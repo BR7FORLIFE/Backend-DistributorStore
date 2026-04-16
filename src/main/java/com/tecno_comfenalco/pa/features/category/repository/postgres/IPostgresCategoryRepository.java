@@ -1,12 +1,16 @@
 package com.tecno_comfenalco.pa.features.category.repository.postgres;
 
-import org.springframework.context.annotation.Profile;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.tecno_comfenalco.pa.features.category.CategoryEntity;
-import com.tecno_comfenalco.pa.features.category.repository.ICategoryRepository;
+import com.tecno_comfenalco.pa.features.category.entity.postgres.CategoryEntity;
 
-@Profile("postgres")
-public interface IPostgresCategoryRepository extends JpaRepository<CategoryEntity, Long>, ICategoryRepository {
+public interface IPostgresCategoryRepository extends JpaRepository<CategoryEntity, Long> {
+    CategoryEntity save(CategoryEntity categoryEntity);
 
+    Optional<CategoryEntity> findById(Long id);
+
+    List<CategoryEntity> findByCatalog_Id(Long catalogId);
 }

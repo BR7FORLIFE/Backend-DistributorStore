@@ -1,12 +1,20 @@
 package com.tecno_comfenalco.pa.security.repository.mongo;
 
-import org.springframework.context.annotation.Profile;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.tecno_comfenalco.pa.security.domain.UserEntity;
-import com.tecno_comfenalco.pa.security.repository.IUserRepository;
+import com.tecno_comfenalco.pa.security.entity.mongo.UserDocument;
 
-@Profile("mongo")
-public interface IMongoUserRepository extends MongoRepository<UserEntity, Long>, IUserRepository {
+public interface IMongoUserRepository extends MongoRepository<UserDocument, String> {
+    Optional<UserDocument> findByUsername(String username);
 
+    Optional<UserDocument> findById(Long id);
+
+    boolean existsByUsername(String username);
+
+    List<UserDocument> findAll();
+
+    UserDocument save(UserDocument user);
 }

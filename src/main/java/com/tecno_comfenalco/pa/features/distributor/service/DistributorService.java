@@ -6,9 +6,10 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.tecno_comfenalco.pa.features.catalog.CatalogEntity;
-import com.tecno_comfenalco.pa.features.catalog.repository.ICatalogRepository;
-import com.tecno_comfenalco.pa.features.distributor.DistributorEntity;
+import com.tecno_comfenalco.pa.features.catalog.entity.postgres.CatalogEntity;
+import com.tecno_comfenalco.pa.features.catalog.models.CatalogModel;
+import com.tecno_comfenalco.pa.features.catalog.ports.ICatalogRepositoryPort;
+import com.tecno_comfenalco.pa.features.catalog.repository.IPostgresCatalogRepositoryAdapter;
 import com.tecno_comfenalco.pa.features.distributor.dto.DistributorDto;
 import com.tecno_comfenalco.pa.features.distributor.dto.request.EditDistributorRequestDto;
 import com.tecno_comfenalco.pa.features.distributor.dto.request.RegisterDistributorRequestDto;
@@ -16,26 +17,29 @@ import com.tecno_comfenalco.pa.features.distributor.dto.response.DistributorResp
 import com.tecno_comfenalco.pa.features.distributor.dto.response.EditDistributorResponseDto;
 import com.tecno_comfenalco.pa.features.distributor.dto.response.ListDistributorsResponseDto;
 import com.tecno_comfenalco.pa.features.distributor.dto.response.RegisterDistributorResponseDto;
-import com.tecno_comfenalco.pa.features.distributor.repository.IDistributorRepository;
+import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
+import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
+import com.tecno_comfenalco.pa.features.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.security.AuthenticationService;
-import com.tecno_comfenalco.pa.security.domain.UserEntity;
 import com.tecno_comfenalco.pa.security.dto.requests.RegisterUserRequestDto;
-import com.tecno_comfenalco.pa.security.repository.IUserRepository;
+import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
+import com.tecno_comfenalco.pa.security.model.UserModel;
+import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
 
 @Service
 public class DistributorService {
     @Autowired
-    private IDistributorRepository distributorRepository;
+    private IDistributorRepositoryPort distributorRepository;
 
     @Autowired
     private AuthenticationService authenticationService;
 
     @Autowired
-    private ICatalogRepository catalogRepository;
+    private ICatalogRepositoryPort catalogRepository;
 
     @Autowired
-    private IUserRepository userRepository;
+    private IUserRepositoryPort userRepository;
 
     public Result<RegisterDistributorResponseDto, Exception> newDistributor(
             RegisterDistributorRequestDto dtoDistributor) {
@@ -48,7 +52,7 @@ public class DistributorService {
 
         try {
 
-            DistributorEntity distributorEntity = new DistributorEntity();
+            DistributorModel distributorEntity = new DistributorModel();
             distributorEntity.setNIT(dtoDistributor.NIT());
             distributorEntity.setName(dtoDistributor.name());
             distributorEntity.setPhoneNumber(dtoDistributor.phoneNumber());
@@ -60,13 +64,13 @@ public class DistributorService {
                             "password", Set.of("DISTRIBUTOR"), true))
                     .getValue().userId();
 
-            UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new Exception("User not found!"));
+            UserModel userEntity = userRepository.findById(userId).orElseThrow(() -> new Exception("User not found!"));
 
             distributorEntity.setUser(userEntity);
 
             distributorRepository.save(distributorEntity);
 
-            var catalogOfDistributor = new CatalogEntity();
+            var catalogOfDistributor = new CatalogModel();
             catalogOfDistributor.setDistributor(distributorEntity);
             catalogRepository.save(catalogOfDistributor);
 
@@ -107,7 +111,7 @@ public class DistributorService {
     }
 
     public Result<ListDistributorsResponseDto, Exception> listDistributors() {
-        List<DistributorEntity> distributorEntities = distributorRepository.findAll();
+        List<DistributorModel> distributorEntities = distributorRepository.findAll();
 
         try {
 

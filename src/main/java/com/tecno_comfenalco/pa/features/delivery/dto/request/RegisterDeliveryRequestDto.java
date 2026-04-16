@@ -1,6 +1,7 @@
 package com.tecno_comfenalco.pa.features.delivery.dto.request;
 
-import com.tecno_comfenalco.pa.features.delivery.DeliveryEntity.LicenseTypeEnum;
+
+import com.tecno_comfenalco.pa.features.delivery.model.DeliveryModel.LicenseTypeEnum;
 import com.tecno_comfenalco.pa.shared.enums.DocumentTypeEnum;
 
 import jakarta.validation.constraints.NotBlank;

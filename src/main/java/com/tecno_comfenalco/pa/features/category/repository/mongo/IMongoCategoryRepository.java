@@ -1,12 +1,11 @@
 package com.tecno_comfenalco.pa.features.category.repository.mongo;
 
-import org.springframework.context.annotation.Profile;
+import java.util.List;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.tecno_comfenalco.pa.features.category.CategoryEntity;
-import com.tecno_comfenalco.pa.features.category.repository.ICategoryRepository;
+import com.tecno_comfenalco.pa.features.category.entity.mongo.CategoryDocument;
 
-@Profile("mongo")
-public interface IMongoCategoryRepository extends MongoRepository<CategoryEntity, Long>, ICategoryRepository {
-
+public interface IMongoCategoryRepository extends MongoRepository<CategoryDocument, String> {
+    List<CategoryDocument> findByCatalog_Id(String category_id);
 }

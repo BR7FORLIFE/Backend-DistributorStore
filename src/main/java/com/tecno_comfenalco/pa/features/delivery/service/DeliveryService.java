@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.tecno_comfenalco.pa.features.delivery.DeliveryEntity;
 import com.tecno_comfenalco.pa.features.delivery.dto.DeliveryDto;
 import com.tecno_comfenalco.pa.features.delivery.dto.request.EditDeliveryRequestDto;
 import com.tecno_comfenalco.pa.features.delivery.dto.request.RegisterDeliveryRequestDto;
@@ -15,29 +14,31 @@ import com.tecno_comfenalco.pa.features.delivery.dto.response.DeliveryResponseDt
 import com.tecno_comfenalco.pa.features.delivery.dto.response.EditDeliveryResponseDto;
 import com.tecno_comfenalco.pa.features.delivery.dto.response.ListDeliveriesResponseDto;
 import com.tecno_comfenalco.pa.features.delivery.dto.response.RegisterDeliveryResponseDto;
-import com.tecno_comfenalco.pa.features.delivery.repository.IDeliveryRepository;
-import com.tecno_comfenalco.pa.features.distributor.DistributorEntity;
-import com.tecno_comfenalco.pa.features.distributor.repository.IDistributorRepository;
-import com.tecno_comfenalco.pa.features.presales.PresalesEntity;
+import com.tecno_comfenalco.pa.features.delivery.model.DeliveryModel;
+import com.tecno_comfenalco.pa.features.delivery.ports.IDeliveryRepositoryPort;
+import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
+import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
+import com.tecno_comfenalco.pa.features.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.security.AuthenticationService;
-import com.tecno_comfenalco.pa.security.domain.UserEntity;
 import com.tecno_comfenalco.pa.security.dto.requests.RegisterUserRequestDto;
-import com.tecno_comfenalco.pa.security.repository.IUserRepository;
+import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
+import com.tecno_comfenalco.pa.security.model.UserModel;
+import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
 
 @Service
 public class DeliveryService {
     @Autowired
-    private IDeliveryRepository deliveryRepository;
+    private IDeliveryRepositoryPort deliveryRepository;
 
     @Autowired
     private AuthenticationService authenticationService;
 
     @Autowired
-    private IUserRepository userRepository;
+    private IUserRepositoryPort userRepository;
 
     @Autowired
-    private IDistributorRepository distributorRepository;
+    private IDistributorRepositoryPort distributorRepository;
 
     public Result<RegisterDeliveryResponseDto, Exception> newDelivery(RegisterDeliveryRequestDto dtoDelivery) {
 
@@ -49,26 +50,26 @@ public class DeliveryService {
 
         try {
 
-            DeliveryEntity deliveryEntity = new DeliveryEntity();
-            deliveryEntity.setName(dtoDelivery.name());
-            deliveryEntity.setDocumentType(dtoDelivery.documentType());
-            deliveryEntity.setDocumentNumber(dtoDelivery.documentNumber());
-            deliveryEntity.setPhoneNumber(dtoDelivery.phoneNumber());
-            deliveryEntity.setLicenseNumber(dtoDelivery.licenseNumber());
-            deliveryEntity.setLicenseType(dtoDelivery.licenseType());
+            DeliveryModel deliveryModel = new DeliveryModel();
+            deliveryModel.setName(dtoDelivery.name());
+            deliveryModel.setDocumentType(dtoDelivery.documentType());
+            deliveryModel.setDocumentNumber(dtoDelivery.documentNumber());
+            deliveryModel.setPhoneNumber(dtoDelivery.phoneNumber());
+            deliveryModel.setLicenseNumber(dtoDelivery.licenseNumber());
+            deliveryModel.setLicenseType(dtoDelivery.licenseType());
 
             Long userId = authenticationService.registerUser(
                     new RegisterUserRequestDto(dtoDelivery.name().toLowerCase().replace(" ", "_"),
                             "password", Set.of("DELIVERY"), true))
                     .getValue().userId();
 
-            UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new Exception("User not found!"));
+            UserModel userEntity = userRepository.findById(userId).orElseThrow(() -> new Exception("User not found!"));
 
-            deliveryEntity.setUser(userEntity);
+            deliveryModel.setUser(userEntity);
 
-            assignDeliveryToDistributor(deliveryEntity);
+            assignDeliveryToDistributor(deliveryModel);
 
-            deliveryRepository.save(deliveryEntity);
+            deliveryRepository.save(deliveryModel);
 
             return Result.ok(new RegisterDeliveryResponseDto("Delivery register successful!"));
         } catch (Exception e) {
@@ -103,7 +104,7 @@ public class DeliveryService {
     }
 
     public Result<ListDeliveriesResponseDto, Exception> listDelivery() {
-        List<DeliveryEntity> deliveryEntities = deliveryRepository.findAll();
+        List<DeliveryModel> deliveryEntities = deliveryRepository.findAll();
 
         try {
 
@@ -137,7 +138,7 @@ public class DeliveryService {
         }
     }
 
-    public void assignDeliveryToDistributor(DeliveryEntity deliveryEntity) {
+    public void assignDeliveryToDistributor(DeliveryModel deliveryModel) {
         try {
 
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -147,7 +148,7 @@ public class DeliveryService {
                 return;
             }
 
-            UserEntity user = userOpt.get();
+            UserModel user = userOpt.get();
 
             var distributorOpt = distributorRepository.findByUser_Id(user.getId());
 
@@ -155,9 +156,9 @@ public class DeliveryService {
                 return;
             }
 
-            DistributorEntity distributorAuthenticated = distributorOpt.get();
+            DistributorModel distributorAuthenticated = distributorOpt.get();
 
-            deliveryEntity.setDistributor(distributorAuthenticated);
+            deliveryModel.setDistributor(distributorAuthenticated);
 
         } catch (Exception e) {
             e.printStackTrace();

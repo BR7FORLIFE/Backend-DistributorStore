@@ -1,12 +1,12 @@
 package com.tecno_comfenalco.pa.features.catalog.repository.mongo;
 
-import org.springframework.context.annotation.Profile;
+import java.util.Optional;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.tecno_comfenalco.pa.features.catalog.CatalogEntity;
-import com.tecno_comfenalco.pa.features.catalog.repository.ICatalogRepository;
+import com.tecno_comfenalco.pa.features.catalog.entity.mongo.CatalogDocument;
 
-@Profile("mongo")
-public interface IMongoCatalogRepository extends MongoRepository<CatalogEntity, Long>, ICatalogRepository {
+public interface IMongoCatalogRepository extends MongoRepository<CatalogDocument, String> {
+    Optional<CatalogDocument> findByDistributor_Id(String distributorId);
 
 }

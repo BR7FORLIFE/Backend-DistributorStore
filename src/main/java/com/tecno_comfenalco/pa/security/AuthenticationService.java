@@ -9,7 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.tecno_comfenalco.pa.security.domain.UserEntity;
 import com.tecno_comfenalco.pa.security.dto.UserDto;
 import com.tecno_comfenalco.pa.security.dto.requests.EditUserRequestDto;
 import com.tecno_comfenalco.pa.security.dto.requests.LoginRequestDto;
@@ -18,13 +17,14 @@ import com.tecno_comfenalco.pa.security.dto.responses.DisableUserResponseDto;
 import com.tecno_comfenalco.pa.security.dto.responses.ListUserResponseDto;
 import com.tecno_comfenalco.pa.security.dto.responses.RegisterUserResponseDto;
 import com.tecno_comfenalco.pa.security.dto.responses.UserResponseDto;
-import com.tecno_comfenalco.pa.security.repository.IUserRepository;
+import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
+import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
 
 @Service
 public class AuthenticationService {
     @Autowired
-    private IUserRepository userRepository;
+    private IUserRepositoryPort userRepository;
 
     @Autowired
     private AuthenticationManager authenticationManager;

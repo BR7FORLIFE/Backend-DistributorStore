@@ -8,11 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.tecno_comfenalco.pa.features.distributor.DistributorEntity;
-import com.tecno_comfenalco.pa.features.distributor.repository.IDistributorRepository;
-import com.tecno_comfenalco.pa.features.order.OrderDetailEntity;
-import com.tecno_comfenalco.pa.features.order.OrderDetailIdEmbedded;
-import com.tecno_comfenalco.pa.features.order.OrderEntity;
+import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
+import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
+import com.tecno_comfenalco.pa.features.distributor.repository.IPostgresDistributorRepositoryAdapter;
 import com.tecno_comfenalco.pa.features.order.dto.OrderDto;
 import com.tecno_comfenalco.pa.features.order.dto.OrderProductDto;
 import com.tecno_comfenalco.pa.features.order.dto.request.CreateOrderRequestDto;
@@ -20,39 +18,52 @@ import com.tecno_comfenalco.pa.features.order.dto.response.CancelledOrderRespons
 import com.tecno_comfenalco.pa.features.order.dto.response.CreateOrderResponseDto;
 import com.tecno_comfenalco.pa.features.order.dto.response.ListOrderResponseDto;
 import com.tecno_comfenalco.pa.features.order.dto.response.ShowOrderResponseDto;
-import com.tecno_comfenalco.pa.features.order.repository.IOrderRepository;
-import com.tecno_comfenalco.pa.features.presales.PresalesEntity;
+import com.tecno_comfenalco.pa.features.order.entity.postgres.OrderDetailEntity;
+import com.tecno_comfenalco.pa.features.order.entity.postgres.OrderDetailIdEmbedded;
+import com.tecno_comfenalco.pa.features.order.entity.postgres.OrderEntity;
+import com.tecno_comfenalco.pa.features.order.models.OrderDetaildEmbeddedModel;
+import com.tecno_comfenalco.pa.features.order.models.OrderDetailsModel;
+import com.tecno_comfenalco.pa.features.order.models.OrderModel;
+import com.tecno_comfenalco.pa.features.order.port.IOrderRepositoryPort;
+import com.tecno_comfenalco.pa.features.order.repository.IPostgresOrderRepositoryAdapter;
 import com.tecno_comfenalco.pa.features.presales.dto.PresalesDto;
-import com.tecno_comfenalco.pa.features.presales.repository.IPresalesRepository;
-import com.tecno_comfenalco.pa.features.product.ProductEntity;
-import com.tecno_comfenalco.pa.features.product.repository.IProductRepository;
-import com.tecno_comfenalco.pa.features.store.StoreEntity;
-import com.tecno_comfenalco.pa.features.store.StoresDistributorsEntity;
+import com.tecno_comfenalco.pa.features.presales.entity.postgres.PresalesEntity;
+import com.tecno_comfenalco.pa.features.presales.models.PresalesModel;
+import com.tecno_comfenalco.pa.features.presales.ports.IPresalesRepositoryPort;
+import com.tecno_comfenalco.pa.features.presales.repository.IPostgresPresalesRepositoryAdapter;
+import com.tecno_comfenalco.pa.features.product.entity.postgres.ProductEntity;
+import com.tecno_comfenalco.pa.features.product.models.ProductModel;
+import com.tecno_comfenalco.pa.features.product.ports.IProductRepositoryPort;
+import com.tecno_comfenalco.pa.features.product.repository.IPostgresProductRepositoryAdapter;
 import com.tecno_comfenalco.pa.features.store.dto.StoreDto;
-import com.tecno_comfenalco.pa.features.store.repository.IStoreRepository;
-import com.tecno_comfenalco.pa.features.store.repository.IStoresDistributorsRepository;
+import com.tecno_comfenalco.pa.features.store.entity.postgres.StoreEntity;
+import com.tecno_comfenalco.pa.features.store.entity.postgres.StoresDistributorsEntity;
+import com.tecno_comfenalco.pa.features.store.models.StoreDistributorModel;
+import com.tecno_comfenalco.pa.features.store.models.StoreModel;
+import com.tecno_comfenalco.pa.features.store.ports.IStoreDistributorPort;
+import com.tecno_comfenalco.pa.features.store.ports.IStoreRepositoryPort;
 import com.tecno_comfenalco.pa.security.CustomUserDetails;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
 
 @Service
 public class OrderService {
     @Autowired
-    private IOrderRepository orderRepository;
+    private IOrderRepositoryPort orderRepository;
 
     @Autowired
-    private IStoreRepository storeRepository;
+    private IStoreRepositoryPort storeRepository;
 
     @Autowired
-    private IPresalesRepository presalesRepository;
+    private IPresalesRepositoryPort presalesRepository;
 
     @Autowired
-    private IProductRepository productRepository;
+    private IProductRepositoryPort productRepository;
 
     @Autowired
-    private IStoresDistributorsRepository storesDistributorsRepository;
+    private IStoreDistributorPort storesDistributorsRepository;
 
     @Autowired
-    private IDistributorRepository distributorRepository;
+    private IPostgresDistributorRepositoryAdapter distributorRepository;
 
     public Result<CreateOrderResponseDto, Exception> createOrder(CreateOrderRequestDto dtoOrder) {
         // Validar que la tienda exista
@@ -60,19 +71,19 @@ public class OrderService {
         if (optionalStore.isEmpty()) {
             return Result.error(new Exception("The store does not exist!"));
         }
-        StoreEntity store = optionalStore.get();
+        StoreModel store = optionalStore.get();
 
         // Validar que la distribuidora exista
         var optionalDistributor = distributorRepository.findById(dtoOrder.distributor_id());
         if (optionalDistributor.isEmpty()) {
             return Result.error(new Exception("The distributor does not exist!"));
         }
-        DistributorEntity distributor = optionalDistributor.get();
+        DistributorModel distributor = optionalDistributor.get();
 
         // El preventista es opcional - puede ser null si la tienda pide directamente
-        PresalesEntity presale = null;
+        PresalesModel presale = null;
         if (dtoOrder.presales_id() != null) {
-            var optionalPresales = presalesRepository.findById(dtoOrder.presales_id());
+            var optionalPresales = presalesRepository.findById(dtoOrder.presales_id().toString());
             if (optionalPresales.isEmpty()) {
                 return Result.error(new Exception("The presales does not exist!"));
             }
@@ -96,7 +107,7 @@ public class OrderService {
 
             if (relationshipOpt.isEmpty()) {
                 // La relación no existe, crear automáticamente
-                StoresDistributorsEntity newRelationship = new StoresDistributorsEntity();
+                StoreDistributorModel newRelationship = new StoreDistributorModel();
                 newRelationship.setStore(store);
                 newRelationship.setDistributor(distributor);
                 newRelationship.setInternalClientCode(null); // El distribuidor puede asignarlo después
@@ -107,30 +118,30 @@ public class OrderService {
              * Empezamos seteando la entidad pedidos con su iva fijo de 19%, con su tienda,
              * preventista (si existe) y distribuidora
              */
-            OrderEntity order = new OrderEntity();
+            OrderModel order = new OrderModel();
             order.setIva_percent(0.19);
             order.setStore(store);
             order.setPresales(presale); // Puede ser null si la tienda pide directamente
-            order.setStatus(OrderEntity.OrderStatus.PENDING);
+            order.setStatus(OrderModel.OrderStatus.PENDING);
             order.setDistributorId(distributor.getId()); // Guardar el ID de la distribuidora
 
             // preparamos el arrayList de detalles de pedido
-            List<OrderDetailEntity> details = new ArrayList<>();
+            List<OrderDetailsModel> details = new ArrayList<>();
             double total = 0; // esto para calcular el total del pedido!;
 
             // recorremos cada producto de la lista que le llega del dto
             for (OrderProductDto p : dtoOrder.productEntities()) {
-                ProductEntity productEntity = productRepository.findById(p.id())
+                ProductModel productEntity = productRepository.findById(p.id())
                         .orElseThrow(() -> new RuntimeException("The product not exists!"));
 
                 // enlazamos la id de pedido y la id de producto
-                OrderDetailIdEmbedded orderDetailIdEmbedded = new OrderDetailIdEmbedded();
+                OrderDetaildEmbeddedModel orderDetailIdEmbedded = new OrderDetaildEmbeddedModel();
                 orderDetailIdEmbedded.setOrderId(order.getId());
                 orderDetailIdEmbedded.setProductId(productEntity.getId());
 
                 // terminamos de setear el objeto del detalle de pedido
-                OrderDetailEntity orderDetailEntity = new OrderDetailEntity();
-                orderDetailEntity.setId(orderDetailIdEmbedded);
+                OrderDetailsModel orderDetailEntity = new OrderDetailsModel();
+                orderDetailEntity.setId(orderDetailIdEmbedded.getOrderId());
                 orderDetailEntity.setOrder(order);
                 orderDetailEntity.setProduct(productEntity);
                 orderDetailEntity.setQuantity(p.quantity());
@@ -167,12 +178,12 @@ public class OrderService {
             Long userId = userDetails.getUserId();
 
             // Buscar el pedido
-            var orderOpt = orderRepository.findByid(id);
+            var orderOpt = orderRepository.findByid(id.toString());
             if (orderOpt.isEmpty()) {
                 return Result.error(new Exception("Order not found"));
             }
 
-            OrderEntity order = orderOpt.get();
+            OrderModel order = orderOpt.get();
 
             // Verificar si el usuario tiene rol STORE
             boolean isStore = userDetails.getAuthorities().stream()
@@ -189,7 +200,7 @@ public class OrderService {
                 if (storeOpt.isEmpty()) {
                     return Result.error(new Exception("Store not found for the authenticated user"));
                 }
-                StoreEntity store = storeOpt.get();
+                StoreModel store = storeOpt.get();
 
                 // Validar que el pedido pertenezca a esta tienda
                 if (!order.getStore().getId().equals(store.getId())) {
@@ -198,11 +209,11 @@ public class OrderService {
 
             } else if (isPresales) {
                 // Buscar el preventista asociado al usuario
-                var presalesOpt = presalesRepository.findByUser_Id(userId);
+                var presalesOpt = presalesRepository.findByUser_Id(userId.toString());
                 if (presalesOpt.isEmpty()) {
                     return Result.error(new Exception("Presales not found for the authenticated user"));
                 }
-                PresalesEntity presales = presalesOpt.get();
+                PresalesModel presales = presalesOpt.get();
 
                 // Validar que el pedido haya sido tomado por este preventista
                 if (order.getPresales() == null || !order.getPresales().getId().equals(presales.getId())) {
@@ -214,7 +225,7 @@ public class OrderService {
             }
 
             // Cancelar el pedido
-            order.setStatus(OrderEntity.OrderStatus.CANCELLED);
+            order.setStatus(OrderModel.OrderStatus.CANCELLED);
             orderRepository.save(order);
 
             CancelledOrderResponseDto response = new CancelledOrderResponseDto("Order cancelled successfully!");
@@ -237,7 +248,7 @@ public class OrderService {
                     .getAuthentication().getPrincipal();
             Long userId = userDetails.getUserId();
 
-            List<OrderEntity> orderEntities;
+            List<OrderModel> orderEntities;
 
             // Verificar si el usuario tiene rol STORE
             boolean isStore = userDetails.getAuthorities().stream()
@@ -253,21 +264,21 @@ public class OrderService {
                 if (storeOpt.isEmpty()) {
                     return Result.error(new Exception("Store not found for the authenticated user"));
                 }
-                StoreEntity store = storeOpt.get();
+                StoreModel store = storeOpt.get();
 
                 // Obtener solo los pedidos de esta tienda
-                orderEntities = orderRepository.findByStore_Id(store.getId());
+                orderEntities = orderRepository.findByStore_Id(store.getId().toString());
 
             } else if (isPresales) {
                 // Buscar el preventista asociado al usuario
-                var presalesOpt = presalesRepository.findByUser_Id(userId);
+                var presalesOpt = presalesRepository.findByUser_Id(userId.toString());
                 if (presalesOpt.isEmpty()) {
                     return Result.error(new Exception("Presales not found for the authenticated user"));
                 }
-                PresalesEntity presales = presalesOpt.get();
+                PresalesModel presales = presalesOpt.get();
 
                 // Obtener solo los pedidos tomados por este preventista
-                orderEntities = orderRepository.findByPresales_Id(presales.getId());
+                orderEntities = orderRepository.findByPresales_Id(presales.getId().toString());
 
             } else {
                 return Result.error(new Exception("User does not have STORE or PRESALES role"));
@@ -289,12 +300,12 @@ public class OrderService {
                                 order.getIva_percent(),
                                 order.getTotal(),
                                 order.getStatus(),
-                                new StoreDto(order.getStore().getId(), order.getStore().getNIT(),
+                                new StoreDto(order.getStore().getId().toString(), order.getStore().getNIT(),
                                         order.getStore().getName(),
                                         order.getStore().getPhoneNumber(), order.getStore().getEmail(),
                                         order.getStore().getDirection()),
                                 order.getPresales() != null
-                                        ? new PresalesDto(order.getPresales().getId(),
+                                        ? new PresalesDto(order.getPresales().getId().toString(),
                                                 order.getPresales().getName(), order.getPresales().getPhoneNumber(),
                                                 order.getPresales().getEmail(), order.getPresales().getDocumentType(),
                                                 order.getPresales().getDocumentNumber(),

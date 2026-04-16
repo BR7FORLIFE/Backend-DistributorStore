@@ -9,22 +9,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.tecno_comfenalco.pa.features.catalog.CatalogEntity;
-import com.tecno_comfenalco.pa.features.catalog.ProductsCatalogEntity;
 import com.tecno_comfenalco.pa.features.catalog.dto.response.AddCategoryToCatalogResponseDto;
 import com.tecno_comfenalco.pa.features.catalog.dto.response.GetCatalogResponseDto;
 import com.tecno_comfenalco.pa.features.catalog.dto.response.GetCategoryProductsResponseDto;
-import com.tecno_comfenalco.pa.features.catalog.repository.ICatalogRepository;
-import com.tecno_comfenalco.pa.features.catalog.repository.IProductsCatalogRepository;
-import com.tecno_comfenalco.pa.features.category.CategoryEntity;
-import com.tecno_comfenalco.pa.features.category.repository.ICategoryRepository;
-import com.tecno_comfenalco.pa.features.distributor.DistributorEntity;
-import com.tecno_comfenalco.pa.features.distributor.repository.IDistributorRepository;
-import com.tecno_comfenalco.pa.features.presales.PresalesEntity;
-import com.tecno_comfenalco.pa.features.presales.repository.IPresalesRepository;
-import com.tecno_comfenalco.pa.features.product.ProductEntity;
+import com.tecno_comfenalco.pa.features.catalog.models.CatalogModel;
+import com.tecno_comfenalco.pa.features.catalog.models.ProductCatalogModel;
+import com.tecno_comfenalco.pa.features.catalog.ports.ICatalogRepositoryPort;
+import com.tecno_comfenalco.pa.features.catalog.ports.IProductsCatalogRepositoryPort;
+
+import com.tecno_comfenalco.pa.features.category.models.CategoryModel;
+import com.tecno_comfenalco.pa.features.category.ports.ICategoryRepositoryPort;
+
+import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
+import com.tecno_comfenalco.pa.features.distributor.ports.IDistributorRepositoryPort;
+
+import com.tecno_comfenalco.pa.features.presales.models.PresalesModel;
+import com.tecno_comfenalco.pa.features.presales.ports.IPresalesRepositoryPort;
 import com.tecno_comfenalco.pa.features.product.dto.ProductDto;
-import com.tecno_comfenalco.pa.features.product.repository.IProductRepository;
+import com.tecno_comfenalco.pa.features.product.models.ProductModel;
+import com.tecno_comfenalco.pa.features.product.ports.IProductRepositoryPort;
 import com.tecno_comfenalco.pa.security.CustomUserDetails;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
 
@@ -32,22 +35,22 @@ import com.tecno_comfenalco.pa.shared.utils.result.Result;
 public class CatalogService {
 
     @Autowired
-    private ICatalogRepository catalogRepository;
+    private ICatalogRepositoryPort catalogRepository;
 
     @Autowired
-    private IProductsCatalogRepository productsCatalogRepository;
+    private IProductsCatalogRepositoryPort productsCatalogRepository;
 
     @Autowired
-    private ICategoryRepository categoryRepository;
+    private ICategoryRepositoryPort categoryRepository;
 
     @Autowired
-    private IProductRepository productRepository;
+    private IProductRepositoryPort productRepository;
 
     @Autowired
-    private IDistributorRepository distributorRepository;
+    private IDistributorRepositoryPort distributorRepository;
 
     @Autowired
-    private IPresalesRepository presalesRepository;
+    private IPresalesRepositoryPort presalesRepository;
 
     /**
      * Agrega una categoría al catálogo de la distribuidora autenticada
@@ -62,25 +65,25 @@ public class CatalogService {
             Long userId = userDetails.getUserId();
 
             // Buscar la distribuidora asociada al usuario
-            Optional<DistributorEntity> distributorOpt = distributorRepository.findByUser_Id(userId);
+            Optional<DistributorModel> distributorOpt = distributorRepository.findByUser_Id(userId);
 
             if (distributorOpt.isEmpty()) {
                 return Result.error(new Exception("Distributor not found for the authenticated user"));
             }
 
-            DistributorEntity distributor = distributorOpt.get();
+            DistributorModel distributor = distributorOpt.get();
 
             // Buscar el catálogo de la distribuidora
-            Optional<CatalogEntity> catalogOpt = catalogRepository.findByDistributor_Id(distributor.getId());
+            Optional<CatalogModel> catalogOpt = catalogRepository.findByDistributor_Id(distributor.getId());
 
             if (catalogOpt.isEmpty()) {
                 return Result.error(new Exception("Catalog not found for this distributor"));
             }
 
-            CatalogEntity catalog = catalogOpt.get();
+            CatalogModel catalog = catalogOpt.get();
 
             // Crear la nueva categoría
-            CategoryEntity category = new CategoryEntity();
+            CategoryModel category = new CategoryModel();
             category.setName(categoryName);
             category.setCatalog(catalog);
 
@@ -105,31 +108,31 @@ public class CatalogService {
             Long userId = userDetails.getUserId();
 
             // Buscar la distribuidora asociada al usuario
-            Optional<DistributorEntity> distributorOpt = distributorRepository.findByUser_Id(userId);
+            Optional<DistributorModel> distributorOpt = distributorRepository.findByUser_Id(userId);
 
             if (distributorOpt.isEmpty()) {
                 return Result.error(new Exception("Distributor not found for the authenticated user"));
             }
 
-            DistributorEntity distributor = distributorOpt.get();
+            DistributorModel distributor = distributorOpt.get();
 
             // Buscar el catálogo de la distribuidora
-            Optional<CatalogEntity> catalogOpt = catalogRepository.findByDistributor_Id(distributor.getId());
+            Optional<CatalogModel> catalogOpt = catalogRepository.findByDistributor_Id(distributor.getId());
 
             if (catalogOpt.isEmpty()) {
                 return Result.error(new Exception("Catalog not found for this distributor"));
             }
 
-            CatalogEntity catalog = catalogOpt.get();
+            CatalogModel catalog = catalogOpt.get();
 
             // Buscar la categoría
-            Optional<CategoryEntity> categoryOpt = categoryRepository.findById(categoryId);
+            Optional<CategoryModel> categoryOpt = categoryRepository.findById(categoryId);
 
             if (categoryOpt.isEmpty()) {
                 return Result.error(new Exception("Category not found"));
             }
 
-            CategoryEntity category = categoryOpt.get();
+            CategoryModel category = categoryOpt.get();
 
             // Validar que la categoría pertenezca al catálogo de la distribuidora
             if (!category.getCatalog().getId().equals(catalog.getId())) {
@@ -138,16 +141,16 @@ public class CatalogService {
             }
 
             // Buscar el producto
-            Optional<ProductEntity> productOpt = productRepository.findById(productId);
+            Optional<ProductModel> productOpt = productRepository.findById(productId);
 
             if (productOpt.isEmpty()) {
                 return Result.error(new Exception("Product not found"));
             }
 
-            ProductEntity product = productOpt.get();
+            ProductModel product = productOpt.get();
 
             // Crear la relación entre categoría y producto
-            ProductsCatalogEntity categoryProduct = new ProductsCatalogEntity();
+            ProductCatalogModel categoryProduct = new ProductCatalogModel();
             categoryProduct.setCategory(category);
             categoryProduct.setProduct(product);
 
@@ -172,9 +175,9 @@ public class CatalogService {
             Long userId = userDetails.getUserId();
 
             // 1. Intentar obtener distribuidor por userId
-            Optional<DistributorEntity> distributorOpt = distributorRepository.findByUser_Id(userId);
+            Optional<DistributorModel> distributorOpt = distributorRepository.findByUser_Id(userId);
 
-            DistributorEntity distributor;
+            DistributorModel distributor;
 
             if (distributorOpt.isPresent()) {
                 // si el usuario es una distribura
@@ -182,7 +185,7 @@ public class CatalogService {
 
             } else {
                 // Usuario NO es distribuidor → debe ser preventista
-                Optional<PresalesEntity> presalesOpt = presalesRepository.findByUser_Id(userId);
+                Optional<PresalesModel> presalesOpt = presalesRepository.findByUser_Id(userId.toString());
 
                 if (presalesOpt.isEmpty()) {
                     return Result.error(new Exception("User is not associated with a distributor or presales entity."));
@@ -192,16 +195,16 @@ public class CatalogService {
             }
 
             // 2. Buscar el catálogo de la distribuidora
-            Optional<CatalogEntity> catalogOpt = catalogRepository.findByDistributor_Id(distributor.getId());
+            Optional<CatalogModel> catalogOpt = catalogRepository.findByDistributor_Id(distributor.getId());
 
             if (catalogOpt.isEmpty()) {
                 return Result.error(new Exception("Catalog not found for this distributor"));
             }
 
-            CatalogEntity catalog = catalogOpt.get();
+            CatalogModel catalog = catalogOpt.get();
 
             // 3. Obtener categorías
-            List<CategoryEntity> categories = categoryRepository.findByCatalog_Id(catalog.getId());
+            List<CategoryModel> categories = categoryRepository.findByCatalog_Id(catalog.getId());
 
             // 4. Mapear a DTO
             List<GetCatalogResponseDto.CategoryDto> categoryDtos = categories.stream()
@@ -210,7 +213,7 @@ public class CatalogService {
                             cat.getName(),
                             cat.getProducts().stream()
                                     .map(pc -> new ProductDto(
-                                            pc.getId(),
+                                            UUID.fromString(pc.getId()),
                                             pc.getName(),
                                             pc.getPrice(),
                                             pc.getUnit().toString(),
@@ -245,20 +248,20 @@ public class CatalogService {
             Long userId = userDetails.getUserId();
 
             // Buscar la distribuidora asociada al usuario
-            Optional<DistributorEntity> distributorOpt = distributorRepository.findByUser_Id(userId);
+            Optional<DistributorModel> distributorOpt = distributorRepository.findByUser_Id(userId);
 
             if (distributorOpt.isEmpty()) {
                 return Result.error(new Exception("Distributor not found for the authenticated user"));
             }
 
             // Buscar la categoría
-            Optional<CategoryEntity> categoryOpt = categoryRepository.findById(categoryId);
+            Optional<CategoryModel> categoryOpt = categoryRepository.findById(categoryId);
 
             if (categoryOpt.isEmpty()) {
                 return Result.error(new Exception("Category not found"));
             }
 
-            CategoryEntity category = categoryOpt.get();
+            CategoryModel category = categoryOpt.get();
 
             // Validar que la categoría pertenezca al catálogo de la distribuidora del
             // usuario
@@ -267,12 +270,12 @@ public class CatalogService {
             }
 
             // Obtener los productos de la categoría
-            List<ProductEntity> products = category.getProducts();
+            List<ProductModel> products = category.getProducts();
 
             // Mapear a DTO
             List<GetCategoryProductsResponseDto.ProductDto> productDtos = products.stream()
                     .map(prod -> new GetCategoryProductsResponseDto.ProductDto(
-                            prod.getId(),
+                            UUID.fromString(prod.getId()),
                             prod.getName(),
                             prod.getPrice(),
                             prod.getUnit().toString()))

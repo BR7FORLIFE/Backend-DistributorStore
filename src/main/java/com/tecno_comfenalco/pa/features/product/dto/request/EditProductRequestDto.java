@@ -1,6 +1,6 @@
 package com.tecno_comfenalco.pa.features.product.dto.request;
 
-import com.tecno_comfenalco.pa.features.product.ProductEntity.Unit;
+import com.tecno_comfenalco.pa.features.product.entity.postgres.ProductEntity.Unit;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

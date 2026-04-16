@@ -1,14 +1,14 @@
 package com.tecno_comfenalco.pa.features.order.repository.mongo;
 
-import java.util.UUID;
+import java.util.List;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.tecno_comfenalco.pa.features.order.OrderEntity;
-import com.tecno_comfenalco.pa.features.order.repository.IOrderRepository;
+import com.tecno_comfenalco.pa.features.order.entity.mongo.OrderDocument;
 
-@Profile("mongo")
-public interface IMongoOrderRepository extends MongoRepository<OrderEntity, UUID>, IOrderRepository {
+public interface IMongoOrderRepository extends MongoRepository<OrderDocument, String> {
+    List<OrderDocument> findByStore_Id(String storeId);
+
+    List<OrderDocument> findByPresales_Id(String presalesId);
 
 }

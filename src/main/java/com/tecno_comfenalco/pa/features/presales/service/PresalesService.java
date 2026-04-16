@@ -7,9 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.tecno_comfenalco.pa.features.distributor.DistributorEntity;
-import com.tecno_comfenalco.pa.features.distributor.repository.IDistributorRepository;
-import com.tecno_comfenalco.pa.features.presales.PresalesEntity;
+import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
+import com.tecno_comfenalco.pa.features.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.features.presales.dto.PresalesDto;
 import com.tecno_comfenalco.pa.features.presales.dto.request.EditPresalesRequestDto;
 import com.tecno_comfenalco.pa.features.presales.dto.request.RegisterPresalesRequestDto;
@@ -17,26 +16,27 @@ import com.tecno_comfenalco.pa.features.presales.dto.response.EditPresalesRespon
 import com.tecno_comfenalco.pa.features.presales.dto.response.ListPresalesResponseDto;
 import com.tecno_comfenalco.pa.features.presales.dto.response.PresalesResponseDto;
 import com.tecno_comfenalco.pa.features.presales.dto.response.RegisterPresalesResponseDto;
-import com.tecno_comfenalco.pa.features.presales.repository.IPresalesRepository;
+import com.tecno_comfenalco.pa.features.presales.entity.postgres.PresalesEntity;
+import com.tecno_comfenalco.pa.features.presales.ports.IPresalesRepositoryPort;
 import com.tecno_comfenalco.pa.security.AuthenticationService;
-import com.tecno_comfenalco.pa.security.domain.UserEntity;
 import com.tecno_comfenalco.pa.security.dto.requests.RegisterUserRequestDto;
-import com.tecno_comfenalco.pa.security.repository.IUserRepository;
+import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
+import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
 
 @Service
 public class PresalesService {
     @Autowired
-    private IDistributorRepository distributorRepository;
+    private IDistributorRepositoryPort distributorRepository;
 
     @Autowired
-    private IPresalesRepository presalesRepository;
+    private IPresalesRepositoryPort presalesRepository;
 
     @Autowired
     private AuthenticationService authenticationService;
 
     @Autowired
-    private IUserRepository userRepository;
+    private IUserRepositoryPort userRepository;
 
     public Result<RegisterPresalesResponseDto, Exception> newPresales(RegisterPresalesRequestDto dtoPresales) {
 

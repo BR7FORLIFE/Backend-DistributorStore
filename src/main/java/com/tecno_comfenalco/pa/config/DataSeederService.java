@@ -12,28 +12,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.javafaker.Faker;
-import com.tecno_comfenalco.pa.features.catalog.CatalogEntity;
-import com.tecno_comfenalco.pa.features.catalog.ProductsCatalogEntity;
-import com.tecno_comfenalco.pa.features.catalog.repository.ICatalogRepository;
-import com.tecno_comfenalco.pa.features.catalog.repository.IProductsCatalogRepository;
-import com.tecno_comfenalco.pa.features.category.CategoryEntity;
-import com.tecno_comfenalco.pa.features.category.repository.ICategoryRepository;
-import com.tecno_comfenalco.pa.features.distributor.DistributorEntity;
-import com.tecno_comfenalco.pa.features.distributor.repository.IDistributorRepository;
-import com.tecno_comfenalco.pa.features.order.OrderDetailEntity;
-import com.tecno_comfenalco.pa.features.order.OrderDetailIdEmbedded;
-import com.tecno_comfenalco.pa.features.order.OrderEntity;
-import com.tecno_comfenalco.pa.features.order.repository.IOrderRepository;
-import com.tecno_comfenalco.pa.features.presales.PresalesEntity;
-import com.tecno_comfenalco.pa.features.presales.repository.IPresalesRepository;
-import com.tecno_comfenalco.pa.features.product.ProductEntity;
-import com.tecno_comfenalco.pa.features.product.repository.IProductRepository;
-import com.tecno_comfenalco.pa.features.store.StoreEntity;
-import com.tecno_comfenalco.pa.features.store.StoresDistributorsEntity;
-import com.tecno_comfenalco.pa.features.store.repository.IStoreRepository;
-import com.tecno_comfenalco.pa.features.store.repository.IStoresDistributorsRepository;
-import com.tecno_comfenalco.pa.security.domain.UserEntity;
-import com.tecno_comfenalco.pa.security.repository.IUserRepository;
+import com.tecno_comfenalco.pa.features.catalog.entity.postgres.CatalogEntity;
+import com.tecno_comfenalco.pa.features.catalog.entity.postgres.ProductsCatalogEntity;
+import com.tecno_comfenalco.pa.features.catalog.repository.IPostgresCatalogRepositoryAdapter;
+import com.tecno_comfenalco.pa.features.catalog.repository.IPostgresProductsCatalogRepositoryAdapter;
+import com.tecno_comfenalco.pa.features.category.entity.postgres.CategoryEntity;
+import com.tecno_comfenalco.pa.features.category.repository.IPostgresCategoryRepositoryAdapter;
+import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
+import com.tecno_comfenalco.pa.features.distributor.repository.IPostgresDistributorRepositoryAdapter;
+import com.tecno_comfenalco.pa.features.order.entity.postgres.OrderDetailEntity;
+import com.tecno_comfenalco.pa.features.order.entity.postgres.OrderDetailIdEmbedded;
+import com.tecno_comfenalco.pa.features.order.entity.postgres.OrderEntity;
+import com.tecno_comfenalco.pa.features.order.repository.IPostgresOrderRepositoryAdapter;
+import com.tecno_comfenalco.pa.features.presales.entity.postgres.PresalesEntity;
+import com.tecno_comfenalco.pa.features.presales.repository.IPostgresPresalesRepositoryAdapter;
+import com.tecno_comfenalco.pa.features.product.entity.postgres.ProductEntity;
+import com.tecno_comfenalco.pa.features.product.repository.IPostgresProductRepositoryAdapter;
+import com.tecno_comfenalco.pa.features.store.entity.postgres.StoreEntity;
+import com.tecno_comfenalco.pa.features.store.entity.postgres.StoresDistributorsEntity;
+import com.tecno_comfenalco.pa.features.store.repository.IPostgresStoreRepositoryAdapter;
+import com.tecno_comfenalco.pa.features.store.repository.IPostgresStoresDistributorsRepositoryAdapter;
+import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
+import com.tecno_comfenalco.pa.security.repository.IPostgresUserRepositoryAdapter;
 import com.tecno_comfenalco.pa.shared.dto.DirectionDto;
 import com.tecno_comfenalco.pa.shared.enums.DocumentTypeEnum;
 import com.tecno_comfenalco.pa.shared.enums.StoreClaimStatus;
@@ -47,32 +47,32 @@ import lombok.extern.slf4j.Slf4j;
 public class DataSeederService {
 
     @Qualifier("postgresUserRepository")
-    private final IUserRepository userRepository;
+    private final IPostgresUserRepositoryAdapter userRepository;
 
     @Qualifier("postgresDistributorRepository")
-    private final IDistributorRepository distributorRepository;
+    private final IPostgresDistributorRepositoryAdapter distributorRepository;
 
     @Qualifier("postgresStoreRepository")
-    private final IStoreRepository storeRepository;
+    private final IPostgresStoreRepositoryAdapter storeRepository;
 
     @Qualifier("postgresPresalesRepository")
-    private final IPresalesRepository presalesRepository;
+    private final IPostgresPresalesRepositoryAdapter presalesRepository;
 
     @Qualifier("postgresCatalogRepository")
-    private final ICatalogRepository catalogRepository;
+    private final IPostgresCatalogRepositoryAdapter catalogRepository;
 
     @Qualifier("postgresCategoryRepository")
-    private final ICategoryRepository categoryRepository;
+    private final IPostgresCategoryRepositoryAdapter categoryRepository;
 
     @Qualifier("postgresProductRepository")
-    private final IProductRepository productRepository;
+    private final IPostgresProductRepositoryAdapter productRepository;
 
     @Qualifier("postgresOrderRepository")
-    private final IOrderRepository orderRepository;
+    private final IPostgresOrderRepositoryAdapter orderRepository;
 
-    private final IStoresDistributorsRepository storesDistributorsRepository;
+    private final IPostgresStoresDistributorsRepositoryAdapter storesDistributorsRepository;
 
-    private final IProductsCatalogRepository productsCatalogRepository;
+    private final IPostgresProductsCatalogRepositoryAdapter productsCatalogRepository;
 
     private final PasswordEncoder passwordEncoder;
 

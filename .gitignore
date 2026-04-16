@@ -5,7 +5,6 @@ target/
 !**/src/test/**/target/
 
 ### Application Properties ###
-application.yml
 application-dev.yml
 application-prod.yml
 application-postgres.yml

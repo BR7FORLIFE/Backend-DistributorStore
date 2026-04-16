@@ -5,25 +5,25 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.tecno_comfenalco.pa.features.vehicle.VehicleEntity;
 import com.tecno_comfenalco.pa.features.vehicle.dto.VehicleDto;
-import com.tecno_comfenalco.pa.features.vehicle.dto.mapper.VehicleMapper;
+import com.tecno_comfenalco.pa.features.vehicle.dto.mapper.MongoVehicleMapper;
 import com.tecno_comfenalco.pa.features.vehicle.dto.request.RegisterVehicleRequestDto;
 import com.tecno_comfenalco.pa.features.vehicle.dto.response.DisableVehicleResponseDto;
 import com.tecno_comfenalco.pa.features.vehicle.dto.response.ListVehiclesResponseDto;
 import com.tecno_comfenalco.pa.features.vehicle.dto.response.RegisterVehicleResponseDto;
 import com.tecno_comfenalco.pa.features.vehicle.dto.response.VehicleResponseDto;
-import com.tecno_comfenalco.pa.features.vehicle.repository.IVehicleRepository;
+import com.tecno_comfenalco.pa.features.vehicle.entity.postgres.VehicleEntity;
+import com.tecno_comfenalco.pa.features.vehicle.ports.IVehicleRepositoryPort;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
 
 @Service
 public class VehicleService {
 
     @Autowired
-    private IVehicleRepository vehicleRepository;
+    private IVehicleRepositoryPort vehicleRepository;
 
     @Autowired
-    private VehicleMapper vehicleMapper;
+    private MongoVehicleMapper vehicleMapper;
 
     // Implementacion de nuevo metodo Vechicle(CREATE).
     // Se usa el mapper para convertir entre dto de request a entidad.

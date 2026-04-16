@@ -1,0 +1,48 @@
+package com.tecno_comfenalco.pa.features.presales.entity.postgres;
+
+import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
+import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
+import com.tecno_comfenalco.pa.shared.enums.DocumentTypeEnum;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@Data
+@EqualsAndHashCode(exclude = { "user", "distributor" })
+@ToString(exclude = { "user", "distributor" })
+@Entity
+@Table(name = "presales")
+public class PresalesEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String phoneNumber;
+    private String email;
+
+    @Enumerated(EnumType.STRING)
+    private DocumentTypeEnum documentType;
+    private Long documentNumber;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
+    private UserEntity user;
+
+    @ManyToOne
+    @JoinColumn(name = "distributor_id", referencedColumnName = "id", nullable = true)
+    private DistributorEntity distributor;
+
+}

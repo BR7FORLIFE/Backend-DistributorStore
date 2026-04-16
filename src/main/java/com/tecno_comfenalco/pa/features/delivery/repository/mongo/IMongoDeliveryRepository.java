@@ -1,12 +1,13 @@
 package com.tecno_comfenalco.pa.features.delivery.repository.mongo;
 
-import org.springframework.context.annotation.Profile;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
-import com.tecno_comfenalco.pa.features.delivery.DeliveryEntity;
-import com.tecno_comfenalco.pa.features.delivery.repository.IDeliveryRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-@Profile("mongo")
-public interface IMongoDeliveryRepository extends JpaRepository<DeliveryEntity, Long>, IDeliveryRepository {
+import com.tecno_comfenalco.pa.features.delivery.entity.mongo.DeliveryDocument;
 
+public interface IMongoDeliveryRepository extends MongoRepository<DeliveryDocument, String> {
+    Optional<DeliveryDocument> findByName(String name);
+
+    boolean existsByDocumentNumber(String documentNumber);
 }
