@@ -3,12 +3,11 @@ package com.tecno_comfenalco.pa.features.presales.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
 
 import com.tecno_comfenalco.pa.features.presales.PresalesEntity;
 
-@NoRepositoryBean
+@org.springframework.stereotype.Repository
 public interface IPresalesRepository extends Repository<PresalesEntity, Long> {
 
     Optional<PresalesEntity> findById(Long id);

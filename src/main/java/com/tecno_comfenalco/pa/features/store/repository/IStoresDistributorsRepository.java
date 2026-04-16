@@ -7,6 +7,7 @@ import org.springframework.data.repository.Repository;
 
 import com.tecno_comfenalco.pa.features.store.StoresDistributorsEntity;
 
+@org.springframework.stereotype.Repository
 public interface IStoresDistributorsRepository extends Repository<StoresDistributorsEntity, Long> {
     StoresDistributorsEntity save(StoresDistributorsEntity entity);
     

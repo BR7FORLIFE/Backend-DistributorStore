@@ -2,12 +2,11 @@ package com.tecno_comfenalco.pa.features.catalog.repository;
 
 import java.util.Optional;
 
-import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
 
 import com.tecno_comfenalco.pa.features.catalog.CatalogEntity;
 
-@NoRepositoryBean
+@org.springframework.stereotype.Repository
 public interface ICatalogRepository extends Repository<CatalogEntity, Long> {
     CatalogEntity save(CatalogEntity catalogEntity);
 

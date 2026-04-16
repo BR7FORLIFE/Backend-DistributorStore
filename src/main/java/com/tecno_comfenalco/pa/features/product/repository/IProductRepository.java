@@ -4,12 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
 
 import com.tecno_comfenalco.pa.features.product.ProductEntity;
 
-@NoRepositoryBean
+@org.springframework.stereotype.Repository
 public interface IProductRepository extends Repository<ProductEntity, UUID> {
     ProductEntity save(ProductEntity productEntity);
 

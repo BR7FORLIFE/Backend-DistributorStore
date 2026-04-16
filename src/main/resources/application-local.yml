@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  data:
+    mongodb:
+      uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:27017/${MONGO_DB}
+  
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://postgres:5432/${DB_NAME}
+    user: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    locations:
+    - classpath:db/migrations
+    baseline-on-migrate: true
