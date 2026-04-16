@@ -3,12 +3,11 @@ package com.tecno_comfenalco.pa.features.store.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
 
 import com.tecno_comfenalco.pa.features.store.StoreEntity;
 
-@NoRepositoryBean
+@org.springframework.stereotype.Repository
 public interface IStoreRepository extends Repository<StoreEntity, Long> {
     StoreEntity save(StoreEntity storeEntity);
 
