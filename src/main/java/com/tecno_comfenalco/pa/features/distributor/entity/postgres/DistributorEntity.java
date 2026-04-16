@@ -1,0 +1,51 @@
+package com.tecno_comfenalco.pa.features.distributor.entity.postgres;
+
+import java.util.List;
+
+import com.tecno_comfenalco.pa.features.store.entity.postgres.StoresDistributorsEntity;
+import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
+import com.tecno_comfenalco.pa.shared.dto.DirectionDto;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@Data
+@EqualsAndHashCode(exclude = { "user", "storesDistributors" })
+@ToString(exclude = { "user", "storesDistributors" })
+@Entity
+@Table(name = "distributors")
+public class DistributorEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "NIT", nullable = false, unique = true)
+    private Long NIT;
+
+    private String name;
+    private String phoneNumber;
+    private String email;
+
+    @Embedded
+    private DirectionDto direction;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
+    private UserEntity user;
+
+    @OneToMany(mappedBy = "distributor")
+    private List<StoresDistributorsEntity> storesDistributors;
+
+}

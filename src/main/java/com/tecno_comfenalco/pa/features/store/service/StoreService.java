@@ -10,10 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tecno_comfenalco.pa.features.distributor.DistributorEntity;
-import com.tecno_comfenalco.pa.features.distributor.repository.IDistributorRepository;
-import com.tecno_comfenalco.pa.features.store.StoreEntity;
-import com.tecno_comfenalco.pa.features.store.StoresDistributorsEntity;
+import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
+import com.tecno_comfenalco.pa.features.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.features.store.dto.StoreDto;
 import com.tecno_comfenalco.pa.features.store.dto.request.ClaimStoreRequestDto;
 import com.tecno_comfenalco.pa.features.store.dto.request.EditStoreRequestDto;
@@ -25,12 +23,14 @@ import com.tecno_comfenalco.pa.features.store.dto.response.EditStoreResponseDto;
 import com.tecno_comfenalco.pa.features.store.dto.response.ListStoresResponseDto;
 import com.tecno_comfenalco.pa.features.store.dto.response.RegisterStoreResponseDto;
 import com.tecno_comfenalco.pa.features.store.dto.response.StoresResponseDto;
-import com.tecno_comfenalco.pa.features.store.repository.IStoreRepository;
-import com.tecno_comfenalco.pa.features.store.repository.IStoresDistributorsRepository;
+import com.tecno_comfenalco.pa.features.store.entity.postgres.StoreEntity;
+import com.tecno_comfenalco.pa.features.store.entity.postgres.StoresDistributorsEntity;
+import com.tecno_comfenalco.pa.features.store.ports.IStoreDistributorPort;
+import com.tecno_comfenalco.pa.features.store.ports.IStoreRepositoryPort;
 import com.tecno_comfenalco.pa.security.AuthenticationService;
-import com.tecno_comfenalco.pa.security.domain.UserEntity;
 import com.tecno_comfenalco.pa.security.dto.requests.RegisterUserRequestDto;
-import com.tecno_comfenalco.pa.security.repository.IUserRepository;
+import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
+import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.shared.enums.StoreClaimStatus;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
 
@@ -39,16 +39,16 @@ public class StoreService {
     private static final Logger logger = LoggerFactory.getLogger(StoreService.class);
 
     @Autowired
-    private IStoreRepository storeRepository;
+    private IStoreRepositoryPort storeRepository;
 
     @Autowired
-    private IUserRepository userRepository;
+    private IUserRepositoryPort userRepository;
 
     @Autowired
-    private IStoresDistributorsRepository storesDistributorsRepository;
+    private IStoreDistributorPort storesDistributorsRepository;
 
     @Autowired
-    private IDistributorRepository distributorRepository;
+    private IDistributorRepositoryPort distributorRepository;
 
     @Autowired
     private AuthenticationService authenticationService;

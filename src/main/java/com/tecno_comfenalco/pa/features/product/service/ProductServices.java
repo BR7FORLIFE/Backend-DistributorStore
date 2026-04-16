@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.tecno_comfenalco.pa.features.distributor.DistributorEntity;
-import com.tecno_comfenalco.pa.features.distributor.repository.IDistributorRepository;
-import com.tecno_comfenalco.pa.features.product.ProductEntity;
+import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
+import com.tecno_comfenalco.pa.features.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.features.product.dto.ProductDto;
 import com.tecno_comfenalco.pa.features.product.dto.request.EditProductRequestDto;
 import com.tecno_comfenalco.pa.features.product.dto.request.RegisterProductRequestDto;
@@ -19,16 +18,17 @@ import com.tecno_comfenalco.pa.features.product.dto.response.EditProductResponse
 import com.tecno_comfenalco.pa.features.product.dto.response.ListProductsResponseDto;
 import com.tecno_comfenalco.pa.features.product.dto.response.ProductResponseDto;
 import com.tecno_comfenalco.pa.features.product.dto.response.RegisterProductResponseDto;
-import com.tecno_comfenalco.pa.features.product.repository.IProductRepository;
+import com.tecno_comfenalco.pa.features.product.entity.postgres.ProductEntity;
+import com.tecno_comfenalco.pa.features.product.ports.IProductRepositoryPort;
 import com.tecno_comfenalco.pa.security.CustomUserDetails;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
 
 @Service
 public class ProductServices {
     @Autowired
-    private IProductRepository productRepository;
+    private IProductRepositoryPort productRepository;
     @Autowired
-    private IDistributorRepository distributorRepository;
+    private IDistributorRepositoryPort distributorRepository;
 
     public Result<RegisterProductResponseDto, Exception> saveProducts(RegisterProductRequestDto dtoProduct) {
 

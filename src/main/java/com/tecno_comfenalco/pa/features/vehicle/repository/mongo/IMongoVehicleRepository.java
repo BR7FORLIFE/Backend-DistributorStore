@@ -1,12 +1,20 @@
 package com.tecno_comfenalco.pa.features.vehicle.repository.mongo;
 
-import org.springframework.context.annotation.Profile;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.tecno_comfenalco.pa.features.vehicle.VehicleEntity;
-import com.tecno_comfenalco.pa.features.vehicle.repository.IVehicleRepository;
+import com.tecno_comfenalco.pa.features.vehicle.entity.mongo.VehicleDocument;
 
-@Profile("mongo")
-public interface IMongoVehicleRepository extends MongoRepository<VehicleEntity, Long>, IVehicleRepository {
+public interface IMongoVehicleRepository extends MongoRepository<VehicleDocument, String> {
+    VehicleDocument save(VehicleDocument vehicleEntity);
 
+    Optional<VehicleDocument> findById(Long id);
+
+    Optional<VehicleDocument> findByVehiclePlate(String plate);
+
+    List<VehicleDocument> findAll();
+
+    void deleteById(Long id);
 }

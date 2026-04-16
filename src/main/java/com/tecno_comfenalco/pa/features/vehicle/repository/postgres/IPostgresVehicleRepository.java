@@ -1,12 +1,20 @@
 package com.tecno_comfenalco.pa.features.vehicle.repository.postgres;
 
-import org.springframework.context.annotation.Profile;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.tecno_comfenalco.pa.features.vehicle.VehicleEntity;
-import com.tecno_comfenalco.pa.features.vehicle.repository.IVehicleRepository;
+import com.tecno_comfenalco.pa.features.vehicle.entity.postgres.VehicleEntity;
 
-@Profile("postgres")
-public interface IPostgresVehicleRepository extends JpaRepository<VehicleEntity, Long>, IVehicleRepository {
+public interface IPostgresVehicleRepository extends JpaRepository<VehicleEntity, Long> {
+    VehicleEntity save(VehicleEntity vehicleEntity);
 
+    Optional<VehicleEntity> findById(Long id);
+
+    Optional<VehicleEntity> findByVehiclePlate(String plate);
+
+    List<VehicleEntity> findAll();
+
+    void deleteById(Long id);
 }

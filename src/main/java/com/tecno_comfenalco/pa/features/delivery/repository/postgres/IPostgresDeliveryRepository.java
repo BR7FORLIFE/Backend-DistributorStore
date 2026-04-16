@@ -1,12 +1,20 @@
 package com.tecno_comfenalco.pa.features.delivery.repository.postgres;
 
-import org.springframework.context.annotation.Profile;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.tecno_comfenalco.pa.features.delivery.DeliveryEntity;
-import com.tecno_comfenalco.pa.features.delivery.repository.IDeliveryRepository;
+import com.tecno_comfenalco.pa.features.delivery.entity.postgres.DeliveryEntity;
 
-@Profile("postgres")
-public interface IPostgresDeliveryRepository extends JpaRepository<DeliveryEntity, Long>, IDeliveryRepository {
+public interface IPostgresDeliveryRepository extends JpaRepository<DeliveryEntity, Long> {
+    Optional<DeliveryEntity> findById(Long id);
 
+    Optional<DeliveryEntity> findByName(String name);
+
+    List<DeliveryEntity> findAll();
+
+    DeliveryEntity save(DeliveryEntity presalesEntity);
+
+    boolean existsByDocumentNumber(Long documentNumber);
 }

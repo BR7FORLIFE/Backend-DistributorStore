@@ -1,12 +1,13 @@
 package com.tecno_comfenalco.pa.security.repository.postgres;
 
-import org.springframework.context.annotation.Profile;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.tecno_comfenalco.pa.security.domain.UserEntity;
-import com.tecno_comfenalco.pa.security.repository.IUserRepository;
+import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
 
-@Profile("postgres")
-public interface IPostgresUserRepository extends JpaRepository<UserEntity, Long>, IUserRepository {
+public interface IPostgresUserRepository extends JpaRepository<UserEntity, Long> {
+    Boolean existsByUsername(String username);
 
+    Optional<UserEntity> findByUsername(String username);
 }

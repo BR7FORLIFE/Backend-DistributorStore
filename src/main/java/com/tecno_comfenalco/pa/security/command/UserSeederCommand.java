@@ -7,14 +7,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.tecno_comfenalco.pa.security.domain.UserEntity;
-import com.tecno_comfenalco.pa.security.repository.IUserRepository;
+import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
+import com.tecno_comfenalco.pa.security.repository.IPostgresUserRepositoryAdapter;
 
 @Component
 public class UserSeederCommand implements CommandLineRunner {
 
         @Autowired
-        private IUserRepository userRepository;
+        private IPostgresUserRepositoryAdapter userRepository;
 
         @Autowired
         private PasswordEncoder passwordEncoder;
