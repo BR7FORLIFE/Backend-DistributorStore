@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.Optional;
 
 import com.tecno_comfenalco.pa.security.entity.mongo.UserDocument;
-import com.tecno_comfenalco.pa.security.mapper.MongoUserMapper;
 import com.tecno_comfenalco.pa.security.model.UserModel;
 import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.security.repository.mongo.IMongoUserRepository;
+import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 public class IMongoUserRepositoryAdapter implements IUserRepositoryPort {
 
     private final IMongoUserRepository repository;
-    private final MongoUserMapper mapper;
+    private final EntityMapper<UserModel, UserDocument> mapper;
 
-    public IMongoUserRepositoryAdapter(IMongoUserRepository repository, MongoUserMapper mapper) {
+    public IMongoUserRepositoryAdapter(IMongoUserRepository repository, EntityMapper<UserModel, UserDocument> mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }

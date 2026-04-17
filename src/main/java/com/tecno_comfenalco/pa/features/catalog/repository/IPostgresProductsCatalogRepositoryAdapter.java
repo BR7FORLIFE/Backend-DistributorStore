@@ -6,20 +6,20 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.tecno_comfenalco.pa.features.catalog.entity.postgres.ProductsCatalogEntity;
-import com.tecno_comfenalco.pa.features.catalog.mapper.PostgresProductCatalogMapper;
 import com.tecno_comfenalco.pa.features.catalog.models.ProductCatalogModel;
 import com.tecno_comfenalco.pa.features.catalog.ports.IProductsCatalogRepositoryPort;
 import com.tecno_comfenalco.pa.features.catalog.repository.postgres.IPostgresProductsCatalogRepository;
+import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("postgres")
 @Repository
 public class IPostgresProductsCatalogRepositoryAdapter implements IProductsCatalogRepositoryPort {
 
-    private final PostgresProductCatalogMapper mapper;
+    private final EntityMapper<ProductCatalogModel, ProductsCatalogEntity> mapper;
     private final IPostgresProductsCatalogRepository repository;
 
     public IPostgresProductsCatalogRepositoryAdapter(IPostgresProductsCatalogRepository repository,
-            PostgresProductCatalogMapper mapper) {
+            EntityMapper<ProductCatalogModel, ProductsCatalogEntity> mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }

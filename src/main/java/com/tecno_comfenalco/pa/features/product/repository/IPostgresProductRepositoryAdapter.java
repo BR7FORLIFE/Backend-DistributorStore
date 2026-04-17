@@ -8,19 +8,19 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.tecno_comfenalco.pa.features.product.entity.postgres.ProductEntity;
-import com.tecno_comfenalco.pa.features.product.mapper.PostgresProductMapper;
 import com.tecno_comfenalco.pa.features.product.models.ProductModel;
 import com.tecno_comfenalco.pa.features.product.ports.IProductRepositoryPort;
 import com.tecno_comfenalco.pa.features.product.repository.postgres.IPostgresProductRepository;
+import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("postgres")
 @Repository
 public class IPostgresProductRepositoryAdapter implements IProductRepositoryPort {
 
     private final IPostgresProductRepository repository;
-    private final PostgresProductMapper mapper;
+    private final EntityMapper<ProductModel, ProductEntity> mapper;
 
-    public IPostgresProductRepositoryAdapter(IPostgresProductRepository repository, PostgresProductMapper mapper) {
+    public IPostgresProductRepositoryAdapter(IPostgresProductRepository repository, EntityMapper<ProductModel, ProductEntity> mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }

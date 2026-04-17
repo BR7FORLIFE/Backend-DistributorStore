@@ -7,19 +7,20 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
-import com.tecno_comfenalco.pa.security.mapper.PostgresUserMapper;
 import com.tecno_comfenalco.pa.security.model.UserModel;
 import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.security.repository.postgres.IPostgresUserRepository;
+import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("postgres")
 @Repository
 public class IPostgresUserRepositoryAdapter implements IUserRepositoryPort {
 
     private final IPostgresUserRepository repository;
-    private final PostgresUserMapper mapper;
+    private final EntityMapper<UserModel, UserEntity> mapper;
 
-    public IPostgresUserRepositoryAdapter(IPostgresUserRepository repository, PostgresUserMapper mapper) {
+    public IPostgresUserRepositoryAdapter(IPostgresUserRepository repository,
+            EntityMapper<UserModel, UserEntity> mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }
