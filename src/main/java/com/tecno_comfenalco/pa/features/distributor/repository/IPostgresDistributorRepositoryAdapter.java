@@ -7,21 +7,22 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
-import com.tecno_comfenalco.pa.features.distributor.mapper.PostgresDistributorMapper;
 import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
 import com.tecno_comfenalco.pa.features.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.features.distributor.repository.postgres.IPostgresDistributorRepository;
+import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("postgres")
 @Repository
 public class IPostgresDistributorRepositoryAdapter implements IDistributorRepositoryPort {
 
     private final IPostgresDistributorRepository repository;
-    private final PostgresDistributorMapper mapper;
+    private final EntityMapper<DistributorModel, DistributorEntity> mapper;
 
-    public IPostgresDistributorRepositoryAdapter(IPostgresDistributorRepository repository) {
+    public IPostgresDistributorRepositoryAdapter(IPostgresDistributorRepository repository,
+            EntityMapper<DistributorModel, DistributorEntity> mapper) {
         this.repository = repository;
-        this.mapper = new PostgresDistributorMapper();
+        this.mapper = mapper;
     }
 
     @Override

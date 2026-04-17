@@ -6,35 +6,35 @@ import java.util.Optional;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import com.tecno_comfenalco.pa.features.store.entity.postgres.StoreEntity;
+import com.tecno_comfenalco.pa.features.store.entity.mongo.StoreDocument;
 import com.tecno_comfenalco.pa.features.store.models.StoreModel;
 import com.tecno_comfenalco.pa.features.store.ports.IStoreRepositoryPort;
-import com.tecno_comfenalco.pa.features.store.repository.postgres.IPostgresStoreRepository;
+import com.tecno_comfenalco.pa.features.store.repository.mongo.IMongoStoreRepository;
 import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
-@Profile("postgres")
+@Profile("mongo")
 @Repository
-public class IPostgresStoreRepositoryAdapter implements IStoreRepositoryPort {
+public class IMongoStoreRepositoryAdapter implements IStoreRepositoryPort {
 
-    private final IPostgresStoreRepository repository;
-    private final EntityMapper<StoreModel, StoreEntity> mapper;
+    private final IMongoStoreRepository repository;
+    private final EntityMapper<StoreModel, StoreDocument> mapper;
 
-    public IPostgresStoreRepositoryAdapter(IPostgresStoreRepository repository,
-            EntityMapper<StoreModel, StoreEntity> mapper) {
+    public IMongoStoreRepositoryAdapter(IMongoStoreRepository repository,
+            EntityMapper<StoreModel, StoreDocument> mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }
 
     @Override
     public StoreModel save(StoreModel StoreModel) {
-        StoreEntity entity = mapper.toEntity(StoreModel);
-        StoreEntity saved = repository.save(entity);
+        StoreDocument entity = mapper.toEntity(StoreModel);
+        StoreDocument saved = repository.save(entity);
         return mapper.toDto(saved);
     }
 
     @Override
     public Optional<StoreModel> findById(Long id) {
-        return repository.findById(id).map(mapper::toDto);
+        return repository.findById(id.toString()).map(mapper::toDto);
     }
 
     @Override
@@ -62,11 +62,13 @@ public class IPostgresStoreRepositoryAdapter implements IStoreRepositoryPort {
 
     @Override
     public boolean existsById(Long id) {
-        return repository.existsById(id);
+        return repository.existsById(id.toString());
     }
 
     @Override
     public void deleteById(Long id) {
-        repository.deleteById(id);
+        repository.deleteById(id.toString());
+        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
     }
+
 }

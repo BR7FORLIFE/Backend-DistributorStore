@@ -7,19 +7,19 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.tecno_comfenalco.pa.features.delivery.entity.postgres.DeliveryEntity;
-import com.tecno_comfenalco.pa.features.delivery.mapper.PostgresDeliveryMapper;
 import com.tecno_comfenalco.pa.features.delivery.model.DeliveryModel;
 import com.tecno_comfenalco.pa.features.delivery.ports.IDeliveryRepositoryPort;
 import com.tecno_comfenalco.pa.features.delivery.repository.postgres.IPostgresDeliveryRepository;
+import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("postgres")
 @Repository
 public class IPostgresDeliveryRepositoryAdapter implements IDeliveryRepositoryPort {
 
     private final IPostgresDeliveryRepository repository;
-    private final PostgresDeliveryMapper mapper;
+    private final EntityMapper<DeliveryModel, DeliveryEntity> mapper;
 
-    public IPostgresDeliveryRepositoryAdapter(IPostgresDeliveryRepository repository, PostgresDeliveryMapper mapper) {
+    public IPostgresDeliveryRepositoryAdapter(IPostgresDeliveryRepository repository, EntityMapper<DeliveryModel, DeliveryEntity> mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }

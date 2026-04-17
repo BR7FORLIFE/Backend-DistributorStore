@@ -6,29 +6,29 @@ import java.util.Optional;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import com.tecno_comfenalco.pa.features.store.entity.postgres.StoresDistributorsEntity;
+import com.tecno_comfenalco.pa.features.store.entity.mongo.StoresDistributorsDocument;
 import com.tecno_comfenalco.pa.features.store.models.StoreDistributorModel;
 import com.tecno_comfenalco.pa.features.store.ports.IStoreDistributorPort;
-import com.tecno_comfenalco.pa.features.store.repository.postgres.IPostgresStoreDistributorRepository;
+import com.tecno_comfenalco.pa.features.store.repository.mongo.IMongoStoreDistributorRepository;
 import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
-@Profile("postgres")
+@Profile("mongo")
 @Repository
-public class IPostgresStoresDistributorsRepositoryAdapter implements IStoreDistributorPort {
+public class IMongoStoreDistributorRepositoryAdapter implements IStoreDistributorPort {
 
-    private final IPostgresStoreDistributorRepository repository;
-    private final EntityMapper<StoreDistributorModel, StoresDistributorsEntity> mapper;
+    private final IMongoStoreDistributorRepository repository;
+    private final EntityMapper<StoreDistributorModel, StoresDistributorsDocument> mapper;
 
-    public IPostgresStoresDistributorsRepositoryAdapter(IPostgresStoreDistributorRepository repository,
-            EntityMapper<StoreDistributorModel, StoresDistributorsEntity> mapper) {
+    public IMongoStoreDistributorRepositoryAdapter(IMongoStoreDistributorRepository repository,
+            EntityMapper<StoreDistributorModel, StoresDistributorsDocument> mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }
 
     @Override
     public StoreDistributorModel save(StoreDistributorModel entity) {
-        StoresDistributorsEntity storeEntity = mapper.toEntity(entity);
-        StoresDistributorsEntity saved = repository.save(storeEntity);
+        StoresDistributorsDocument storeEntity = mapper.toEntity(entity);
+        StoresDistributorsDocument saved = repository.save(storeEntity);
         return mapper.toDto(saved);
     }
 
@@ -58,4 +58,5 @@ public class IPostgresStoresDistributorsRepositoryAdapter implements IStoreDistr
     public boolean existsByStore_IdAndDistributor_Id(Long storeId, Long distributorId) {
         return repository.existsByStore_IdAndDistributor_Id(storeId, distributorId);
     }
+
 }

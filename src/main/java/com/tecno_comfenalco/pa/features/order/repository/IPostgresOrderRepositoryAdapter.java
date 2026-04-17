@@ -7,19 +7,20 @@ import java.util.UUID;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import com.tecno_comfenalco.pa.features.order.mapper.PostgresOrderMapper;
+import com.tecno_comfenalco.pa.features.order.entity.postgres.OrderEntity;
 import com.tecno_comfenalco.pa.features.order.models.OrderModel;
 import com.tecno_comfenalco.pa.features.order.port.IOrderRepositoryPort;
 import com.tecno_comfenalco.pa.features.order.repository.postgres.IPostgresOrderRepository;
+import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("postgres")
 @Repository
 public class IPostgresOrderRepositoryAdapter implements IOrderRepositoryPort {
 
     private final IPostgresOrderRepository repository;
-    private final PostgresOrderMapper mapper;
+    private final EntityMapper<OrderModel, OrderEntity> mapper;
 
-    public IPostgresOrderRepositoryAdapter(IPostgresOrderRepository repository, PostgresOrderMapper mapper) {
+    public IPostgresOrderRepositoryAdapter(IPostgresOrderRepository repository, EntityMapper<OrderModel, OrderEntity> mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }
