@@ -40,8 +40,8 @@ import com.tecno_comfenalco.pa.features.store.entity.postgres.StoreEntity;
 import com.tecno_comfenalco.pa.features.store.entity.postgres.StoresDistributorsEntity;
 import com.tecno_comfenalco.pa.features.store.models.StoreDistributorModel;
 import com.tecno_comfenalco.pa.features.store.models.StoreModel;
-import com.tecno_comfenalco.pa.features.store.ports.IStoreDistributorPort;
-import com.tecno_comfenalco.pa.features.store.ports.IStoreRepositoryPort;
+import com.tecno_comfenalco.pa.features.store.ports.IStoreDistributorRepositoryPort;
+import com.tecno_comfenalco.pa.features.store.ports.IStoreRepositoryRepositoryPort;
 import com.tecno_comfenalco.pa.security.CustomUserDetails;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
 
@@ -51,7 +51,7 @@ public class OrderService {
     private IOrderRepositoryPort orderRepository;
 
     @Autowired
-    private IStoreRepositoryPort storeRepository;
+    private IStoreRepositoryRepositoryPort storeRepository;
 
     @Autowired
     private IPresalesRepositoryPort presalesRepository;
@@ -60,7 +60,7 @@ public class OrderService {
     private IProductRepositoryPort productRepository;
 
     @Autowired
-    private IStoreDistributorPort storesDistributorsRepository;
+    private IStoreDistributorRepositoryPort storesDistributorsRepository;
 
     @Autowired
     private IPostgresDistributorRepositoryAdapter distributorRepository;
@@ -141,7 +141,7 @@ public class OrderService {
 
                 // terminamos de setear el objeto del detalle de pedido
                 OrderDetailsModel orderDetailEntity = new OrderDetailsModel();
-                orderDetailEntity.setId(orderDetailIdEmbedded.getOrderId());
+                orderDetailEntity.setId(orderDetailIdEmbedded);
                 orderDetailEntity.setOrder(order);
                 orderDetailEntity.setProduct(productEntity);
                 orderDetailEntity.setQuantity(p.quantity());
@@ -295,30 +295,34 @@ public class OrderService {
                             internalClientCode = relationshipOpt.get().getInternalClientCode();
                         }
 
+                        StoreDto storeDto = new StoreDto(Long.parseLong(order.getId()), order.getStore().getNIT(),
+                                order.getStore().getName(), order.getStore().getPhoneNumber(),
+                                order.getStore().getEmail(), order.getStore().getDirection());
+
+                        PresalesDto presalesDto = null;
+
+                        if (order.getPresales() != null) {
+                            presalesDto = new PresalesDto(order.getPresales().getId(),
+                                    order.getPresales().getName(), order.getPresales().getPhoneNumber(),
+                                    order.getPresales().getEmail(), order.getPresales().getDocumentType(),
+                                    order.getPresales().getDocumentNumber(), order.getPresales().getUser().getId(),
+                                    order.getPresales().getDistributor().getId());
+                        }
+
                         return new OrderDto(
-                                order.getId(),
+                                UUID.fromString(order.getId()),
                                 order.getIva_percent(),
                                 order.getTotal(),
                                 order.getStatus(),
-                                new StoreDto(order.getStore().getId().toString(), order.getStore().getNIT(),
-                                        order.getStore().getName(),
-                                        order.getStore().getPhoneNumber(), order.getStore().getEmail(),
-                                        order.getStore().getDirection()),
-                                order.getPresales() != null
-                                        ? new PresalesDto(order.getPresales().getId().toString(),
-                                                order.getPresales().getName(), order.getPresales().getPhoneNumber(),
-                                                order.getPresales().getEmail(), order.getPresales().getDocumentType(),
-                                                order.getPresales().getDocumentNumber(),
-                                                order.getPresales().getUser().getId(),
-                                                order.getPresales().getDistributor().getId())
-                                        : null,
-                                order.getOrderDetails().stream().map(detail -> new OrderProductDto(
-                                        detail.getProduct().getId(),
-                                        detail.getQuantity(),
-                                        detail.getUnitPrice())).toList(),
-                                internalClientCode, // Código interno desde la relación StoresDistributors
-                                order.getDistributorId() // ID de la distribuidora
-                        );
+                                storeDto,
+                                presalesDto,
+                                order.getOrderDetails().stream()
+                                        .map(details -> new OrderProductDto(
+                                                UUID.fromString(details.getId().getOrderId()),
+                                                details.getQuantity(), details.getUnitPrice()))
+                                        .toList(),
+                                internalClientCode,
+                                order.getDistributorId());
                     })
                     .toList();
 
@@ -345,12 +349,12 @@ public class OrderService {
             Long userId = userDetails.getUserId();
 
             // Buscar el pedido
-            var orderOpt = orderRepository.findByid(id);
+            var orderOpt = orderRepository.findByid(id.toString());
             if (orderOpt.isEmpty()) {
                 return Result.error(new Exception("Order not found"));
             }
 
-            OrderEntity order = orderOpt.get();
+            OrderModel order = orderOpt.get();
 
             // Verificar si el usuario tiene rol STORE
             boolean isStore = userDetails.getAuthorities().stream()
@@ -367,7 +371,7 @@ public class OrderService {
                 if (storeOpt.isEmpty()) {
                     return Result.error(new Exception("Store not found for the authenticated user"));
                 }
-                StoreEntity store = storeOpt.get();
+                StoreModel store = storeOpt.get();
 
                 // Validar que el pedido pertenezca a esta tienda
                 if (!order.getStore().getId().equals(store.getId())) {
@@ -376,11 +380,11 @@ public class OrderService {
 
             } else if (isPresales) {
                 // Buscar el preventista asociado al usuario
-                var presalesOpt = presalesRepository.findByUser_Id(userId);
+                var presalesOpt = presalesRepository.findByUser_Id(userId.toString());
                 if (presalesOpt.isEmpty()) {
                     return Result.error(new Exception("Presales not found for the authenticated user"));
                 }
-                PresalesEntity presales = presalesOpt.get();
+                PresalesModel presales = presalesOpt.get();
 
                 // Validar que el pedido haya sido tomado por este preventista
                 if (order.getPresales() == null || !order.getPresales().getId().equals(presales.getId())) {
@@ -399,24 +403,30 @@ public class OrderService {
                 internalClientCode = relationshipOpt.get().getInternalClientCode();
             }
 
+            StoreDto storeDto = new StoreDto(Long.parseLong(order.getId()), order.getStore().getNIT(),
+                    order.getStore().getName(), order.getStore().getPhoneNumber(),
+                    order.getStore().getEmail(), order.getStore().getDirection());
+
+            PresalesDto presalesDto = null;
+
+            if (order.getPresales() != null) {
+                presalesDto = new PresalesDto(order.getPresales().getId(),
+                        order.getPresales().getName(), order.getPresales().getPhoneNumber(),
+                        order.getPresales().getEmail(), order.getPresales().getDocumentType(),
+                        order.getPresales().getDocumentNumber(), order.getPresales().getUser().getId(),
+                        order.getPresales().getDistributor().getId());
+            }
+
             // Mapear a DTO
             OrderDto orderDto = new OrderDto(
-                    order.getId(),
+                    UUID.fromString(order.getId()),
                     order.getIva_percent(),
                     order.getTotal(),
                     order.getStatus(),
-                    new StoreDto(order.getStore().getId(), order.getStore().getNIT(), order.getStore().getName(),
-                            order.getStore().getPhoneNumber(), order.getStore().getEmail(),
-                            order.getStore().getDirection()),
-                    order.getPresales() != null
-                            ? new PresalesDto(order.getPresales().getId(),
-                                    order.getPresales().getName(), order.getPresales().getPhoneNumber(),
-                                    order.getPresales().getEmail(), order.getPresales().getDocumentType(),
-                                    order.getPresales().getDocumentNumber(), order.getPresales().getUser().getId(),
-                                    order.getPresales().getDistributor().getId())
-                            : null,
+                    storeDto,
+                    presalesDto,
                     order.getOrderDetails().stream().map(detail -> new OrderProductDto(
-                            detail.getProduct().getId(),
+                            UUID.fromString(detail.getProduct().getId()),
                             detail.getQuantity(),
                             detail.getUnitPrice())).toList(),
                     internalClientCode, // Código interno desde la relación StoresDistributors

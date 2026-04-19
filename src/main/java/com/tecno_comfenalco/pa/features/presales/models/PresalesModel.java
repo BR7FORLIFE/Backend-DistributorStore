@@ -18,6 +18,10 @@ public class PresalesModel {
 
     private DistributorModel distributor;
 
+    public PresalesModel() {
+
+    }
+
     public PresalesModel(Long id, String name, String phoneNumber, String email, DocumentTypeEnum documentType,
             Long documentNumber, UserModel user, DistributorModel distributor) {
         this.id = id;

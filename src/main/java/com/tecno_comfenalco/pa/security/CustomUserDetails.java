@@ -7,12 +7,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
+import com.tecno_comfenalco.pa.security.model.UserModel;
 
 public class CustomUserDetails implements UserDetails {
-    private UserEntity userEntity;
+    private UserModel userEntity;
 
-    public CustomUserDetails(UserEntity userEntity) {
+    public CustomUserDetails(UserModel userEntity) {
         this.userEntity = userEntity;
     }
 

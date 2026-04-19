@@ -1,47 +1,24 @@
 package com.tecno_comfenalco.pa.features.delivery.mapper;
 
-import java.util.List;
-import java.util.Set;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import com.tecno_comfenalco.pa.features.delivery.entity.mongo.DeliveryDocument;
 import com.tecno_comfenalco.pa.features.delivery.model.DeliveryModel;
+import com.tecno_comfenalco.pa.features.distributor.mapper.MongoDistributorMapper;
+import com.tecno_comfenalco.pa.security.mapper.MongoUserMapper;
 import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
-public class MongoDeliveryMapper implements EntityMapper<DeliveryModel, DeliveryDocument> {
+import org.springframework.context.annotation.Profile;
 
-    @Override
-    public DeliveryModel toDto(DeliveryDocument entity) {
-        throw new UnsupportedOperationException("Unimplemented method 'toDto'");
-    }
+@Profile("mongo")
+@Mapper(componentModel = "spring", uses = { MongoUserMapper.class, MongoDistributorMapper.class })
+public interface MongoDeliveryMapper extends EntityMapper<DeliveryModel, DeliveryDocument> {
+        @Override
+        @Mapping(target = "routes", ignore = true)
+        DeliveryModel toDto(DeliveryDocument document);
 
-    @Override
-    public DeliveryDocument toEntity(DeliveryModel dto) {
-        throw new UnsupportedOperationException("Unimplemented method 'toEntity'");
-    }
-
-    @Override
-    public List<DeliveryModel> toDto(List<DeliveryDocument> entityList) {
-        throw new UnsupportedOperationException("Unimplemented method 'toDto'");
-    }
-
-    @Override
-    public List<DeliveryDocument> toEntity(List<DeliveryModel> dtoList) {
-        throw new UnsupportedOperationException("Unimplemented method 'toEntity'");
-    }
-
-    @Override
-    public Set<DeliveryModel> toDto(Set<DeliveryDocument> entitySet) {
-        throw new UnsupportedOperationException("Unimplemented method 'toDto'");
-    }
-
-    @Override
-    public Set<DeliveryDocument> toEntity(Set<DeliveryModel> dtoSet) {
-        throw new UnsupportedOperationException("Unimplemented method 'toEntity'");
-    }
-
-    @Override
-    public void updateEntityFromDto(DeliveryModel dto, DeliveryDocument entity) {
-        throw new UnsupportedOperationException("Unimplemented method 'updateEntityFromDto'");
-    }
-    
+        @Override
+        @Mapping(target = "routes", ignore = true)
+        DeliveryDocument toEntity(DeliveryModel model);
 }

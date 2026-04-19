@@ -20,9 +20,12 @@ public class ProductModel {
 
     private List<OrderDetailsModel> orderDetails;
 
-    private ProductCatalogModel  categoryProduct;
+    private ProductCatalogModel categoryProduct;
 
     private DistributorModel distributor;
+
+    public ProductModel() {
+    }
 
     public ProductModel(String id, String name, Double price, Unit unit, List<OrderDetailsModel> orderDetails,
             ProductCatalogModel categoryProduct, DistributorModel distributor) {
@@ -91,5 +94,4 @@ public class ProductModel {
         this.distributor = distributor;
     }
 
-    
 }

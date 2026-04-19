@@ -6,20 +6,20 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.tecno_comfenalco.pa.features.catalog.entity.mongo.ProductsCatalogDocument;
+import com.tecno_comfenalco.pa.features.catalog.mapper.MongoProductCatalogMapper;
 import com.tecno_comfenalco.pa.features.catalog.models.ProductCatalogModel;
 import com.tecno_comfenalco.pa.features.catalog.ports.IProductsCatalogRepositoryPort;
 import com.tecno_comfenalco.pa.features.catalog.repository.mongo.IMongoProductsCatalogRepository;
-import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("mongo")
 @Repository
 public class IMongoProductCatalogRepositoryAdapter implements IProductsCatalogRepositoryPort {
 
     private final IMongoProductsCatalogRepository repository;
-    private final EntityMapper<ProductCatalogModel, ProductsCatalogDocument> mapper;
+    private final MongoProductCatalogMapper mapper;
 
     public IMongoProductCatalogRepositoryAdapter(IMongoProductsCatalogRepository repository,
-            EntityMapper<ProductCatalogModel, ProductsCatalogDocument> mapper) {
+            MongoProductCatalogMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }

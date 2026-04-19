@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
+import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
 import com.tecno_comfenalco.pa.features.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.features.product.dto.ProductDto;
 import com.tecno_comfenalco.pa.features.product.dto.request.EditProductRequestDto;
@@ -19,6 +20,7 @@ import com.tecno_comfenalco.pa.features.product.dto.response.ListProductsRespons
 import com.tecno_comfenalco.pa.features.product.dto.response.ProductResponseDto;
 import com.tecno_comfenalco.pa.features.product.dto.response.RegisterProductResponseDto;
 import com.tecno_comfenalco.pa.features.product.entity.postgres.ProductEntity;
+import com.tecno_comfenalco.pa.features.product.models.ProductModel;
 import com.tecno_comfenalco.pa.features.product.ports.IProductRepositoryPort;
 import com.tecno_comfenalco.pa.security.CustomUserDetails;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
@@ -32,7 +34,7 @@ public class ProductServices {
 
     public Result<RegisterProductResponseDto, Exception> saveProducts(RegisterProductRequestDto dtoProduct) {
 
-        Optional<DistributorEntity> distributorOpt;
+        Optional<DistributorModel> distributorOpt;
         try {
 
             CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
@@ -49,7 +51,7 @@ public class ProductServices {
             return Result.error(new Exception("Distributor not found for the authenticated user"));
         }
 
-        DistributorEntity distributor = distributorOpt.get();
+        DistributorModel distributor = distributorOpt.get();
 
         boolean existProduct = productRepository.existsByName(dtoProduct.name());
 
@@ -59,7 +61,7 @@ public class ProductServices {
 
         try {
             // TODO: Create a mapper for this
-            ProductEntity productEntity = new ProductEntity();
+            ProductModel productEntity = new ProductModel();
             productEntity.setName(dtoProduct.name());
             productEntity.setPrice(dtoProduct.price());
             productEntity.setUnit(dtoProduct.unit());
@@ -110,7 +112,7 @@ public class ProductServices {
     }
 
     public Result<ListProductsResponseDto, Exception> listProducts() {
-        Optional<DistributorEntity> distributorOpt;
+        Optional<DistributorModel> distributorOpt;
         try {
 
             CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
@@ -127,9 +129,9 @@ public class ProductServices {
             return Result.error(new Exception("Distributor not found for the authenticated user"));
         }
 
-        DistributorEntity distributor = distributorOpt.get();
+        DistributorModel distributor = distributorOpt.get();
 
-        List<ProductEntity> productEntities = productRepository.findAll().stream()
+        List<ProductModel> productEntities = productRepository.findAll().stream()
                 .filter(product -> product.getDistributor().getId().equals(distributor.getId()))
                 .toList();
 
@@ -140,7 +142,7 @@ public class ProductServices {
         try {
             // TODO: Create a mapper for this
             List<ProductDto> productDtos = productEntities.stream().map(product -> new ProductDto(
-                    product.getId(),
+                    UUID.fromString(product.getId()),
                     product.getName(),
                     product.getPrice(),
                     product.getUnit().name(),
@@ -158,7 +160,7 @@ public class ProductServices {
             return productRepository.findById(id).map(product -> {
                 // TODO: Create a mapper for this
                 ProductDto productDto = new ProductDto(
-                        product.getId(),
+                        UUID.fromString(product.getId()),
                         product.getName(),
                         product.getPrice(),
                         product.getUnit().name(),

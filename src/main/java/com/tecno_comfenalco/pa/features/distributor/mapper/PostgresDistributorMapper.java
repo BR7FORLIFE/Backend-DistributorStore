@@ -1,47 +1,17 @@
 package com.tecno_comfenalco.pa.features.distributor.mapper;
 
-import java.util.List;
-import java.util.Set;
+import org.mapstruct.Mapper;
 
 import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
 import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
+import com.tecno_comfenalco.pa.features.store.mapper.PostgresStoreDistributorMapper;
+import com.tecno_comfenalco.pa.security.mapper.PostgresUserMapper;
 import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
-public class PostgresDistributorMapper implements EntityMapper<DistributorModel, DistributorEntity>{
+import org.springframework.context.annotation.Profile;
 
-    @Override
-    public DistributorModel toDto(DistributorEntity entity) {
-        throw new UnsupportedOperationException("Unimplemented method 'toDto'");
-    }
+@Profile("postgres")
+@Mapper(componentModel = "spring", uses = { PostgresUserMapper.class, PostgresStoreDistributorMapper.class })
+public interface PostgresDistributorMapper extends EntityMapper<DistributorModel, DistributorEntity> {
 
-    @Override
-    public DistributorEntity toEntity(DistributorModel dto) {
-        throw new UnsupportedOperationException("Unimplemented method 'toEntity'");
-    }
-
-    @Override
-    public List<DistributorModel> toDto(List<DistributorEntity> entityList) {
-        throw new UnsupportedOperationException("Unimplemented method 'toDto'");
-    }
-
-    @Override
-    public List<DistributorEntity> toEntity(List<DistributorModel> dtoList) {
-        throw new UnsupportedOperationException("Unimplemented method 'toEntity'");
-    }
-
-    @Override
-    public Set<DistributorModel> toDto(Set<DistributorEntity> entitySet) {
-        throw new UnsupportedOperationException("Unimplemented method 'toDto'");
-    }
-
-    @Override
-    public Set<DistributorEntity> toEntity(Set<DistributorModel> dtoSet) {
-        throw new UnsupportedOperationException("Unimplemented method 'toEntity'");
-    }
-
-    @Override
-    public void updateEntityFromDto(DistributorModel dto, DistributorEntity entity) {
-        throw new UnsupportedOperationException("Unimplemented method 'updateEntityFromDto'");
-    }
-    
 }

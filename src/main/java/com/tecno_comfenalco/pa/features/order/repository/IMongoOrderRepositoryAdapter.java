@@ -6,20 +6,19 @@ import java.util.Optional;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import com.tecno_comfenalco.pa.features.order.entity.mongo.OrderDocument;
+import com.tecno_comfenalco.pa.features.order.mapper.MongoOrderMapper;
 import com.tecno_comfenalco.pa.features.order.models.OrderModel;
 import com.tecno_comfenalco.pa.features.order.port.IOrderRepositoryPort;
 import com.tecno_comfenalco.pa.features.order.repository.mongo.IMongoOrderRepository;
-import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("mongo")
 @Repository
 public class IMongoOrderRepositoryAdapter implements IOrderRepositoryPort {
 
     private final IMongoOrderRepository repository;
-    private final EntityMapper<OrderModel, OrderDocument> mapper;
+    private final MongoOrderMapper mapper;
 
-    public IMongoOrderRepositoryAdapter(IMongoOrderRepository repository, EntityMapper<OrderModel, OrderDocument> mapper) {
+    public IMongoOrderRepositoryAdapter(IMongoOrderRepository repository, MongoOrderMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }

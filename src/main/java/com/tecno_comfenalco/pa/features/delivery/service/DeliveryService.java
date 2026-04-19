@@ -16,12 +16,10 @@ import com.tecno_comfenalco.pa.features.delivery.dto.response.ListDeliveriesResp
 import com.tecno_comfenalco.pa.features.delivery.dto.response.RegisterDeliveryResponseDto;
 import com.tecno_comfenalco.pa.features.delivery.model.DeliveryModel;
 import com.tecno_comfenalco.pa.features.delivery.ports.IDeliveryRepositoryPort;
-import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
 import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
 import com.tecno_comfenalco.pa.features.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.security.AuthenticationService;
 import com.tecno_comfenalco.pa.security.dto.requests.RegisterUserRequestDto;
-import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
 import com.tecno_comfenalco.pa.security.model.UserModel;
 import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;

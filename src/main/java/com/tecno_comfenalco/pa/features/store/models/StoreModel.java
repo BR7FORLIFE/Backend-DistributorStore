@@ -29,6 +29,9 @@ public class StoreModel {
 
     private List<StoreDistributorModel> storesDistributors;
 
+    public StoreModel() {
+    }
+
     public StoreModel(Long id, Long nIT, String name, String phoneNumber, String email, DirectionDto direction,
             UserModel user, StoreClaimStatus claimStatus, PresalesRoutesModel presalesRoute,
             List<StoreDistributorModel> storesDistributors) {

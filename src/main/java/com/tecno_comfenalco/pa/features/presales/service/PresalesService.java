@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
+import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
 import com.tecno_comfenalco.pa.features.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.features.presales.dto.PresalesDto;
 import com.tecno_comfenalco.pa.features.presales.dto.request.EditPresalesRequestDto;
@@ -17,10 +18,12 @@ import com.tecno_comfenalco.pa.features.presales.dto.response.ListPresalesRespon
 import com.tecno_comfenalco.pa.features.presales.dto.response.PresalesResponseDto;
 import com.tecno_comfenalco.pa.features.presales.dto.response.RegisterPresalesResponseDto;
 import com.tecno_comfenalco.pa.features.presales.entity.postgres.PresalesEntity;
+import com.tecno_comfenalco.pa.features.presales.models.PresalesModel;
 import com.tecno_comfenalco.pa.features.presales.ports.IPresalesRepositoryPort;
 import com.tecno_comfenalco.pa.security.AuthenticationService;
 import com.tecno_comfenalco.pa.security.dto.requests.RegisterUserRequestDto;
 import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
+import com.tecno_comfenalco.pa.security.model.UserModel;
 import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
 
@@ -48,7 +51,7 @@ public class PresalesService {
 
         try {
 
-            PresalesEntity presalesEntity = new PresalesEntity();
+            PresalesModel presalesEntity = new PresalesModel();
             presalesEntity.setName(dtoPresales.name());
             presalesEntity.setPhoneNumber(dtoPresales.phoneNumber());
             presalesEntity.setEmail(dtoPresales.email());
@@ -60,7 +63,7 @@ public class PresalesService {
                             "password", Set.of("PRESALES"), true))
                     .getValue().userId();
 
-            UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new Exception("User not found!"));
+            UserModel userEntity = userRepository.findById(userId).orElseThrow(() -> new Exception("User not found!"));
 
             presalesEntity.setUser(userEntity);
 
@@ -77,7 +80,7 @@ public class PresalesService {
     public Result<EditPresalesResponseDto, Exception> editPresales(Long id,
             EditPresalesRequestDto dtoPresales) {
         try {
-            return presalesRepository.findById(id)
+            return presalesRepository.findById(id.toString())
                     .map(presale -> {
 
                         presale.setName(dtoPresales.name().isBlank() ? presale.getName() : dtoPresales.name());
@@ -104,11 +107,11 @@ public class PresalesService {
     }
 
     public Result<ListPresalesResponseDto, Exception> listPresales() {
-        List<PresalesEntity> presalesEntities = presalesRepository.findAll();
+        List<PresalesModel> presalesModel = presalesRepository.findAll();
 
         try {
 
-            List<PresalesDto> presalesDtos = presalesEntities.stream()
+            List<PresalesDto> presalesDtos = presalesModel.stream()
                     .map(presales -> new PresalesDto(presales.getId(), presales.getName(), presales.getPhoneNumber(),
                             presales.getEmail(), presales.getDocumentType(), presales.getDocumentNumber(),
                             presales.getUser().getId(), presales.getDistributor().getId()))
@@ -122,7 +125,7 @@ public class PresalesService {
 
     public Result<PresalesResponseDto, Exception> showPresale(Long id) {
         try {
-            return presalesRepository.findById(id).map(presale -> {
+            return presalesRepository.findById(id.toString()).map(presale -> {
                 PresalesDto presalesDto = new PresalesDto(presale.getId(), presale.getName(), presale.getPhoneNumber(),
                         presale.getEmail(), presale.getDocumentType(), presale.getDocumentNumber(),
                         presale.getUser().getId(), presale.getDistributor().getId());
@@ -136,7 +139,7 @@ public class PresalesService {
         }
     }
 
-    public void assignPresalesToDistributor(PresalesEntity presalesEntity) {
+    public void assignPresalesToDistributor(PresalesModel presalesEntity) {
         try {
 
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -146,7 +149,7 @@ public class PresalesService {
                 return;
             }
 
-            UserEntity user = userOpt.get();
+            UserModel user = userOpt.get();
 
             var distributorOpt = distributorRepository.findByUser_Id(user.getId());
 
@@ -154,7 +157,7 @@ public class PresalesService {
                 return;
             }
 
-            DistributorEntity distributorAuthenticated = distributorOpt.get();
+            DistributorModel distributorAuthenticated = distributorOpt.get();
 
             presalesEntity.setDistributor(distributorAuthenticated);
 
@@ -172,9 +175,9 @@ public class PresalesService {
                 return Result.error(new Exception("User not found!"));
             }
 
-            UserEntity user = userOpt.get();
+            UserModel user = userOpt.get();
 
-            return presalesRepository.findByUser_Id(user.getId()).map(presale -> {
+            return presalesRepository.findByUser_Id(user.getId().toString()).map(presale -> {
                 PresalesDto presalesDto = new PresalesDto(presale.getId(), presale.getName(), presale.getPhoneNumber(),
                         presale.getEmail(), presale.getDocumentType(), presale.getDocumentNumber(),
                         presale.getUser().getId(), presale.getDistributor().getId());

@@ -7,7 +7,6 @@ target/
 ### Application Properties ###
 application-dev.yml
 application-prod.yml
-application-postgres.yml
 
 ### STS ###
 .apt_generated

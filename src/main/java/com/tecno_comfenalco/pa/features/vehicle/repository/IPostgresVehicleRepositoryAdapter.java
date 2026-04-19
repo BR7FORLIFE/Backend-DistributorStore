@@ -7,20 +7,20 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.tecno_comfenalco.pa.features.vehicle.entity.postgres.VehicleEntity;
+import com.tecno_comfenalco.pa.features.vehicle.mapper.PostgresVehicleMapper;
 import com.tecno_comfenalco.pa.features.vehicle.models.VehicleModel;
 import com.tecno_comfenalco.pa.features.vehicle.ports.IVehicleRepositoryPort;
 import com.tecno_comfenalco.pa.features.vehicle.repository.postgres.IPostgresVehicleRepository;
-import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("postgres")
 @Repository
 public class IPostgresVehicleRepositoryAdapter implements IVehicleRepositoryPort {
 
     private final IPostgresVehicleRepository repository;
-    private final EntityMapper<VehicleModel, VehicleEntity> mapper;
+    private final PostgresVehicleMapper mapper;
 
     public IPostgresVehicleRepositoryAdapter(IPostgresVehicleRepository repository,
-            EntityMapper<VehicleModel, VehicleEntity> mapper) {
+            PostgresVehicleMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }

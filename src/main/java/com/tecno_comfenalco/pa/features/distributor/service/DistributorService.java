@@ -6,10 +6,9 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.tecno_comfenalco.pa.features.catalog.entity.postgres.CatalogEntity;
+
 import com.tecno_comfenalco.pa.features.catalog.models.CatalogModel;
 import com.tecno_comfenalco.pa.features.catalog.ports.ICatalogRepositoryPort;
-import com.tecno_comfenalco.pa.features.catalog.repository.IPostgresCatalogRepositoryAdapter;
 import com.tecno_comfenalco.pa.features.distributor.dto.DistributorDto;
 import com.tecno_comfenalco.pa.features.distributor.dto.request.EditDistributorRequestDto;
 import com.tecno_comfenalco.pa.features.distributor.dto.request.RegisterDistributorRequestDto;
@@ -17,12 +16,10 @@ import com.tecno_comfenalco.pa.features.distributor.dto.response.DistributorResp
 import com.tecno_comfenalco.pa.features.distributor.dto.response.EditDistributorResponseDto;
 import com.tecno_comfenalco.pa.features.distributor.dto.response.ListDistributorsResponseDto;
 import com.tecno_comfenalco.pa.features.distributor.dto.response.RegisterDistributorResponseDto;
-import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
 import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
 import com.tecno_comfenalco.pa.features.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.security.AuthenticationService;
 import com.tecno_comfenalco.pa.security.dto.requests.RegisterUserRequestDto;
-import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
 import com.tecno_comfenalco.pa.security.model.UserModel;
 import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;

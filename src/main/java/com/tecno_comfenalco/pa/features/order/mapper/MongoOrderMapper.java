@@ -1,47 +1,18 @@
 package com.tecno_comfenalco.pa.features.order.mapper;
 
-import java.util.List;
-import java.util.Set;
+import org.mapstruct.Mapper;
 
 import com.tecno_comfenalco.pa.features.order.entity.mongo.OrderDocument;
 import com.tecno_comfenalco.pa.features.order.models.OrderModel;
+import com.tecno_comfenalco.pa.features.presales.mapper.MongoPresalesMapper;
+import com.tecno_comfenalco.pa.features.store.mapper.MongoStoreMapper;
 import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
-public class MongoOrderMapper implements EntityMapper<OrderModel, OrderDocument>{
+import org.springframework.context.annotation.Profile;
 
-    @Override
-    public OrderModel toDto(OrderDocument entity) {
-        throw new UnsupportedOperationException("Unimplemented method 'toDto'");
-    }
+@Profile("mongo")
+@Mapper(componentModel = "spring", uses = { MongoStoreMapper.class, MongoPresalesMapper.class,
+        MongoOrderDetailsMapper.class })
+public interface MongoOrderMapper extends EntityMapper<OrderModel, OrderDocument> {
 
-    @Override
-    public OrderDocument toEntity(OrderModel dto) {
-        throw new UnsupportedOperationException("Unimplemented method 'toEntity'");
-    }
-
-    @Override
-    public List<OrderModel> toDto(List<OrderDocument> entityList) {
-        throw new UnsupportedOperationException("Unimplemented method 'toDto'");
-    }
-
-    @Override
-    public List<OrderDocument> toEntity(List<OrderModel> dtoList) {
-        throw new UnsupportedOperationException("Unimplemented method 'toEntity'");
-    }
-
-    @Override
-    public Set<OrderModel> toDto(Set<OrderDocument> entitySet) {
-        throw new UnsupportedOperationException("Unimplemented method 'toDto'");
-    }
-
-    @Override
-    public Set<OrderDocument> toEntity(Set<OrderModel> dtoSet) {
-        throw new UnsupportedOperationException("Unimplemented method 'toEntity'");
-    }
-
-    @Override
-    public void updateEntityFromDto(OrderModel dto, OrderDocument entity) {
-        throw new UnsupportedOperationException("Unimplemented method 'updateEntityFromDto'");
-    }
-    
 }

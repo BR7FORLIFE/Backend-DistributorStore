@@ -3,7 +3,7 @@ package com.tecno_comfenalco.pa.features.order.models;
 import com.tecno_comfenalco.pa.features.product.models.ProductModel;
 
 public class OrderDetailsModel {
-    private String id;
+    private OrderDetaildEmbeddedModel id;
 
     private OrderModel order;
 
@@ -16,7 +16,8 @@ public class OrderDetailsModel {
     public OrderDetailsModel() {
     }
 
-    public OrderDetailsModel(String id, OrderModel order, ProductModel product, Integer quantity, Double unitPrice) {
+    public OrderDetailsModel(OrderDetaildEmbeddedModel id, OrderModel order, ProductModel product, Integer quantity,
+            Double unitPrice) {
         this.id = id;
         this.order = order;
         this.product = product;
@@ -24,11 +25,11 @@ public class OrderDetailsModel {
         this.unitPrice = unitPrice;
     }
 
-    public String getId() {
+    public OrderDetaildEmbeddedModel getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(OrderDetaildEmbeddedModel id) {
         this.id = id;
     }
 

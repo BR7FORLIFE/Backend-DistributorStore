@@ -12,72 +12,106 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.github.javafaker.Faker;
-import com.tecno_comfenalco.pa.features.catalog.entity.postgres.CatalogEntity;
-import com.tecno_comfenalco.pa.features.catalog.entity.postgres.ProductsCatalogEntity;
-import com.tecno_comfenalco.pa.features.catalog.repository.IPostgresCatalogRepositoryAdapter;
-import com.tecno_comfenalco.pa.features.catalog.repository.IPostgresProductsCatalogRepositoryAdapter;
-import com.tecno_comfenalco.pa.features.category.entity.postgres.CategoryEntity;
-import com.tecno_comfenalco.pa.features.category.repository.IPostgresCategoryRepositoryAdapter;
-import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
-import com.tecno_comfenalco.pa.features.distributor.repository.IPostgresDistributorRepositoryAdapter;
-import com.tecno_comfenalco.pa.features.order.entity.postgres.OrderDetailEntity;
-import com.tecno_comfenalco.pa.features.order.entity.postgres.OrderDetailIdEmbedded;
-import com.tecno_comfenalco.pa.features.order.entity.postgres.OrderEntity;
-import com.tecno_comfenalco.pa.features.order.repository.IPostgresOrderRepositoryAdapter;
-import com.tecno_comfenalco.pa.features.presales.entity.postgres.PresalesEntity;
-import com.tecno_comfenalco.pa.features.presales.repository.IPostgresPresalesRepositoryAdapter;
-import com.tecno_comfenalco.pa.features.product.entity.postgres.ProductEntity;
-import com.tecno_comfenalco.pa.features.product.repository.IPostgresProductRepositoryAdapter;
-import com.tecno_comfenalco.pa.features.store.entity.postgres.StoreEntity;
-import com.tecno_comfenalco.pa.features.store.entity.postgres.StoresDistributorsEntity;
-import com.tecno_comfenalco.pa.features.store.repository.IPostgresStoreRepositoryAdapter;
-import com.tecno_comfenalco.pa.features.store.repository.IPostgresStoresDistributorsRepositoryAdapter;
-import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
-import com.tecno_comfenalco.pa.security.repository.IPostgresUserRepositoryAdapter;
+import com.tecno_comfenalco.pa.features.catalog.models.CatalogModel;
+import com.tecno_comfenalco.pa.features.catalog.models.ProductCatalogModel;
+import com.tecno_comfenalco.pa.features.catalog.ports.ICatalogRepositoryPort;
+import com.tecno_comfenalco.pa.features.catalog.ports.IProductsCatalogRepositoryPort;
+import com.tecno_comfenalco.pa.features.category.models.CategoryModel;
+import com.tecno_comfenalco.pa.features.category.ports.ICategoryRepositoryPort;
+import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
+import com.tecno_comfenalco.pa.features.distributor.ports.IDistributorRepositoryPort;
+import com.tecno_comfenalco.pa.features.order.models.OrderDetaildEmbeddedModel;
+import com.tecno_comfenalco.pa.features.order.models.OrderDetailsModel;
+import com.tecno_comfenalco.pa.features.order.models.OrderModel;
+import com.tecno_comfenalco.pa.features.order.port.IOrderRepositoryPort;
+import com.tecno_comfenalco.pa.features.presales.models.PresalesModel;
+import com.tecno_comfenalco.pa.features.presales.ports.IPresalesRepositoryPort;
+import com.tecno_comfenalco.pa.features.product.models.ProductModel;
+import com.tecno_comfenalco.pa.features.product.ports.IProductRepositoryPort;
+import com.tecno_comfenalco.pa.features.store.models.StoreDistributorModel;
+import com.tecno_comfenalco.pa.features.store.models.StoreModel;
+import com.tecno_comfenalco.pa.features.store.ports.IStoreDistributorRepositoryPort;
+import com.tecno_comfenalco.pa.features.store.ports.IStoreRepositoryRepositoryPort;
+import com.tecno_comfenalco.pa.security.model.UserModel;
+import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.shared.dto.DirectionDto;
 import com.tecno_comfenalco.pa.shared.enums.DocumentTypeEnum;
 import com.tecno_comfenalco.pa.shared.enums.StoreClaimStatus;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class DataSeederService {
+    //@Qualifier("IPostgresUserRepositoryAdapter")
+    @Qualifier("IMongoUserRepositoryAdapter")
+    private final IUserRepositoryPort userRepository;
 
-    @Qualifier("postgresUserRepository")
-    private final IPostgresUserRepositoryAdapter userRepository;
+    //@Qualifier("IPostgresDistributorRepositoryAdapter")
+    @Qualifier("IMongoDistributorRepositoryAdapter")
+    private final IDistributorRepositoryPort distributorRepository;
 
-    @Qualifier("postgresDistributorRepository")
-    private final IPostgresDistributorRepositoryAdapter distributorRepository;
+    //@Qualifier("IPostgresStoreRepositoryAdapter")
+    @Qualifier("IMongoStoreRepositoryAdapter")
+    private final IStoreRepositoryRepositoryPort storeRepository;
 
-    @Qualifier("postgresStoreRepository")
-    private final IPostgresStoreRepositoryAdapter storeRepository;
+    //@Qualifier("IPostgresPresalesRepositoryAdapter")
+    @Qualifier("IMongoPresalesRepositoryAdapter")
+    private final IPresalesRepositoryPort presalesRepository;
 
-    @Qualifier("postgresPresalesRepository")
-    private final IPostgresPresalesRepositoryAdapter presalesRepository;
+    //@Qualifier("IPostgresCatalogRepositoryAdapter")
+    @Qualifier("IMongoCatalogRepositoryAdapter")
+    private final ICatalogRepositoryPort catalogRepository;
 
-    @Qualifier("postgresCatalogRepository")
-    private final IPostgresCatalogRepositoryAdapter catalogRepository;
+    //@Qualifier("IPostgresCategoryRepositoryAdapter")
+    @Qualifier("IMongoCategoryRepositoryAdapter")
+    private final ICategoryRepositoryPort categoryRepository;
 
-    @Qualifier("postgresCategoryRepository")
-    private final IPostgresCategoryRepositoryAdapter categoryRepository;
+    //@Qualifier("IPostgresProductRepositoryAdapter")
+    @Qualifier("IMongoProductRepositoryAdapter")
+    private final IProductRepositoryPort productRepository;
 
-    @Qualifier("postgresProductRepository")
-    private final IPostgresProductRepositoryAdapter productRepository;
+    //@Qualifier("IPostgresOrderRepositoryAdapter")
+    @Qualifier("IMongoOrderRepositoryAdapter")
+    private final IOrderRepositoryPort orderRepository;
 
-    @Qualifier("postgresOrderRepository")
-    private final IPostgresOrderRepositoryAdapter orderRepository;
+    //@Qualifier("IPostgresStoresDistributorsRepositoryAdapter")
+    @Qualifier("IMongoStoreDistributorRepositoryAdapter")
+    private final IStoreDistributorRepositoryPort storesDistributorsRepository;
 
-    private final IPostgresStoresDistributorsRepositoryAdapter storesDistributorsRepository;
-
-    private final IPostgresProductsCatalogRepositoryAdapter productsCatalogRepository;
+    //@Qualifier("IPostgresProductsCatalogRepositoryAdapter")
+    @Qualifier("IMongoProductCatalogRepositoryAdapter")
+    private final IProductsCatalogRepositoryPort productsCatalogRepository;
 
     private final PasswordEncoder passwordEncoder;
 
     private final Faker faker = new Faker();
     private final Random random = new Random();
+
+    public DataSeederService(
+            @Qualifier("IPostgresUserRepositoryAdapter") IUserRepositoryPort userRepository,
+            @Qualifier("IPostgresDistributorRepositoryAdapter") IDistributorRepositoryPort distributorRepository,
+            @Qualifier("IPostgresStoreRepositoryAdapter") IStoreRepositoryRepositoryPort storeRepository,
+            @Qualifier("IPostgresPresalesRepositoryAdapter") IPresalesRepositoryPort presalesRepository,
+            @Qualifier("IPostgresCatalogRepositoryAdapter") ICatalogRepositoryPort catalogRepository,
+            @Qualifier("IPostgresCategoryRepositoryAdapter") ICategoryRepositoryPort categoryRepository,
+            @Qualifier("IPostgresProductRepositoryAdapter") IProductRepositoryPort productRepository,
+            @Qualifier("IPostgresOrderRepositoryAdapter") IOrderRepositoryPort orderRepository,
+            @Qualifier("IPostgresStoresDistributorsRepositoryAdapter") IStoreDistributorRepositoryPort storesDistributorsRepository,
+            @Qualifier("IPostgresProductsCatalogRepositoryAdapter") IProductsCatalogRepositoryPort productsCatalogRepository,
+            PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.distributorRepository = distributorRepository;
+        this.storeRepository = storeRepository;
+        this.presalesRepository = presalesRepository;
+        this.catalogRepository = catalogRepository;
+        this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
+        this.orderRepository = orderRepository;
+        this.storesDistributorsRepository = storesDistributorsRepository;
+        this.productsCatalogRepository = productsCatalogRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Transactional
     public void seedDatabase(int totalRecords) {
@@ -85,16 +119,16 @@ public class DataSeederService {
 
         // 1. Crear distribuidoras (10% de los registros) - cada una con su usuario
         // dedicado
-        List<DistributorEntity> distributors = createDistributors(totalRecords / 100);
+        List<DistributorModel> distributors = createDistributors(totalRecords / 100);
         log.info("Creadas {} distribuidoras con sus usuarios", distributors.size());
 
         // 2. Crear preventa (5% de los registros) - cada uno con su usuario dedicado y
         // asociado a un distribuidor
-        List<PresalesEntity> presalesList = createPresales(distributors, totalRecords / 200);
+        List<PresalesModel> presalesList = createPresales(distributors, totalRecords / 200);
         log.info("Creados {} preventistas con sus usuarios", presalesList.size());
 
         // 3. Crear tiendas (15% de los registros) - cada una con su usuario dedicado
-        List<StoreEntity> stores = createStores(totalRecords / 7);
+        List<StoreModel> stores = createStores(totalRecords / 7);
         log.info("Creadas {} tiendas con sus usuarios", stores.size());
 
         // 5. Crear relaciones tiendas-distribuidoras
@@ -102,15 +136,15 @@ public class DataSeederService {
         log.info("Creadas relaciones tiendas-distribuidoras");
 
         // 6. Crear catálogos (uno por distribuidora)
-        List<CatalogEntity> catalogs = createCatalogs(distributors);
+        List<CatalogModel> catalogs = createCatalogs(distributors);
         log.info("Creados {} catálogos", catalogs.size());
 
         // 7. Crear categorías (5 por catálogo)
-        List<CategoryEntity> categories = createCategories(catalogs);
+        List<CategoryModel> categories = createCategories(catalogs);
         log.info("Creadas {} categorías", categories.size());
 
         // 8. Crear productos (40% de los registros)
-        List<ProductEntity> products = createProducts(distributors, totalRecords * 2 / 5);
+        List<ProductModel> products = createProducts(distributors, totalRecords * 2 / 5);
         log.info("Creados {} productos", products.size());
 
         // 9. Vincular productos con categorías
@@ -127,11 +161,11 @@ public class DataSeederService {
     /**
      * Crea UN usuario dedicado para UN distribuidor con rol DISTRIBUTOR
      */
-    private List<DistributorEntity> createDistributors(int count) {
-        List<DistributorEntity> distributors = new ArrayList<>();
+    private List<DistributorModel> createDistributors(int count) {
+        List<DistributorModel> distributors = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             // Crear usuario específico para este distribuidor
-            UserEntity user = UserEntity.builder()
+            UserModel user = UserModel.builder()
                     .username(faker.internet().emailAddress())
                     .password(passwordEncoder.encode("password123"))
                     .enabled(true)
@@ -140,7 +174,7 @@ public class DataSeederService {
             user = userRepository.save(user);
 
             // Crear distribuidor vinculado al usuario
-            DistributorEntity distributor = new DistributorEntity();
+            DistributorModel distributor = new DistributorModel();
             distributor.setNIT(Long.valueOf(faker.number().digits(9)));
             distributor.setName(faker.company().name());
             distributor.setPhoneNumber(faker.phoneNumber().cellPhone());
@@ -156,14 +190,14 @@ public class DataSeederService {
      * Crea UN usuario dedicado para UN preventista con rol PRESALES
      * Cada preventista DEBE estar asociado a UN distribuidor
      */
-    private List<PresalesEntity> createPresales(List<DistributorEntity> distributors, int count) {
-        List<PresalesEntity> presalesList = new ArrayList<>();
+    private List<PresalesModel> createPresales(List<DistributorModel> distributors, int count) {
+        List<PresalesModel> presalesList = new ArrayList<>();
 
         // Primero, asignar al menos un preventista a cada distribuidora
         int minIndex = Math.min(count, distributors.size());
         for (int i = 0; i < minIndex; i++) {
             // Crear usuario específico para este preventista
-            UserEntity user = UserEntity.builder()
+            UserModel user = UserModel.builder()
                     .username(faker.internet().emailAddress())
                     .password(passwordEncoder.encode("password123"))
                     .enabled(true)
@@ -172,7 +206,7 @@ public class DataSeederService {
             user = userRepository.save(user);
 
             // Crear preventista vinculado al usuario y al distribuidor
-            PresalesEntity presales = new PresalesEntity();
+            PresalesModel presales = new PresalesModel();
             presales.setName(faker.name().fullName());
             presales.setPhoneNumber(faker.phoneNumber().cellPhone());
             presales.setEmail(faker.internet().emailAddress());
@@ -188,7 +222,7 @@ public class DataSeederService {
         // Luego, crear el resto de preventistas con distribuidoras aleatorias
         for (int i = minIndex; i < count; i++) {
             // Crear usuario específico para este preventista
-            UserEntity user = UserEntity.builder()
+            UserModel user = UserModel.builder()
                     .username(faker.internet().emailAddress())
                     .password(passwordEncoder.encode("password123"))
                     .enabled(true)
@@ -197,7 +231,7 @@ public class DataSeederService {
             user = userRepository.save(user);
 
             // Crear preventista vinculado al usuario y a un distribuidor aleatorio
-            PresalesEntity presales = new PresalesEntity();
+            PresalesModel presales = new PresalesModel();
             presales.setName(faker.name().fullName());
             presales.setPhoneNumber(faker.phoneNumber().cellPhone());
             presales.setEmail(faker.internet().emailAddress());
@@ -214,11 +248,11 @@ public class DataSeederService {
     /**
      * Crea UN usuario dedicado para UNA tienda con rol STORE
      */
-    private List<StoreEntity> createStores(int count) {
-        List<StoreEntity> stores = new ArrayList<>();
+    private List<StoreModel> createStores(int count) {
+        List<StoreModel> stores = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             // Crear usuario específico para esta tienda
-            UserEntity user = UserEntity.builder()
+            UserModel user = UserModel.builder()
                     .username(faker.internet().emailAddress())
                     .password(passwordEncoder.encode("password123"))
                     .enabled(true)
@@ -227,7 +261,7 @@ public class DataSeederService {
             user = userRepository.save(user);
 
             // Crear tienda vinculada al usuario
-            StoreEntity store = new StoreEntity();
+            StoreModel store = new StoreModel();
             store.setNIT(Long.valueOf(faker.number().digits(9)));
             store.setName(faker.company().name() + " Store");
             store.setPhoneNumber(faker.phoneNumber().cellPhone());
@@ -240,12 +274,12 @@ public class DataSeederService {
         return stores;
     }
 
-    private void createStoresDistributors(List<StoreEntity> stores, List<DistributorEntity> distributors) {
-        for (StoreEntity store : stores) {
+    private void createStoresDistributors(List<StoreModel> stores, List<DistributorModel> distributors) {
+        for (StoreModel store : stores) {
             // Cada tienda se asocia con 1-3 distribuidoras
             int numDistributors = random.nextInt(3) + 1;
             for (int i = 0; i < numDistributors; i++) {
-                StoresDistributorsEntity sd = new StoresDistributorsEntity();
+                StoreDistributorModel sd = new StoreDistributorModel();
                 sd.setStore(store);
                 sd.setDistributor(distributors.get(random.nextInt(distributors.size())));
                 sd.setInternalClientCode("CLIENT-" + faker.number().digits(6));
@@ -254,24 +288,24 @@ public class DataSeederService {
         }
     }
 
-    private List<CatalogEntity> createCatalogs(List<DistributorEntity> distributors) {
-        List<CatalogEntity> catalogs = new ArrayList<>();
-        for (DistributorEntity distributor : distributors) {
-            CatalogEntity catalog = new CatalogEntity();
+    private List<CatalogModel> createCatalogs(List<DistributorModel> distributors) {
+        List<CatalogModel> catalogs = new ArrayList<>();
+        for (DistributorModel distributor : distributors) {
+            CatalogModel catalog = new CatalogModel();
             catalog.setDistributor(distributor);
             catalogs.add(catalogRepository.save(catalog));
         }
         return catalogs;
     }
 
-    private List<CategoryEntity> createCategories(List<CatalogEntity> catalogs) {
-        List<CategoryEntity> categories = new ArrayList<>();
+    private List<CategoryModel> createCategories(List<CatalogModel> catalogs) {
+        List<CategoryModel> categories = new ArrayList<>();
         String[] categoryNames = { "Bebidas", "Snacks", "Lácteos", "Carnes", "Frutas", "Verduras", "Panadería",
                 "Limpieza", "Aseo Personal", "Electrónica" };
 
-        for (CatalogEntity catalog : catalogs) {
+        for (CatalogModel catalog : catalogs) {
             for (String categoryName : categoryNames) {
-                CategoryEntity category = new CategoryEntity();
+                CategoryModel category = new CategoryModel();
                 category.setName(categoryName);
                 category.setCatalog(catalog);
                 categories.add(categoryRepository.save(category));
@@ -280,12 +314,12 @@ public class DataSeederService {
         return categories;
     }
 
-    private List<ProductEntity> createProducts(List<DistributorEntity> distributors, int count) {
-        List<ProductEntity> products = new ArrayList<>();
-        ProductEntity.Unit[] units = ProductEntity.Unit.values();
+    private List<ProductModel> createProducts(List<DistributorModel> distributors, int count) {
+        List<ProductModel> products = new ArrayList<>();
+        ProductModel.Unit[] units = ProductModel.Unit.values();
 
         for (int i = 0; i < count; i++) {
-            ProductEntity product = new ProductEntity();
+            ProductModel product = new ProductModel();
             product.setName(faker.commerce().productName());
             product.setPrice(Double.valueOf(faker.commerce().price().replace(",", "")));
             product.setUnit(units[random.nextInt(units.length)]);
@@ -295,27 +329,27 @@ public class DataSeederService {
         return products;
     }
 
-    private void linkProductsToCategories(List<ProductEntity> products, List<CategoryEntity> categories) {
+    private void linkProductsToCategories(List<ProductModel> products, List<CategoryModel> categories) {
         if (categories.isEmpty() || products.isEmpty()) {
             log.warn("No hay categorías o productos para vincular");
             return;
         }
 
         int linksCreated = 0;
-        for (ProductEntity product : products) {
+        for (ProductModel product : products) {
             // Cada producto se asocia con 1-3 categorías aleatorias
             int numCategories = random.nextInt(3) + 1;
-            Set<CategoryEntity> selectedCategories = new HashSet<>();
+            Set<CategoryModel> selectedCategories = new HashSet<>();
 
             // Seleccionar categorías únicas
             while (selectedCategories.size() < numCategories && selectedCategories.size() < categories.size()) {
-                CategoryEntity category = categories.get(random.nextInt(categories.size()));
+                CategoryModel category = categories.get(random.nextInt(categories.size()));
                 selectedCategories.add(category);
             }
 
             // Crear las asociaciones
-            for (CategoryEntity category : selectedCategories) {
-                ProductsCatalogEntity productCatalog = new ProductsCatalogEntity();
+            for (CategoryModel category : selectedCategories) {
+                ProductCatalogModel productCatalog = new ProductCatalogModel();
                 productCatalog.setProduct(product);
                 productCatalog.setCategory(category);
                 productsCatalogRepository.save(productCatalog);
@@ -324,10 +358,10 @@ public class DataSeederService {
 
             // Asignar una categoría principal al producto (la primera del conjunto)
             if (!selectedCategories.isEmpty()) {
-                CategoryEntity primaryCategory = selectedCategories.iterator().next();
+                CategoryModel primaryCategory = selectedCategories.iterator().next();
                 // Buscar el ProductsCatalogEntity correspondiente para asignarlo al producto
-                List<ProductsCatalogEntity> productCatalogs = productsCatalogRepository.findAll();
-                for (ProductsCatalogEntity pc : productCatalogs) {
+                List<ProductCatalogModel> productCatalogs = productsCatalogRepository.findAll();
+                for (ProductCatalogModel pc : productCatalogs) {
                     if (pc.getProduct().getId().equals(product.getId()) &&
                             pc.getCategory().getId().equals(primaryCategory.getId())) {
                         product.setCategoryProduct(pc);
@@ -340,12 +374,12 @@ public class DataSeederService {
         log.info("Creados {} vínculos productos-categorías", linksCreated);
     }
 
-    private void createOrders(List<StoreEntity> stores, List<PresalesEntity> presalesList,
-            List<DistributorEntity> distributors, List<ProductEntity> products, int count) {
-        OrderEntity.OrderStatus[] statuses = OrderEntity.OrderStatus.values();
+    private void createOrders(List<StoreModel> stores, List<PresalesModel> presalesList,
+            List<DistributorModel> distributors, List<ProductModel> products, int count) {
+        OrderModel.OrderStatus[] statuses = OrderModel.OrderStatus.values();
 
         for (int i = 0; i < count; i++) {
-            OrderEntity order = new OrderEntity();
+            OrderModel order = new OrderModel();
             order.setIva_percent(19.0);
             order.setStatus(statuses[random.nextInt(statuses.length)]);
             order.setStore(stores.get(random.nextInt(stores.size())));
@@ -359,23 +393,23 @@ public class DataSeederService {
 
             // Crear detalles de la orden (2-5 productos por orden)
             // Usar un Set para evitar productos duplicados
-            List<OrderDetailEntity> orderDetails = new ArrayList<>();
-            Set<ProductEntity> selectedProducts = new HashSet<>();
+            List<OrderDetailsModel> orderDetails = new ArrayList<>();
+            Set<ProductModel> selectedProducts = new HashSet<>();
             int numProducts = random.nextInt(4) + 2;
             double total = 0.0;
 
             // Seleccionar productos únicos
             while (selectedProducts.size() < numProducts && selectedProducts.size() < products.size()) {
-                ProductEntity product = products.get(random.nextInt(products.size()));
+                ProductModel product = products.get(random.nextInt(products.size()));
                 selectedProducts.add(product);
             }
 
             // Crear detalles de orden para cada producto único
-            for (ProductEntity product : selectedProducts) {
-                OrderDetailIdEmbedded detailId = new OrderDetailIdEmbedded();
+            for (ProductModel product : selectedProducts) {
+                OrderDetaildEmbeddedModel detailId = new OrderDetaildEmbeddedModel();
                 detailId.setProductId(product.getId());
 
-                OrderDetailEntity detail = new OrderDetailEntity();
+                OrderDetailsModel detail = new OrderDetailsModel();
                 detail.setId(detailId);
                 detail.setProduct(product);
                 detail.setQuantity(random.nextInt(10) + 1);

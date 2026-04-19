@@ -18,6 +18,7 @@ import com.tecno_comfenalco.pa.security.dto.responses.ListUserResponseDto;
 import com.tecno_comfenalco.pa.security.dto.responses.RegisterUserResponseDto;
 import com.tecno_comfenalco.pa.security.dto.responses.UserResponseDto;
 import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
+import com.tecno_comfenalco.pa.security.model.UserModel;
 import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
 
@@ -39,7 +40,7 @@ public class AuthenticationService {
                     new Exception("Username already taken"));
         }
 
-        UserEntity newUser = new UserEntity();
+        UserModel newUser = new UserModel();
         newUser.setUsername(request.username());
         newUser.setPassword(new BCryptPasswordEncoder().encode(request.password()));
         newUser.setRoles(request.roles());
@@ -70,7 +71,7 @@ public class AuthenticationService {
             return Result.error(new Exception("User not found"));
         }
 
-        UserEntity user = userOpt.get();
+        UserModel user = userOpt.get();
         user.setEnabled(false);
         userRepository.save(user);
 
@@ -83,7 +84,7 @@ public class AuthenticationService {
             return Result.error(new Exception("User not found"));
         }
 
-        UserEntity user = userOpt.get();
+        UserModel user = userOpt.get();
         UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getRoles(), user.isEnabled());
 
         UserResponseDto userResponse = new UserResponseDto(userDto, "User obtained successfully");
@@ -106,7 +107,7 @@ public class AuthenticationService {
             return Result.error(new Exception("User not found"));
         }
 
-        UserEntity user = userOpt.get();
+        UserModel user = userOpt.get();
         user.setUsername(request.username());
         user.setPassword(request.password());
         user.setRoles(request.roles());
@@ -126,7 +127,7 @@ public class AuthenticationService {
             return Result.error(new Exception("User not found"));
         }
 
-        UserEntity user = userOpt.get();
+        UserModel user = userOpt.get();
         UserDto userDto = new UserDto(user.getId(), user.getUsername(), user.getRoles(), user.isEnabled());
 
         return Result.ok(userDto);

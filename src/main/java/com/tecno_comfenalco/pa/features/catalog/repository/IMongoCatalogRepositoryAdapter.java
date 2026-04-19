@@ -6,19 +6,19 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.tecno_comfenalco.pa.features.catalog.entity.mongo.CatalogDocument;
+import com.tecno_comfenalco.pa.features.catalog.mapper.MongoCatalogMapper;
 import com.tecno_comfenalco.pa.features.catalog.models.CatalogModel;
 import com.tecno_comfenalco.pa.features.catalog.ports.ICatalogRepositoryPort;
 import com.tecno_comfenalco.pa.features.catalog.repository.mongo.IMongoCatalogRepository;
-import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("mongo")
 @Repository
 public class IMongoCatalogRepositoryAdapter implements ICatalogRepositoryPort {
 
     private final IMongoCatalogRepository repository;
-    private final EntityMapper<CatalogModel, CatalogDocument> mapper;
+    private final MongoCatalogMapper mapper;
 
-    public IMongoCatalogRepositoryAdapter(IMongoCatalogRepository repository, EntityMapper<CatalogModel, CatalogDocument> mapper) {
+    public IMongoCatalogRepositoryAdapter(IMongoCatalogRepository repository, MongoCatalogMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }
@@ -38,7 +38,7 @@ public class IMongoCatalogRepositoryAdapter implements ICatalogRepositoryPort {
 
     @Override
     public Optional<CatalogModel> findByDistributor_Id(Long distributorId) {
-        return repository.findByDistributor_Id(distributorId.toString())
+        return repository.findByDistributorId(distributorId.toString())
                 .map(mapper::toDto);
     }
 }

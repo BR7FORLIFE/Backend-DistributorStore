@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import com.tecno_comfenalco.pa.features.store.models.StoreModel;
 
-public interface IStoreRepositoryPort {
+public interface IStoreRepositoryRepositoryPort {
     StoreModel save(StoreModel StoreModel);
 
     Optional<StoreModel> findById(Long id);

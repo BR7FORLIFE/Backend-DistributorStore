@@ -7,19 +7,19 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.tecno_comfenalco.pa.features.category.entity.mongo.CategoryDocument;
+import com.tecno_comfenalco.pa.features.category.mapper.MongoCategoryMapper;
 import com.tecno_comfenalco.pa.features.category.models.CategoryModel;
 import com.tecno_comfenalco.pa.features.category.ports.ICategoryRepositoryPort;
 import com.tecno_comfenalco.pa.features.category.repository.mongo.IMongoCategoryRepository;
-import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("mongo")
 @Repository
 public class IMongoCategoryRepositoryAdapter implements ICategoryRepositoryPort {
 
     private final IMongoCategoryRepository repository;
-    private final EntityMapper<CategoryModel, CategoryDocument> mapper;
+    private final MongoCategoryMapper mapper;
 
-    public IMongoCategoryRepositoryAdapter(IMongoCategoryRepository repository, EntityMapper<CategoryModel, CategoryDocument> mapper) {
+    public IMongoCategoryRepositoryAdapter(IMongoCategoryRepository repository, MongoCategoryMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }

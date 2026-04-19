@@ -7,20 +7,20 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.tecno_comfenalco.pa.features.store.entity.mongo.StoresDistributorsDocument;
+import com.tecno_comfenalco.pa.features.store.mapper.MongoStoreDistributorMapper;
 import com.tecno_comfenalco.pa.features.store.models.StoreDistributorModel;
-import com.tecno_comfenalco.pa.features.store.ports.IStoreDistributorPort;
+import com.tecno_comfenalco.pa.features.store.ports.IStoreDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.features.store.repository.mongo.IMongoStoreDistributorRepository;
-import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("mongo")
 @Repository
-public class IMongoStoreDistributorRepositoryAdapter implements IStoreDistributorPort {
+public class IMongoStoreDistributorRepositoryAdapter implements IStoreDistributorRepositoryPort {
 
     private final IMongoStoreDistributorRepository repository;
-    private final EntityMapper<StoreDistributorModel, StoresDistributorsDocument> mapper;
+    private final MongoStoreDistributorMapper mapper;
 
     public IMongoStoreDistributorRepositoryAdapter(IMongoStoreDistributorRepository repository,
-            EntityMapper<StoreDistributorModel, StoresDistributorsDocument> mapper) {
+            MongoStoreDistributorMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }

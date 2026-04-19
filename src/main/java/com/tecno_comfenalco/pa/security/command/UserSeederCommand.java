@@ -7,14 +7,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
-import com.tecno_comfenalco.pa.security.repository.IPostgresUserRepositoryAdapter;
+import com.tecno_comfenalco.pa.security.model.UserModel;
+import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 
 @Component
 public class UserSeederCommand implements CommandLineRunner {
 
         @Autowired
-        private IPostgresUserRepositoryAdapter userRepository;
+        private IUserRepositoryPort userRepository;
 
         @Autowired
         private PasswordEncoder passwordEncoder;
@@ -22,22 +22,22 @@ public class UserSeederCommand implements CommandLineRunner {
         @Override
         public void run(String... args) throws Exception {
                 // Seed initial users
-                userRepository.save(UserEntity.builder().username("admin").password(passwordEncoder.encode("password"))
+                userRepository.save(UserModel.builder().username("admin").password(passwordEncoder.encode("password"))
                                 .enabled(true).roles(Set.of("ADMIN")).build());
 
                 userRepository.save(
-                                UserEntity.builder().username("presales").password(passwordEncoder.encode("password"))
+                                UserModel.builder().username("presales").password(passwordEncoder.encode("password"))
                                                 .enabled(true).roles(Set.of("PRESALES")).build());
 
-                userRepository.save(UserEntity.builder().username("distributor")
+                userRepository.save(UserModel.builder().username("distributor")
                                 .password(passwordEncoder.encode("password")).enabled(true)
                                 .roles(Set.of("DISTRIBUTOR")).build());
 
-                userRepository.save(UserEntity.builder().username("delivery")
+                userRepository.save(UserModel.builder().username("delivery")
                                 .password(passwordEncoder.encode("password")).enabled(true)
                                 .roles(Set.of("DELIVERY")).build());
 
-                userRepository.save(UserEntity.builder().username("store")
+                userRepository.save(UserModel.builder().username("store")
                                 .password(passwordEncoder.encode("password")).enabled(true)
                                 .roles(Set.of("STORE")).build());
 

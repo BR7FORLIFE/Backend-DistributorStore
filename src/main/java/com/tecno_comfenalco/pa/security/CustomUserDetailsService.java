@@ -1,12 +1,11 @@
 package com.tecno_comfenalco.pa.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
+import com.tecno_comfenalco.pa.security.model.UserModel;
 import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 
 @Service
@@ -21,21 +20,21 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        UserEntity userEntity = userRepository.findByUsername(username)
+        UserModel userEntity = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         System.out.println("Authorities: " + new CustomUserDetails(userEntity).getAuthorities());
         return new CustomUserDetails(userEntity);
     }
 
     public UserDetails loadUserById(Long id) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findById(id)
+        UserModel userEntity = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return new CustomUserDetails(userEntity);
     }
 
     // Registrar nuevo usuario
-    public UserDetails registerUser(UserEntity userEntity) {
-        UserEntity savedUser = userRepository.save(userEntity);
+    public UserDetails registerUser(UserModel userEntity) {
+        UserModel savedUser = userRepository.save(userEntity);
         return new CustomUserDetails(savedUser);
     }
 

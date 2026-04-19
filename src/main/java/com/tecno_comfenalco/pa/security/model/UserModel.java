@@ -6,20 +6,18 @@ public class UserModel {
     private Long id;
     private String username;
     private String password;
-
     private boolean enabled;
-
     private Set<String> roles;
 
     public UserModel() {
     }
-    
-    public UserModel(Long id, String username, String password, boolean enabled, Set<String> roles) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.enabled = enabled;
-        this.roles = roles;
+
+    private UserModel(Builder builder) {
+        this.id = builder.id;
+        this.username = builder.username;
+        this.password = builder.password;
+        this.enabled = builder.enabled;
+        this.roles = builder.roles;
     }
 
     public Long getId() {
@@ -62,5 +60,44 @@ public class UserModel {
         this.roles = roles;
     }
 
-    
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private Long id;
+        private String username;
+        private String password;
+        private boolean enabled;
+        private Set<String> roles;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder enabled(boolean enabled) {
+            this.enabled = enabled;
+            return this;
+        }
+
+        public Builder roles(Set<String> roles) {
+            this.roles = roles;
+            return this;
+        }
+
+        public UserModel build() {
+            return new UserModel(this);
+        }
+    }
 }

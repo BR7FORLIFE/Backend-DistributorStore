@@ -7,20 +7,20 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.tecno_comfenalco.pa.features.presales.entity.mongo.PresalesDocument;
+import com.tecno_comfenalco.pa.features.presales.mapper.MongoPresalesMapper;
 import com.tecno_comfenalco.pa.features.presales.models.PresalesModel;
 import com.tecno_comfenalco.pa.features.presales.ports.IPresalesRepositoryPort;
 import com.tecno_comfenalco.pa.features.presales.repository.mongo.IMongoPresalesRepository;
-import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("mongo")
 @Repository
 public class IMongoPresalesRepositoryAdapter implements IPresalesRepositoryPort {
 
     private final IMongoPresalesRepository repository;
-    private final EntityMapper<PresalesModel, PresalesDocument> mapper;
+    private final MongoPresalesMapper mapper;
 
     public IMongoPresalesRepositoryAdapter(IMongoPresalesRepository repository,
-            EntityMapper<PresalesModel, PresalesDocument> mapper) {
+            MongoPresalesMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }

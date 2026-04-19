@@ -6,13 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tecno_comfenalco.pa.features.vehicle.dto.VehicleDto;
-import com.tecno_comfenalco.pa.features.vehicle.dto.mapper.MongoVehicleMapper;
 import com.tecno_comfenalco.pa.features.vehicle.dto.request.RegisterVehicleRequestDto;
 import com.tecno_comfenalco.pa.features.vehicle.dto.response.DisableVehicleResponseDto;
 import com.tecno_comfenalco.pa.features.vehicle.dto.response.ListVehiclesResponseDto;
 import com.tecno_comfenalco.pa.features.vehicle.dto.response.RegisterVehicleResponseDto;
 import com.tecno_comfenalco.pa.features.vehicle.dto.response.VehicleResponseDto;
-import com.tecno_comfenalco.pa.features.vehicle.entity.postgres.VehicleEntity;
+import com.tecno_comfenalco.pa.features.vehicle.models.VehicleModel;
 import com.tecno_comfenalco.pa.features.vehicle.ports.IVehicleRepositoryPort;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
 
@@ -21,9 +20,6 @@ public class VehicleService {
 
     @Autowired
     private IVehicleRepositoryPort vehicleRepository;
-
-    @Autowired
-    private MongoVehicleMapper vehicleMapper;
 
     // Implementacion de nuevo metodo Vechicle(CREATE).
     // Se usa el mapper para convertir entre dto de request a entidad.
@@ -36,10 +32,10 @@ public class VehicleService {
 
         // Usamos el mapper para convertir el dto a entidad.
         try {
-            VehicleEntity vehicleEntity = vehicleMapper.toEntity(
-                    new VehicleDto(dtoVehicle.vehiclePlate(), dtoVehicle.model(), dtoVehicle.brand()));
+            VehicleModel vehicleModel = new VehicleModel(null, dtoVehicle.vehiclePlate(), dtoVehicle.model(),
+                    dtoVehicle.brand(), null, null);
 
-            vehicleEntity = vehicleRepository.save(vehicleEntity);
+            vehicleRepository.save(vehicleModel);
 
             RegisterVehicleResponseDto response = new RegisterVehicleResponseDto("Vehicle registered successfully!");
             return Result.ok(response);
@@ -67,11 +63,13 @@ public class VehicleService {
     // Metodo list all vehicles (READ).
     // Usamos el metodo toDto del mapper para mapear toda la coleccion.
     public Result<ListVehiclesResponseDto, Exception> listAllVehicles() {
-        List<VehicleEntity> vehicleEntities = vehicleRepository.findAll();
+        List<VehicleModel> vehicleEntities = vehicleRepository.findAll();
 
         try {
             // Usar el mapper para convertir la lista de entidades a lista de dtos.
-            List<VehicleDto> vehicleDtos = vehicleMapper.toDto(vehicleEntities);
+            List<VehicleDto> vehicleDtos = vehicleEntities.stream().map(vehicle -> {
+                return new VehicleDto(vehicle.getVehiclePlate(), vehicle.getModel(), vehicle.getBrand());
+            }).toList();
 
             ListVehiclesResponseDto response = new ListVehiclesResponseDto(vehicleDtos, "vehicles found succesfull!");
             return Result.ok(response);
@@ -88,7 +86,8 @@ public class VehicleService {
             return vehicleRepository.findById(id)
                     .map(vehicleEntity -> {
                         // Usar el mapper para convertir la entidad a dto.
-                        VehicleDto vehicleDto = vehicleMapper.toDto(vehicleEntity);
+                        VehicleDto vehicleDto = new VehicleDto(vehicleEntity.getVehiclePlate(),
+                                vehicleEntity.getModel(), vehicleEntity.getBrand());
 
                         VehicleResponseDto response = new VehicleResponseDto(vehicleDto, "Vehicle show succesfull!");
                         return Result.ok(response);

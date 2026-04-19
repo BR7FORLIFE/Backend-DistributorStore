@@ -1,47 +1,23 @@
 package com.tecno_comfenalco.pa.features.product.mapper;
 
-import java.util.List;
-import java.util.Set;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
+import com.tecno_comfenalco.pa.features.distributor.mapper.MongoDistributorMapper;
 import com.tecno_comfenalco.pa.features.product.entity.mongo.ProductDocument;
 import com.tecno_comfenalco.pa.features.product.models.ProductModel;
 import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
-public class MongoProductMapper implements EntityMapper<ProductModel, ProductDocument>{
+import org.springframework.context.annotation.Profile;
 
-    @Override
-    public ProductModel toDto(ProductDocument entity) {
-        throw new UnsupportedOperationException("Unimplemented method 'toDto'");
-    }
+@Profile("mongo")
+@Mapper(componentModel = "spring", uses = { MongoDistributorMapper.class })
+public interface MongoProductMapper extends EntityMapper<ProductModel, ProductDocument> {
+        @Override
+        @Mapping(target = "orderDetails", ignore = true)
+        ProductModel toDto(ProductDocument document);
 
-    @Override
-    public ProductDocument toEntity(ProductModel dto) {
-        throw new UnsupportedOperationException("Unimplemented method 'toEntity'");
-    }
-
-    @Override
-    public List<ProductModel> toDto(List<ProductDocument> entityList) {
-        throw new UnsupportedOperationException("Unimplemented method 'toDto'");
-    }
-
-    @Override
-    public List<ProductDocument> toEntity(List<ProductModel> dtoList) {
-        throw new UnsupportedOperationException("Unimplemented method 'toEntity'");
-    }
-
-    @Override
-    public Set<ProductModel> toDto(Set<ProductDocument> entitySet) {
-        throw new UnsupportedOperationException("Unimplemented method 'toDto'");
-    }
-
-    @Override
-    public Set<ProductDocument> toEntity(Set<ProductModel> dtoSet) {
-        throw new UnsupportedOperationException("Unimplemented method 'toEntity'");
-    }
-
-    @Override
-    public void updateEntityFromDto(ProductModel dto, ProductDocument entity) {
-        throw new UnsupportedOperationException("Unimplemented method 'updateEntityFromDto'");
-    }
-    
+        @Override
+        @Mapping(target = "orderDetails", ignore = true)
+        ProductDocument toEntity(ProductModel model);
 }

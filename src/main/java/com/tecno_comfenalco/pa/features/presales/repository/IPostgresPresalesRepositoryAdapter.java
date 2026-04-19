@@ -6,21 +6,20 @@ import java.util.Optional;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
-import com.tecno_comfenalco.pa.features.presales.entity.postgres.PresalesEntity;
+import com.tecno_comfenalco.pa.features.presales.mapper.PostgresPresalesMapper;
 import com.tecno_comfenalco.pa.features.presales.models.PresalesModel;
 import com.tecno_comfenalco.pa.features.presales.ports.IPresalesRepositoryPort;
 import com.tecno_comfenalco.pa.features.presales.repository.postgres.IPostgresPresalesRepository;
-import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("postgres")
 @Repository
 public class IPostgresPresalesRepositoryAdapter implements IPresalesRepositoryPort {
 
     private final IPostgresPresalesRepository repository;
-    private final EntityMapper<PresalesModel, PresalesEntity> mapper;
+    private final PostgresPresalesMapper mapper;
 
     public IPostgresPresalesRepositoryAdapter(IPostgresPresalesRepository repository,
-            EntityMapper<PresalesModel, PresalesEntity> mapper) {
+            PostgresPresalesMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }

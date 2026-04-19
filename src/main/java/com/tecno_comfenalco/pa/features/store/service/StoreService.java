@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
+import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
 import com.tecno_comfenalco.pa.features.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.features.store.dto.StoreDto;
 import com.tecno_comfenalco.pa.features.store.dto.request.ClaimStoreRequestDto;
@@ -25,11 +26,14 @@ import com.tecno_comfenalco.pa.features.store.dto.response.RegisterStoreResponse
 import com.tecno_comfenalco.pa.features.store.dto.response.StoresResponseDto;
 import com.tecno_comfenalco.pa.features.store.entity.postgres.StoreEntity;
 import com.tecno_comfenalco.pa.features.store.entity.postgres.StoresDistributorsEntity;
-import com.tecno_comfenalco.pa.features.store.ports.IStoreDistributorPort;
-import com.tecno_comfenalco.pa.features.store.ports.IStoreRepositoryPort;
+import com.tecno_comfenalco.pa.features.store.models.StoreDistributorModel;
+import com.tecno_comfenalco.pa.features.store.models.StoreModel;
+import com.tecno_comfenalco.pa.features.store.ports.IStoreDistributorRepositoryPort;
+import com.tecno_comfenalco.pa.features.store.ports.IStoreRepositoryRepositoryPort;
 import com.tecno_comfenalco.pa.security.AuthenticationService;
 import com.tecno_comfenalco.pa.security.dto.requests.RegisterUserRequestDto;
 import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
+import com.tecno_comfenalco.pa.security.model.UserModel;
 import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.shared.enums.StoreClaimStatus;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
@@ -39,13 +43,13 @@ public class StoreService {
     private static final Logger logger = LoggerFactory.getLogger(StoreService.class);
 
     @Autowired
-    private IStoreRepositoryPort storeRepository;
+    private IStoreRepositoryRepositoryPort storeRepository;
 
     @Autowired
     private IUserRepositoryPort userRepository;
 
     @Autowired
-    private IStoreDistributorPort storesDistributorsRepository;
+    private IStoreDistributorRepositoryPort storesDistributorsRepository;
 
     @Autowired
     private IDistributorRepositoryPort distributorRepository;
@@ -76,11 +80,11 @@ public class StoreService {
                             true))
                     .getValue().userId();
 
-            UserEntity userEntity = userRepository.findById(userId)
+            UserModel userEntity = userRepository.findById(userId)
                     .orElseThrow(() -> new Exception("User not found!"));
 
             // Crear tienda con usuario asignado y estado SELF_REGISTERED
-            StoreEntity storeEntity = new StoreEntity();
+            StoreModel storeEntity = new StoreModel();
             storeEntity.setNIT(dtoStore.NIT());
             storeEntity.setName(dtoStore.name());
             storeEntity.setPhoneNumber(dtoStore.phoneNumber());
@@ -114,20 +118,20 @@ public class StoreService {
 
         try {
             // Verificar que la distribuidora existe
-            DistributorEntity distributor = distributorRepository.findById(distributorId)
+            DistributorModel distributor = distributorRepository.findById(distributorId)
                     .orElseThrow(() -> new Exception("Distributor not found!"));
 
             // Verificar si la tienda ya existe
-            Optional<StoreEntity> existingStore = storeRepository.findByNIT(dtoStore.NIT());
+            Optional<StoreModel> existingStore = storeRepository.findByNIT(dtoStore.NIT());
 
-            StoreEntity storeEntity;
+            StoreModel storeEntity;
 
             if (existingStore.isPresent()) {
                 storeEntity = existingStore.get();
                 logger.info("Store with NIT {} already exists. Creating distributor relationship.", dtoStore.NIT());
             } else {
                 // Crear nueva tienda SIN usuario (será reclamada después)
-                storeEntity = new StoreEntity();
+                storeEntity = new StoreModel();
                 storeEntity.setNIT(dtoStore.NIT());
                 storeEntity.setName(dtoStore.name());
                 storeEntity.setPhoneNumber(dtoStore.phoneNumber());
@@ -145,7 +149,7 @@ public class StoreService {
                     .existsByStore_IdAndDistributor_Id(storeEntity.getId(), distributorId);
 
             if (!relationshipExists) {
-                StoresDistributorsEntity relationship = new StoresDistributorsEntity();
+                StoreDistributorModel relationship = new StoreDistributorModel();
                 relationship.setStore(storeEntity);
                 relationship.setDistributor(distributor);
                 relationship.setInternalClientCode(dtoStore.internalClientCode());
@@ -175,7 +179,7 @@ public class StoreService {
     public Result<ClaimStoreResponseDto, Exception> claimStore(ClaimStoreRequestDto dtoClaimRequest) {
         try {
             // 1. Buscar la tienda por NIT
-            StoreEntity storeEntity = storeRepository.findByNIT(dtoClaimRequest.NIT())
+            StoreModel storeEntity = storeRepository.findByNIT(dtoClaimRequest.NIT())
                     .orElseThrow(() -> new Exception("No existe una tienda registrada con ese NIT."));
 
             // 2. Validar que la tienda esté en estado PENDING_CLAIM
@@ -200,7 +204,7 @@ public class StoreService {
                             true))
                     .getValue().userId();
 
-            UserEntity userEntity = userRepository.findById(userId)
+            UserModel userEntity = userRepository.findById(userId)
                     .orElseThrow(() -> new Exception("Error creating user!"));
 
             // 5. Asociar usuario a la tienda y cambiar estado
@@ -259,7 +263,7 @@ public class StoreService {
     }
 
     public Result<ListStoresResponseDto, Exception> listAllStores() {
-        List<StoreEntity> storeEntities = storeRepository.findAll();
+        List<StoreModel> storeEntities = storeRepository.findAll();
 
         try {
             List<StoreDto> storeDtos = storeEntities.stream()

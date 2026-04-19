@@ -7,20 +7,20 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.tecno_comfenalco.pa.features.store.entity.postgres.StoreEntity;
+import com.tecno_comfenalco.pa.features.store.mapper.PostgresStoreMapper;
 import com.tecno_comfenalco.pa.features.store.models.StoreModel;
-import com.tecno_comfenalco.pa.features.store.ports.IStoreRepositoryPort;
+import com.tecno_comfenalco.pa.features.store.ports.IStoreRepositoryRepositoryPort;
 import com.tecno_comfenalco.pa.features.store.repository.postgres.IPostgresStoreRepository;
-import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("postgres")
 @Repository
-public class IPostgresStoreRepositoryAdapter implements IStoreRepositoryPort {
+public class IPostgresStoreRepositoryAdapter implements IStoreRepositoryRepositoryPort {
 
     private final IPostgresStoreRepository repository;
-    private final EntityMapper<StoreModel, StoreEntity> mapper;
+    private final PostgresStoreMapper mapper;
 
     public IPostgresStoreRepositoryAdapter(IPostgresStoreRepository repository,
-            EntityMapper<StoreModel, StoreEntity> mapper) {
+            PostgresStoreMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }

@@ -3,7 +3,7 @@ package com.tecno_comfenalco.pa.features.order.dto;
 import java.util.List;
 import java.util.UUID;
 
-import com.tecno_comfenalco.pa.features.order.entity.postgres.OrderEntity.OrderStatus;
+import com.tecno_comfenalco.pa.features.order.models.OrderModel.OrderStatus;
 import com.tecno_comfenalco.pa.features.presales.dto.PresalesDto;
 import com.tecno_comfenalco.pa.features.store.dto.StoreDto;
 

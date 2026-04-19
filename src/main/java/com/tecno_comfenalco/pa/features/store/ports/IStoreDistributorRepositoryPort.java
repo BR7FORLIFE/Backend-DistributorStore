@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import com.tecno_comfenalco.pa.features.store.models.StoreDistributorModel;
 
-public interface IStoreDistributorPort {
+public interface IStoreDistributorRepositoryPort {
     StoreDistributorModel save(StoreDistributorModel entity);
 
     Optional<StoreDistributorModel> findByStore_IdAndDistributor_Id(Long storeId, Long distributorId);

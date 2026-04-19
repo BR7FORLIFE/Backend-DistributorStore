@@ -7,19 +7,19 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import com.tecno_comfenalco.pa.features.delivery.entity.mongo.DeliveryDocument;
+import com.tecno_comfenalco.pa.features.delivery.mapper.MongoDeliveryMapper;
 import com.tecno_comfenalco.pa.features.delivery.model.DeliveryModel;
 import com.tecno_comfenalco.pa.features.delivery.ports.IDeliveryRepositoryPort;
 import com.tecno_comfenalco.pa.features.delivery.repository.mongo.IMongoDeliveryRepository;
-import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
 @Profile("mongo")
 @Repository
 public class IMongoDeliveryRepositoryAdapter implements IDeliveryRepositoryPort {
 
     private final IMongoDeliveryRepository repository;
-    private final EntityMapper<DeliveryModel, DeliveryDocument> mapper;
+    private final MongoDeliveryMapper mapper;
 
-    public IMongoDeliveryRepositoryAdapter(IMongoDeliveryRepository repository, EntityMapper<DeliveryModel, DeliveryDocument> mapper) {
+    public IMongoDeliveryRepositoryAdapter(IMongoDeliveryRepository repository, MongoDeliveryMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }

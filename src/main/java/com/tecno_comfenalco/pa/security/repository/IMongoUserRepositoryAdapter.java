@@ -3,18 +3,23 @@ package com.tecno_comfenalco.pa.security.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Repository;
+
 import com.tecno_comfenalco.pa.security.entity.mongo.UserDocument;
+import com.tecno_comfenalco.pa.security.mapper.MongoUserMapper;
 import com.tecno_comfenalco.pa.security.model.UserModel;
 import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.security.repository.mongo.IMongoUserRepository;
-import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
+@Profile("mongo")
+@Repository
 public class IMongoUserRepositoryAdapter implements IUserRepositoryPort {
 
     private final IMongoUserRepository repository;
-    private final EntityMapper<UserModel, UserDocument> mapper;
+    private final MongoUserMapper mapper;
 
-    public IMongoUserRepositoryAdapter(IMongoUserRepository repository, EntityMapper<UserModel, UserDocument> mapper) {
+    public IMongoUserRepositoryAdapter(IMongoUserRepository repository, MongoUserMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
     }

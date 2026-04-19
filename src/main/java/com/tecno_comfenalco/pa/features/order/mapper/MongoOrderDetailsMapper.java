@@ -1,49 +1,27 @@
 package com.tecno_comfenalco.pa.features.order.mapper;
 
-import java.util.List;
-import java.util.Set;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import com.tecno_comfenalco.pa.features.order.entity.mongo.OrderDetailDocument;
 import com.tecno_comfenalco.pa.features.order.models.OrderDetailsModel;
+import com.tecno_comfenalco.pa.features.product.mapper.MongoProductMapper;
 import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
-public class MongoOrderDetailsMapper implements EntityMapper<OrderDetailsModel, OrderDetailDocument> {
+import org.springframework.context.annotation.Profile;
+
+@Profile("mongo")
+@Mapper(componentModel = "spring", uses = { MongoProductMapper.class })
+public interface MongoOrderDetailsMapper extends EntityMapper<OrderDetailsModel, OrderDetailDocument> {
+    @Override
+    @Mapping(target = "id.orderId", source = "order.id")
+    @Mapping(target = "id.productId", source = "product.id")
+    @Mapping(target = "order", ignore = true)
+    OrderDetailsModel toDto(OrderDetailDocument document);
 
     @Override
-    public OrderDetailsModel toDto(OrderDetailDocument entity) {
-        throw new UnsupportedOperationException("Unimplemented method 'toDto'");
-    }
-
-    @Override
-    public OrderDetailDocument toEntity(OrderDetailsModel dto) {
-        throw new UnsupportedOperationException("Unimplemented method 'toEntity'");
-    }
-
-    @Override
-    public List<OrderDetailsModel> toDto(List<OrderDetailDocument> entityList) {
-        throw new UnsupportedOperationException("Unimplemented method 'toDto'");
-    }
-
-    @Override
-    public List<OrderDetailDocument> toEntity(List<OrderDetailsModel> dtoList) {
-        throw new UnsupportedOperationException("Unimplemented method 'toEntity'");
-    }
-
-    @Override
-    public Set<OrderDetailsModel> toDto(Set<OrderDetailDocument> entitySet) {
-        throw new UnsupportedOperationException("Unimplemented method 'toDto'");
-    }
-
-    @Override
-    public Set<OrderDetailDocument> toEntity(Set<OrderDetailsModel> dtoSet) {
-        throw new UnsupportedOperationException("Unimplemented method 'toEntity'");
-    }
-
-    @Override
-    public void updateEntityFromDto(OrderDetailsModel dto, OrderDetailDocument entity) {
-        throw new UnsupportedOperationException("Unimplemented method 'updateEntityFromDto'");
-    }
-
-    
-    
+    @Mapping(target = "id", source = "model.id.orderId")
+    @Mapping(target = "order", ignore = true)
+    @Mapping(target = "product", ignore = true)
+    OrderDetailDocument toEntity(OrderDetailsModel model);
 }
