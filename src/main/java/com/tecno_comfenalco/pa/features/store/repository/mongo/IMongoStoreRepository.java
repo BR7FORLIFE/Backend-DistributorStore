@@ -10,11 +10,11 @@ import com.tecno_comfenalco.pa.features.store.entity.mongo.StoreDocument;
 public interface IMongoStoreRepository extends MongoRepository<StoreDocument, String> {
     StoreDocument save(StoreDocument StoreDocument);
 
-    Optional<StoreDocument> findById(Long id);
+    Optional<StoreDocument> findById(String id);
 
     Optional<StoreDocument> findByNIT(Long NIT);
 
-    Optional<StoreDocument> findByUser_Id(Long userId);
+    Optional<StoreDocument> findByUser_Id(String userId);
 
     List<StoreDocument> findAll();
 

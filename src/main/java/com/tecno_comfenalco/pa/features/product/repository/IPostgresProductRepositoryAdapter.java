@@ -12,6 +12,7 @@ import com.tecno_comfenalco.pa.features.product.mapper.PostgresProductMapper;
 import com.tecno_comfenalco.pa.features.product.models.ProductModel;
 import com.tecno_comfenalco.pa.features.product.ports.IProductRepositoryPort;
 import com.tecno_comfenalco.pa.features.product.repository.postgres.IPostgresProductRepository;
+import com.tecno_comfenalco.pa.shared.utils.helper.SafeParser;
 
 @Profile("postgres")
 @Repository
@@ -33,8 +34,14 @@ public class IPostgresProductRepositoryAdapter implements IProductRepositoryPort
     }
 
     @Override
-    public Optional<ProductModel> findById(UUID id) {
-        return repository.findById(id).map(mapper::toDto);
+    public Optional<ProductModel> findById(String id) {
+        UUID parseId = SafeParser.safeParseUUID(id);
+
+        if (parseId == null) {
+            return Optional.empty();
+        }
+
+        return repository.findById(parseId).map(mapper::toDto);
     }
 
     @Override
@@ -49,19 +56,19 @@ public class IPostgresProductRepositoryAdapter implements IProductRepositoryPort
     }
 
     @Override
-    public List<ProductModel> findByCategoryProduct_Category_Id(Long id) {
-        List<ProductEntity> entities = repository.findByCategoryProduct_Category_Id(id);
-        return mapper.toDto(entities);
-    }
-
-    @Override
     public boolean existsByName(String name) {
         return repository.existsByName(name);
     }
 
     @Override
-    public void deleteById(UUID id) {
-        repository.deleteById(id);
+    public void deleteById(String id) {
+        UUID parseId = SafeParser.safeParseUUID(id);
+
+        if (parseId == null) {
+            return;
+        }
+
+        repository.deleteById(parseId);
     }
 
 }

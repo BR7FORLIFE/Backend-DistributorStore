@@ -1,13 +1,14 @@
 package com.tecno_comfenalco.pa.features.vehicle.models;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.tecno_comfenalco.pa.features.delivery.model.DeliveryModel;
 import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
 
 public class VehicleModel {
 
-    private Long id;
+    private String id;
 
     private String vehiclePlate;
     private String model;
@@ -17,7 +18,7 @@ public class VehicleModel {
 
     private DistributorModel distributor;
 
-    public VehicleModel(Long id, String vehiclePlate, String model, String brand, List<DeliveryModel> deliveries,
+    public VehicleModel(String id, String vehiclePlate, String model, String brand, List<DeliveryModel> deliveries,
             DistributorModel distributor) {
         this.id = id;
         this.vehiclePlate = vehiclePlate;
@@ -27,11 +28,27 @@ public class VehicleModel {
         this.distributor = distributor;
     }
 
-    public Long getId() {
+    public static VehicleModel createDraft(
+            String vehiclePlate,
+            String model,
+            String brand,
+            List<DeliveryModel> deliveries,
+            DistributorModel distributor) {
+
+        return new VehicleModel(
+                UUID.randomUUID().toString(),
+                vehiclePlate,
+                model,
+                brand,
+                deliveries,
+                distributor);
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

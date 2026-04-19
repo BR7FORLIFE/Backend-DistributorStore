@@ -8,7 +8,7 @@ import com.tecno_comfenalco.pa.security.model.UserModel;
 public interface IUserRepositoryPort {
     Optional<UserModel> findByUsername(String username);
 
-    Optional<UserModel> findById(Long id);
+    Optional<UserModel> findById(String id);
 
     boolean existsByUsername(String username);
 

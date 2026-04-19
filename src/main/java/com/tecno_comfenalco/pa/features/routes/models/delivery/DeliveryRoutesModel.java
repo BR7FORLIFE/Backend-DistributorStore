@@ -1,26 +1,38 @@
 package com.tecno_comfenalco.pa.features.routes.models.delivery;
 
+import java.util.UUID;
+
 import com.tecno_comfenalco.pa.features.delivery.model.DeliveryModel;
 import com.tecno_comfenalco.pa.features.order.models.OrderModel;
 
 public class DeliveryRoutesModel {
-    private Long id;
+    private String id;
 
     private OrderModel orderEntity;
 
     private DeliveryModel delivery;
 
-    public DeliveryRoutesModel(Long id, OrderModel orderEntity, DeliveryModel delivery) {
+    public DeliveryRoutesModel(String id, OrderModel orderEntity, DeliveryModel delivery) {
         this.id = id;
         this.orderEntity = orderEntity;
         this.delivery = delivery;
     }
 
-    public Long getId() {
+    public static DeliveryRoutesModel createDraft(
+            OrderModel orderEntity,
+            DeliveryModel delivery) {
+
+        return new DeliveryRoutesModel(
+                UUID.randomUUID().toString(),
+                orderEntity,
+                delivery);
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -40,5 +52,4 @@ public class DeliveryRoutesModel {
         this.delivery = delivery;
     }
 
-    
 }

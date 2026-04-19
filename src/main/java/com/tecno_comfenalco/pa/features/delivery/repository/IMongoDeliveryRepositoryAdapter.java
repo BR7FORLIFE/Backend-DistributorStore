@@ -25,7 +25,7 @@ public class IMongoDeliveryRepositoryAdapter implements IDeliveryRepositoryPort 
     }
 
     @Override
-    public Optional<DeliveryModel> findById(Long id) {
+    public Optional<DeliveryModel> findById(String id) {
         return repository.findById(id.toString())
                 .map(mapper::toDto);
     }

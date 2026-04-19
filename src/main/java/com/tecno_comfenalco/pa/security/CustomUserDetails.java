@@ -39,7 +39,7 @@ public class CustomUserDetails implements UserDetails {
         return userEntity.isEnabled();
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userEntity.getId();
     }
 

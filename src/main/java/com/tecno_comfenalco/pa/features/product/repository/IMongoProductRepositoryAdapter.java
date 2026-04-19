@@ -34,7 +34,7 @@ public class IMongoProductRepositoryAdapter implements IProductRepositoryPort {
     }
 
     @Override
-    public Optional<ProductModel> findById(UUID id) {
+    public Optional<ProductModel> findById(String id) {
         Optional<ProductDocument> documentOpt = repository.findById(id);
         return documentOpt.map(mapper::toDto);
     }
@@ -52,18 +52,12 @@ public class IMongoProductRepositoryAdapter implements IProductRepositoryPort {
     }
 
     @Override
-    public List<ProductModel> findByCategoryProduct_Category_Id(Long id) {
-        List<ProductDocument> documents = repository.findByCategoryProduct_Category_Id(id);
-        return mapper.toDto(documents);
-    }
-
-    @Override
     public boolean existsByName(String name) {
         return repository.existsByName(name);
     }
 
     @Override
-    public void deleteById(UUID id) {
+    public void deleteById(String id) {
         repository.deleteById(id);
     }
 

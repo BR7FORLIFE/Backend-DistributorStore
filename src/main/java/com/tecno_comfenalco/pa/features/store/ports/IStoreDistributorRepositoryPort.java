@@ -8,11 +8,11 @@ import com.tecno_comfenalco.pa.features.store.models.StoreDistributorModel;
 public interface IStoreDistributorRepositoryPort {
     StoreDistributorModel save(StoreDistributorModel entity);
 
-    Optional<StoreDistributorModel> findByStore_IdAndDistributor_Id(Long storeId, Long distributorId);
+    Optional<StoreDistributorModel> findByStore_IdAndDistributor_Id(String storeId, String distributorId);
 
-    List<StoreDistributorModel> findByStore_Id(Long storeId);
+    List<StoreDistributorModel> findByStore_Id(String storeId);
 
-    List<StoreDistributorModel> findByDistributor_Id(Long distributorId);
+    List<StoreDistributorModel> findByDistributor_Id(String distributorId);
 
-    boolean existsByStore_IdAndDistributor_Id(Long storeId, Long distributorId);
+    boolean existsByStore_IdAndDistributor_Id(String storeId, String distributorId);
 }

@@ -4,20 +4,20 @@ import com.tecno_comfenalco.pa.features.category.models.CategoryModel;
 import com.tecno_comfenalco.pa.features.product.models.ProductModel;
 
 public class ProductCatalogModel {
-    private Long id;
+    private String id;
     private CategoryModel category;
     private ProductModel product;
 
     public ProductCatalogModel() {
     }
 
-    public ProductCatalogModel(Long id, CategoryModel categoryModel, ProductModel productModel) {
+    public ProductCatalogModel(String id, CategoryModel categoryModel, ProductModel productModel) {
         this.id = id;
         this.category = categoryModel;
         this.product = productModel;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
@@ -33,7 +33,7 @@ public class ProductCatalogModel {
         return product;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

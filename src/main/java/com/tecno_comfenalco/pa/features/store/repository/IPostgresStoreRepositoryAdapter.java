@@ -11,6 +11,7 @@ import com.tecno_comfenalco.pa.features.store.mapper.PostgresStoreMapper;
 import com.tecno_comfenalco.pa.features.store.models.StoreModel;
 import com.tecno_comfenalco.pa.features.store.ports.IStoreRepositoryRepositoryPort;
 import com.tecno_comfenalco.pa.features.store.repository.postgres.IPostgresStoreRepository;
+import com.tecno_comfenalco.pa.shared.utils.helper.SafeParser;
 
 @Profile("postgres")
 @Repository
@@ -33,8 +34,13 @@ public class IPostgresStoreRepositoryAdapter implements IStoreRepositoryReposito
     }
 
     @Override
-    public Optional<StoreModel> findById(Long id) {
-        return repository.findById(id).map(mapper::toDto);
+    public Optional<StoreModel> findById(String id) {
+        Long parsedId = SafeParser.safeParseId(id);
+
+        if (parsedId == null) {
+            return Optional.empty();
+        }
+        return repository.findById(parsedId).map(mapper::toDto);
     }
 
     @Override
@@ -43,8 +49,13 @@ public class IPostgresStoreRepositoryAdapter implements IStoreRepositoryReposito
     }
 
     @Override
-    public Optional<StoreModel> findByUser_Id(Long userId) {
-        return repository.findByUser_Id(userId).map(mapper::toDto);
+    public Optional<StoreModel> findByUser_Id(String userId) {
+        Long parsedId = SafeParser.safeParseId(userId);
+
+        if (parsedId == null) {
+            return Optional.empty();
+        }
+        return repository.findByUser_Id(parsedId).map(mapper::toDto);
     }
 
     @Override
@@ -61,12 +72,22 @@ public class IPostgresStoreRepositoryAdapter implements IStoreRepositoryReposito
     }
 
     @Override
-    public boolean existsById(Long id) {
-        return repository.existsById(id);
+    public boolean existsById(String id) {
+        Long parsedId = SafeParser.safeParseId(id);
+
+        if (parsedId == null) {
+            return false;
+        }
+        return repository.existsById(parsedId);
     }
 
     @Override
-    public void deleteById(Long id) {
-        repository.deleteById(id);
+    public void deleteById(String id) {
+        Long parsedId = SafeParser.safeParseId(id);
+
+        if (parsedId == null) {
+            return;
+        }
+        repository.deleteById(parsedId);
     }
 }

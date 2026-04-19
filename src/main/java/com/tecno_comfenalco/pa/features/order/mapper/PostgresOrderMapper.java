@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Profile;
 
 @Profile("postgres")
 @Mapper(componentModel = "spring", uses = { PostgresStoreMapper.class, PostgresOrderDetailsMapper.class,
-        PostgresOrderDetailsMapper.class })
+                PostgresOrderDetailsMapper.class })
 public interface PostgresOrderMapper extends EntityMapper<OrderModel, OrderEntity> {
 
 }

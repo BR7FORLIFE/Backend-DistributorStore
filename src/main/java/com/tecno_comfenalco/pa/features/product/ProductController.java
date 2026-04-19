@@ -42,7 +42,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EditProductResponseDto> editProduct(@PathVariable UUID id,
+    public ResponseEntity<EditProductResponseDto> editProduct(@PathVariable String id,
             @RequestBody @Valid EditProductRequestDto dtoProduct) {
         Result<EditProductResponseDto, Exception> result = productServices.editProduct(id, dtoProduct);
 
@@ -50,7 +50,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<DisableProductResponseDto> disabledProduct(@PathVariable UUID id) {
+    public ResponseEntity<DisableProductResponseDto> disabledProduct(@PathVariable String id) {
 
         Result<DisableProductResponseDto, Exception> result = productServices.disabledProduct(id);
 
@@ -64,7 +64,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> showProduct(@PathVariable UUID id) {
+    public ResponseEntity<ProductResponseDto> showProduct(@PathVariable String id) {
         Result<ProductResponseDto, Exception> result = productServices.showProduct(id);
 
         return ResponseEntityHelper.toResponseEntity(result);

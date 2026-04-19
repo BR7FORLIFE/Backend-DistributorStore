@@ -3,8 +3,10 @@ package com.tecno_comfenalco.pa.features.routes.repository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
+import com.tecno_comfenalco.pa.features.routes.ports.IDeliveryRoutesRepositoryPort;
+
 @Profile("mongo")
 @Repository
-public class IMongoDeliveryRoutesRepositoryAdapter {
+public class IMongoDeliveryRoutesRepositoryAdapter implements IDeliveryRoutesRepositoryPort {
 
 }

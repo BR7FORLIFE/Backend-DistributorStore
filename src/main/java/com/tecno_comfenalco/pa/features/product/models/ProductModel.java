@@ -1,6 +1,7 @@
 package com.tecno_comfenalco.pa.features.product.models;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.tecno_comfenalco.pa.features.catalog.models.ProductCatalogModel;
 import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
@@ -13,7 +14,7 @@ public class ProductModel {
 
     private String id;
 
-    private String name;
+    private String name; 
     private Double price;
 
     private Unit unit;
@@ -36,6 +37,24 @@ public class ProductModel {
         this.orderDetails = orderDetails;
         this.categoryProduct = categoryProduct;
         this.distributor = distributor;
+    }
+
+    public static ProductModel createDraft(
+            String name,
+            Double price,
+            Unit unit,
+            List<OrderDetailsModel> orderDetails,
+            ProductCatalogModel categoryProduct,
+            DistributorModel distributor) {
+
+        return new ProductModel(
+                UUID.randomUUID().toString(),
+                name,
+                price,
+                unit,
+                orderDetails,
+                categoryProduct,
+                distributor);
     }
 
     public String getId() {

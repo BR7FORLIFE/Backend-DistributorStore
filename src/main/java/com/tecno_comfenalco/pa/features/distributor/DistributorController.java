@@ -39,7 +39,7 @@ public class DistributorController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EditDistributorResponseDto> editDistributor(@PathVariable Long id,
+    public ResponseEntity<EditDistributorResponseDto> editDistributor(@PathVariable String id,
             @RequestBody @Valid EditDistributorRequestDto dtoDistributor) {
         Result<EditDistributorResponseDto, Exception> result = distributorService.editDistributor(id, dtoDistributor);
         return ResponseEntityHelper.toResponseEntity(result);
@@ -52,7 +52,7 @@ public class DistributorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DistributorResponseDto> showDistributor(@PathVariable Long id) {
+    public ResponseEntity<DistributorResponseDto> showDistributor(@PathVariable String id) {
         Result<DistributorResponseDto, Exception> result = distributorService.showDistributor(id);
         return ResponseEntityHelper.toResponseEntity(result);
     }

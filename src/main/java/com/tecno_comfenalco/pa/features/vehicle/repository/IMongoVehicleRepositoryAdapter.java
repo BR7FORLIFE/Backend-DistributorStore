@@ -33,7 +33,7 @@ public class IMongoVehicleRepositoryAdapter implements IVehicleRepositoryPort {
     }
 
     @Override
-    public Optional<VehicleModel> findById(Long id) {
+    public Optional<VehicleModel> findById(String id) {
         return repository.findById(id).map(mapper::toDto);
     }
 
@@ -50,7 +50,7 @@ public class IMongoVehicleRepositoryAdapter implements IVehicleRepositoryPort {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(String id) {
         repository.deleteById(id);
     }
 

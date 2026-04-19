@@ -20,6 +20,3 @@ spring:
     - classpath:db/migrations
     baseline-on-migrate: false
   
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration

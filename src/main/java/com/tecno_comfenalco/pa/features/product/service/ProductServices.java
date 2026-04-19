@@ -40,7 +40,7 @@ public class ProductServices {
             CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                     .getAuthentication().getPrincipal();
 
-            Long userId = userDetails.getUserId();
+            String userId = userDetails.getUserId();
 
             distributorOpt = distributorRepository.findByUser_Id(userId);
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class ProductServices {
         }
     }
 
-    public Result<EditProductResponseDto, Exception> editProduct(UUID id, EditProductRequestDto dtoProduct) {
+    public Result<EditProductResponseDto, Exception> editProduct(String id, EditProductRequestDto dtoProduct) {
         try {
             // TODO: Create a mapper for this
             return productRepository.findById(id)
@@ -98,7 +98,7 @@ public class ProductServices {
         }
     }
 
-    public Result<DisableProductResponseDto, Exception> disabledProduct(UUID id) {
+    public Result<DisableProductResponseDto, Exception> disabledProduct(String id) {
         try {
             // TODO: Create a mapper for this
             return productRepository.findById(id).map(product -> {
@@ -118,7 +118,7 @@ public class ProductServices {
             CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                     .getAuthentication().getPrincipal();
 
-            Long userId = userDetails.getUserId();
+            String userId = userDetails.getUserId();
 
             distributorOpt = distributorRepository.findByUser_Id(userId);
         } catch (Exception e) {
@@ -142,7 +142,7 @@ public class ProductServices {
         try {
             // TODO: Create a mapper for this
             List<ProductDto> productDtos = productEntities.stream().map(product -> new ProductDto(
-                    UUID.fromString(product.getId()),
+                    product.getId(),
                     product.getName(),
                     product.getPrice(),
                     product.getUnit().name(),
@@ -155,12 +155,12 @@ public class ProductServices {
         }
     }
 
-    public Result<ProductResponseDto, Exception> showProduct(UUID id) {
+    public Result<ProductResponseDto, Exception> showProduct(String id) {
         try {
             return productRepository.findById(id).map(product -> {
                 // TODO: Create a mapper for this
                 ProductDto productDto = new ProductDto(
-                        UUID.fromString(product.getId()),
+                        product.getId(),
                         product.getName(),
                         product.getPrice(),
                         product.getUnit().name(),

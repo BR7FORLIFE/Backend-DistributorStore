@@ -51,7 +51,7 @@ public class CatalogController {
     @PostMapping("/categories/{categoryId}/products")
     @PreAuthorize("hasRole('DISTRIBUTOR')")
     public ResponseEntity<AddCategoryToCatalogResponseDto> addProductToCategory(
-            @PathVariable Long categoryId,
+            @PathVariable String categoryId,
             @RequestBody @Valid AddExistingProductToCategoryRequestDto request) {
         Result<AddCategoryToCatalogResponseDto, Exception> result = catalogService.addProductToCategory(categoryId,
                 request.productId());
@@ -76,7 +76,7 @@ public class CatalogController {
      */
     @GetMapping("/{categoryId}/products")
     @PreAuthorize("hasAnyRole('DISTRIBUTOR', 'PRESALES')")
-    public ResponseEntity<GetCategoryProductsResponseDto> getProductsByCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<GetCategoryProductsResponseDto> getProductsByCategory(@PathVariable String categoryId) {
         Result<GetCategoryProductsResponseDto, Exception> result = catalogService.getProductsByCategory(categoryId);
         return ResponseEntityHelper.toResponseEntity(result);
     }

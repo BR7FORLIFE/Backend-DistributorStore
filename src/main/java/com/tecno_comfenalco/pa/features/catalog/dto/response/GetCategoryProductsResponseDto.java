@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record GetCategoryProductsResponseDto(
-        Long categoryId,
+        String categoryId,
         String categoryName,
         List<ProductDto> products) {
     public record ProductDto(

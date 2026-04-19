@@ -56,7 +56,7 @@ public class DeliveryService {
             deliveryModel.setLicenseNumber(dtoDelivery.licenseNumber());
             deliveryModel.setLicenseType(dtoDelivery.licenseType());
 
-            Long userId = authenticationService.registerUser(
+            String userId = authenticationService.registerUser(
                     new RegisterUserRequestDto(dtoDelivery.name().toLowerCase().replace(" ", "_"),
                             "password", Set.of("DELIVERY"), true))
                     .getValue().userId();
@@ -75,7 +75,7 @@ public class DeliveryService {
         }
     }
 
-    public Result<EditDeliveryResponseDto, Exception> editDelivery(Long id,
+    public Result<EditDeliveryResponseDto, Exception> editDelivery(String id,
             EditDeliveryRequestDto dtoDelivery) {
         try {
             return deliveryRepository.findById(id)
@@ -118,7 +118,7 @@ public class DeliveryService {
         }
     }
 
-    public Result<DeliveryResponseDto, Exception> showDelivery(Long id) {
+    public Result<DeliveryResponseDto, Exception> showDelivery(String id) {
         try {
             return deliveryRepository.findById(id).map(delivery -> {
 

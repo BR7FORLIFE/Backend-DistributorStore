@@ -32,7 +32,7 @@ public class IPostgresUserRepositoryAdapter implements IUserRepositoryPort {
     }
 
     @Override
-    public Optional<UserModel> findById(Long id) {
+    public Optional<UserModel> findById(String id) {
         Optional<UserEntity> entityOpt = repository.findById(id);
         return entityOpt.map(mapper::toDto);
     }

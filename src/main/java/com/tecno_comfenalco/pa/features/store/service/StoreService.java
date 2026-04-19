@@ -72,7 +72,7 @@ public class StoreService {
 
         try {
             // Crear usuario primero
-            Long userId = authenticationService.registerUser(
+            String userId = authenticationService.registerUser(
                     new RegisterUserRequestDto(
                             dtoStore.name().toLowerCase().replace(" ", "_"),
                             "password",
@@ -113,7 +113,7 @@ public class StoreService {
      */
     @Transactional
     public Result<RegisterStoreResponseDto, Exception> registerStoreByDistributor(
-            Long distributorId,
+            String distributorId,
             RegisterStoreByDistributorRequestDto dtoStore) {
 
         try {
@@ -196,7 +196,7 @@ public class StoreService {
             }
 
             // 4. Crear el usuario propietario
-            Long userId = authenticationService.registerUser(
+            String userId = authenticationService.registerUser(
                     new RegisterUserRequestDto(
                             storeEntity.getName().toLowerCase().replace(" ", "_"),
                             dtoClaimRequest.password(),
@@ -229,7 +229,7 @@ public class StoreService {
         }
     }
 
-    public Result<EditStoreResponseDto, Exception> editStore(Long id, EditStoreRequestDto dtoStore) {
+    public Result<EditStoreResponseDto, Exception> editStore(String id, EditStoreRequestDto dtoStore) {
         try {
             return storeRepository.findById(id)
                     .map(store -> {
@@ -249,7 +249,7 @@ public class StoreService {
         }
     }
 
-    public Result<DisableStoreResponseDto, Exception> disableStore(Long id) {
+    public Result<DisableStoreResponseDto, Exception> disableStore(String id) {
         try {
             return storeRepository.findById(id).map(store -> {
                 storeRepository.deleteById(id);
@@ -278,7 +278,7 @@ public class StoreService {
         }
     }
 
-    public Result<StoresResponseDto, Exception> showStore(Long id) {
+    public Result<StoresResponseDto, Exception> showStore(String id) {
         try {
             return storeRepository.findById(id)
                     .map(store -> {

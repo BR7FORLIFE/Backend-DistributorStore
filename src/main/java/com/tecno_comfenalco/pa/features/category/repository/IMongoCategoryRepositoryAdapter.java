@@ -33,14 +33,13 @@ public class IMongoCategoryRepositoryAdapter implements ICategoryRepositoryPort 
     }
 
     @Override
-    public Optional<CategoryModel> findById(Long id) {
+    public Optional<CategoryModel> findById(String id) {
         return repository.findById(id.toString())
                 .map(mapper::toDto);
     }
 
     @Override
-    public List<CategoryModel> findByCatalog_Id(Long catalogId) {
-        return mapper.toDto(repository.findByCatalog_Id(catalogId.toString()));
+    public List<CategoryModel> findByCatalog_Id(String id) {
+        return findByCatalog_Id(id);
     }
-
 }

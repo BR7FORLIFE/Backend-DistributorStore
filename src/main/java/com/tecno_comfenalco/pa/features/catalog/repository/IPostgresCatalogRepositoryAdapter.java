@@ -10,6 +10,7 @@ import com.tecno_comfenalco.pa.features.catalog.mapper.PostgresCatalogMapper;
 import com.tecno_comfenalco.pa.features.catalog.models.CatalogModel;
 import com.tecno_comfenalco.pa.features.catalog.ports.ICatalogRepositoryPort;
 import com.tecno_comfenalco.pa.features.catalog.repository.postgres.IPostgresCatalogRepository;
+import com.tecno_comfenalco.pa.shared.utils.helper.SafeParser;
 
 @Profile("postgres")
 @Repository
@@ -24,14 +25,26 @@ public class IPostgresCatalogRepositoryAdapter implements ICatalogRepositoryPort
     }
 
     @Override
-    public Optional<CatalogModel> findByDistributor_Id(Long distributorId) {
-        return repository.findByDistributor_Id(distributorId)
+    public Optional<CatalogModel> findByDistributor_Id(String distributorId) {
+        Long parsedId = SafeParser.safeParseId(distributorId);
+
+        if (parsedId == null) {
+            return Optional.empty();
+        }
+
+        return repository.findByDistributor_Id(parsedId)
                 .map(mapper::toDto);
     }
 
     @Override
-    public Optional<CatalogModel> findById(Long id) {
-        return repository.findById(id)
+    public Optional<CatalogModel> findById(String id) {
+        Long parsedId = SafeParser.safeParseId(id);
+
+        if (parsedId == null) {
+            return Optional.empty();
+        }
+        
+        return repository.findById(parsedId)
                 .map(mapper::toDto);
     }
 

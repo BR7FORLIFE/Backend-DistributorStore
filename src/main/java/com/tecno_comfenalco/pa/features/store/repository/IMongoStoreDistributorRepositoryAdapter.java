@@ -2,6 +2,7 @@ package com.tecno_comfenalco.pa.features.store.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
@@ -11,6 +12,7 @@ import com.tecno_comfenalco.pa.features.store.mapper.MongoStoreDistributorMapper
 import com.tecno_comfenalco.pa.features.store.models.StoreDistributorModel;
 import com.tecno_comfenalco.pa.features.store.ports.IStoreDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.features.store.repository.mongo.IMongoStoreDistributorRepository;
+import com.tecno_comfenalco.pa.shared.utils.helper.SafeParser;
 
 @Profile("mongo")
 @Repository
@@ -33,30 +35,57 @@ public class IMongoStoreDistributorRepositoryAdapter implements IStoreDistributo
     }
 
     @Override
-    public Optional<StoreDistributorModel> findByStore_IdAndDistributor_Id(Long storeId, Long distributorId) {
-        return repository.findByStore_IdAndDistributor_Id(storeId, distributorId)
+    public Optional<StoreDistributorModel> findByStore_IdAndDistributor_Id(String storeId, String distributorId) {
+        Long parseStoreId = SafeParser.safeParseId(storeId);
+        Long parseDistributorId = SafeParser.safeParseId(distributorId);
+
+        if (parseStoreId == null || parseDistributorId == null) {
+            return Optional.empty();
+        }
+
+        return repository.findByStore_IdAndDistributor_Id(parseStoreId, parseDistributorId)
                 .map(mapper::toDto);
     }
 
     @Override
-    public List<StoreDistributorModel> findByStore_Id(Long storeId) {
-        return repository.findByStore_Id(storeId)
+    public List<StoreDistributorModel> findByStore_Id(String storeId) {
+        Long parserStoreId = SafeParser.safeParseId(storeId);
+
+        if (parserStoreId == null) {
+            return List.of();
+        }
+
+        return repository.findByStore_Id(parserStoreId)
                 .stream()
                 .map(mapper::toDto)
                 .toList();
     }
 
     @Override
-    public List<StoreDistributorModel> findByDistributor_Id(Long distributorId) {
-        return repository.findByDistributor_Id(distributorId)
+    public List<StoreDistributorModel> findByDistributor_Id(String distributorId) {
+
+        Long parseDistributorId = SafeParser.safeParseId(distributorId);
+
+        if (parseDistributorId == null) {
+            return List.of();
+        }
+
+        return repository.findByDistributor_Id(parseDistributorId)
                 .stream()
                 .map(mapper::toDto)
                 .toList();
     }
 
     @Override
-    public boolean existsByStore_IdAndDistributor_Id(Long storeId, Long distributorId) {
-        return repository.existsByStore_IdAndDistributor_Id(storeId, distributorId);
+    public boolean existsByStore_IdAndDistributor_Id(String storeId, String distributorId) {
+        Long parseStoreId = SafeParser.safeParseId(storeId);
+        Long parseDistributorId = SafeParser.safeParseId(distributorId);
+
+        if (parseStoreId == null || parseDistributorId == null) {
+            return false;
+        }
+
+        return repository.existsByStore_IdAndDistributor_Id(parseStoreId, parseDistributorId);
     }
 
 }

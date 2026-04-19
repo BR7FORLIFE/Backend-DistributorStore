@@ -1,9 +1,11 @@
 package com.tecno_comfenalco.pa.features.store.models;
 
+import java.util.UUID;
+
 import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
 
 public class StoreDistributorModel {
-    private Long id;
+    private String id;
 
     private StoreModel store;
 
@@ -19,18 +21,30 @@ public class StoreDistributorModel {
     public StoreDistributorModel() {
     }
 
-    public StoreDistributorModel(Long id, StoreModel store, DistributorModel distributor, String internalClientCode) {
+    public StoreDistributorModel(String id, StoreModel store, DistributorModel distributor, String internalClientCode) {
         this.id = id;
         this.store = store;
         this.distributor = distributor;
         this.internalClientCode = internalClientCode;
     }
 
-    public Long getId() {
+    public static StoreDistributorModel createDraft(
+            StoreModel store,
+            DistributorModel distributor,
+            String internalClientCode) {
+
+        return new StoreDistributorModel(
+                UUID.randomUUID().toString(),
+                store,
+                distributor,
+                internalClientCode);
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

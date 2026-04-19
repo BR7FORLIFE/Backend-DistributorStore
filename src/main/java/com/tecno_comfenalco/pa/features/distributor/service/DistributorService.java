@@ -6,7 +6,6 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import com.tecno_comfenalco.pa.features.catalog.models.CatalogModel;
 import com.tecno_comfenalco.pa.features.catalog.ports.ICatalogRepositoryPort;
 import com.tecno_comfenalco.pa.features.distributor.dto.DistributorDto;
@@ -49,38 +48,34 @@ public class DistributorService {
 
         try {
 
-            DistributorModel distributorEntity = new DistributorModel();
-            distributorEntity.setNIT(dtoDistributor.NIT());
-            distributorEntity.setName(dtoDistributor.name());
-            distributorEntity.setPhoneNumber(dtoDistributor.phoneNumber());
-            distributorEntity.setEmail(dtoDistributor.email());
-            distributorEntity.setDirection(dtoDistributor.direction());
+            DistributorModel distributorEntity = DistributorModel.createDraft(dtoDistributor.NIT(), dtoDistributor.name(), dtoDistributor.phoneNumber(), dtoDistributor.email(), dtoDistributor.direction(), null, null);
 
-            Long userId = authenticationService.registerUser(
+            String userId = authenticationService.registerUser(
                     new RegisterUserRequestDto(dtoDistributor.name().toLowerCase().replace(" ", "_"),
                             "password", Set.of("DISTRIBUTOR"), true))
                     .getValue().userId();
 
+            System.out.println("=============USER ID ========" + userId);
             UserModel userEntity = userRepository.findById(userId).orElseThrow(() -> new Exception("User not found!"));
 
             distributorEntity.setUser(userEntity);
 
             distributorRepository.save(distributorEntity);
 
-            var catalogOfDistributor = new CatalogModel();
-            catalogOfDistributor.setDistributor(distributorEntity);
+            var catalogOfDistributor = CatalogModel.createDraft(distributorEntity);
             catalogRepository.save(catalogOfDistributor);
 
             return Result.ok(new RegisterDistributorResponseDto("Distributor register succesfull!"));
 
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println(e.getMessage());
             return Result.error(new Exception("Error to register distributor!"));
         }
 
     }
 
-    public Result<EditDistributorResponseDto, Exception> editDistributor(Long id,
+    public Result<EditDistributorResponseDto, Exception> editDistributor(String id,
             EditDistributorRequestDto dtoDistributor) {
         try {
             return distributorRepository.findById(id)
@@ -124,7 +119,7 @@ public class DistributorService {
         }
     }
 
-    public Result<DistributorResponseDto, Exception> showDistributor(Long id) {
+    public Result<DistributorResponseDto, Exception> showDistributor(String id) {
         try {
             return distributorRepository.findById(id).map(distributor -> {
                 DistributorDto distributorDto = new DistributorDto(distributor.getId(), distributor.getNIT(),

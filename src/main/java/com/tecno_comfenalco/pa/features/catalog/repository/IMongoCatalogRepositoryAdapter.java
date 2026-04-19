@@ -31,13 +31,13 @@ public class IMongoCatalogRepositoryAdapter implements ICatalogRepositoryPort {
     }
 
     @Override
-    public Optional<CatalogModel> findById(Long id) {
+    public Optional<CatalogModel> findById(String id) {
         return repository.findById(id.toString())
                 .map(mapper::toDto);
     }
 
     @Override
-    public Optional<CatalogModel> findByDistributor_Id(Long distributorId) {
+    public Optional<CatalogModel> findByDistributor_Id(String distributorId) {
         return repository.findByDistributorId(distributorId.toString())
                 .map(mapper::toDto);
     }

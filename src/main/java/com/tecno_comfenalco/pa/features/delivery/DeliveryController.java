@@ -38,7 +38,7 @@ public class DeliveryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EditDeliveryResponseDto> editDelivery(@PathVariable Long id,
+    public ResponseEntity<EditDeliveryResponseDto> editDelivery(@PathVariable String id,
             @RequestBody @Valid EditDeliveryRequestDto dtoDelivery) {
         Result<EditDeliveryResponseDto, Exception> result = deliveryService.editDelivery(id, dtoDelivery);
         return ResponseEntityHelper.toResponseEntity(result);
@@ -51,7 +51,7 @@ public class DeliveryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DeliveryResponseDto> showDelivery(@PathVariable Long id) {
+    public ResponseEntity<DeliveryResponseDto> showDelivery(@PathVariable String id) {
         Result<DeliveryResponseDto, Exception> result = deliveryService.showDelivery(id);
         return ResponseEntityHelper.toResponseEntity(result);
     }

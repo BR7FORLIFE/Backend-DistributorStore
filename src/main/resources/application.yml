@@ -4,6 +4,11 @@ spring:
   profiles:
     active:
       - mongo
+  
+  devtools: 
+    restart:
+      enabled: false
+      
 server:
   servlet:
     context-path: /api

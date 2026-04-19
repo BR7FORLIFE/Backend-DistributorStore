@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
 
 public interface IDistributorRepositoryPort {
-    Optional<DistributorModel> findById(Long id);
+    Optional<DistributorModel> findById(String id);
 
     Optional<DistributorModel> findByName(String name);
 
@@ -16,7 +16,7 @@ public interface IDistributorRepositoryPort {
 
     boolean existsByName(String name);
 
-    Optional<DistributorModel> findByUser_Id(Long userId);
+    Optional<DistributorModel> findByUser_Id(String userId);
 
     Optional<DistributorModel> findByNIT(Long NIT);
 }

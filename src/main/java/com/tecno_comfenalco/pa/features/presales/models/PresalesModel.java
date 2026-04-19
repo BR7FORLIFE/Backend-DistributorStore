@@ -1,11 +1,13 @@
 package com.tecno_comfenalco.pa.features.presales.models;
 
+import java.util.UUID;
+
 import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
 import com.tecno_comfenalco.pa.security.model.UserModel;
 import com.tecno_comfenalco.pa.shared.enums.DocumentTypeEnum;
 
 public class PresalesModel {
-    private Long id;
+    private String id;
 
     private String name;
     private String phoneNumber;
@@ -22,7 +24,7 @@ public class PresalesModel {
 
     }
 
-    public PresalesModel(Long id, String name, String phoneNumber, String email, DocumentTypeEnum documentType,
+    public PresalesModel(String id, String name, String phoneNumber, String email, DocumentTypeEnum documentType,
             Long documentNumber, UserModel user, DistributorModel distributor) {
         this.id = id;
         this.name = name;
@@ -34,11 +36,31 @@ public class PresalesModel {
         this.distributor = distributor;
     }
 
-    public Long getId() {
+    public static PresalesModel createDraft(
+            String name,
+            String phoneNumber,
+            String email,
+            DocumentTypeEnum documentType,
+            Long documentNumber,
+            UserModel user,
+            DistributorModel distributor) {
+
+        return new PresalesModel(
+                UUID.randomUUID().toString(),
+                name,
+                phoneNumber,
+                email,
+                documentType,
+                documentNumber,
+                user,
+                distributor);
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

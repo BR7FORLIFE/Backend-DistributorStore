@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.tecno_comfenalco.pa.features.category.entity.postgres.CategoryEntity;
+import com.tecno_comfenalco.pa.features.category.models.CategoryModel;
 
 public interface IPostgresCategoryRepository extends JpaRepository<CategoryEntity, Long> {
     CategoryEntity save(CategoryEntity categoryEntity);

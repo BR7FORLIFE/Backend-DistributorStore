@@ -50,7 +50,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ShowOrderResponseDto> showOrder(@PathVariable UUID id) {
+    public ResponseEntity<ShowOrderResponseDto> showOrder(@PathVariable String id) {
         Result<ShowOrderResponseDto, Exception> result = orderService.showOrder(id);
         return ResponseEntityHelper.toResponseEntity(result);
     }

@@ -11,6 +11,7 @@ import com.tecno_comfenalco.pa.features.delivery.mapper.PostgresDeliveryMapper;
 import com.tecno_comfenalco.pa.features.delivery.model.DeliveryModel;
 import com.tecno_comfenalco.pa.features.delivery.ports.IDeliveryRepositoryPort;
 import com.tecno_comfenalco.pa.features.delivery.repository.postgres.IPostgresDeliveryRepository;
+import com.tecno_comfenalco.pa.shared.utils.helper.SafeParser;
 
 @Profile("postgres")
 @Repository
@@ -25,8 +26,14 @@ public class IPostgresDeliveryRepositoryAdapter implements IDeliveryRepositoryPo
     }
 
     @Override
-    public Optional<DeliveryModel> findById(Long id) {
-        return repository.findById(id)
+    public Optional<DeliveryModel> findById(String id) {
+        Long parsedId = SafeParser.safeParseId(id);
+
+        if (parsedId == null) {
+            return Optional.empty();
+        }
+
+        return repository.findById(parsedId)
                 .map(mapper::toDto);
     }
 

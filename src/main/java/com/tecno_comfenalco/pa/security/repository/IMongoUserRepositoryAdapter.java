@@ -33,7 +33,7 @@ public class IMongoUserRepositoryAdapter implements IUserRepositoryPort {
     }
 
     @Override
-    public Optional<UserModel> findById(Long id) {
+    public Optional<UserModel> findById(String id) {
         Optional<UserDocument> entityOpt = repository.findById(id);
         return entityOpt.map(mapper::toDto);
         // throw new UnsupportedOperationException("Unimplemented method 'findById'");

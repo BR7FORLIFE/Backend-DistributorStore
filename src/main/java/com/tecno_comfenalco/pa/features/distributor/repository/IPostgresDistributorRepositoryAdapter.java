@@ -11,6 +11,7 @@ import com.tecno_comfenalco.pa.features.distributor.mapper.PostgresDistributorMa
 import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
 import com.tecno_comfenalco.pa.features.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.features.distributor.repository.postgres.IPostgresDistributorRepository;
+import com.tecno_comfenalco.pa.shared.utils.helper.SafeParser;
 
 @Profile("postgres")
 @Repository
@@ -26,8 +27,13 @@ public class IPostgresDistributorRepositoryAdapter implements IDistributorReposi
     }
 
     @Override
-    public Optional<DistributorModel> findById(Long id) {
-        return repository.findById(id)
+    public Optional<DistributorModel> findById(String id) {
+        Long parsedId = SafeParser.safeParseId(id);
+
+        if (parsedId == null) {
+            return Optional.empty();
+        }
+        return repository.findById(parsedId)
                 .map(mapper::toDto);
     }
 
@@ -55,8 +61,13 @@ public class IPostgresDistributorRepositoryAdapter implements IDistributorReposi
     }
 
     @Override
-    public Optional<DistributorModel> findByUser_Id(Long userId) {
-        return repository.findByUser_Id(userId)
+    public Optional<DistributorModel> findByUser_Id(String userId) {
+        Long parsedId = SafeParser.safeParseId(userId);
+
+        if (parsedId == null) {
+            return Optional.empty();
+        }
+        return repository.findByUser_Id(parsedId)
                 .map(mapper::toDto);
     }
 

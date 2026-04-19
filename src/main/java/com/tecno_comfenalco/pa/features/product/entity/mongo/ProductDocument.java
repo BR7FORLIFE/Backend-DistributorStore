@@ -35,8 +35,6 @@ public class ProductDocument {
     @DBRef
     private List<OrderDetailDocument> orderDetails;
 
-    @DBRef
-    private ProductsCatalogDocument categoryProduct;
 
     @DBRef
     private DistributorDocument distributor;

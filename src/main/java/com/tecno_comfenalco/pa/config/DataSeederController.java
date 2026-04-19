@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/seeder")
+@RequestMapping("/seeder")
 @RequiredArgsConstructor
 @Tag(name = "Data Seeder", description = "Endpoints para generar datos de prueba")
 public class DataSeederController {

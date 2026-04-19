@@ -1,21 +1,27 @@
 package com.tecno_comfenalco.pa.features.catalog.models;
 
+import java.util.UUID;
+
 import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
 
 public class CatalogModel {
 
-    private Long id;
+    private String id;
     private DistributorModel distributor;
 
     public CatalogModel() {
     }
 
-    public CatalogModel(Long id, DistributorModel distributor) {
+    public static CatalogModel createDraft(DistributorModel distributor) {
+        return new CatalogModel(UUID.randomUUID().toString(), distributor);
+    }
+
+    public CatalogModel(String id, DistributorModel distributor) {
         this.id = id;
         this.distributor = distributor;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
@@ -23,12 +29,12 @@ public class CatalogModel {
         return distributor;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
     public void setDistributor(DistributorModel distributor) {
         this.distributor = distributor;
     }
-    
+
 }

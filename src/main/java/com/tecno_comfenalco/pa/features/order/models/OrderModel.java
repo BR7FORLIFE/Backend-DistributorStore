@@ -1,6 +1,7 @@
 package com.tecno_comfenalco.pa.features.order.models;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.tecno_comfenalco.pa.features.presales.models.PresalesModel;
 import com.tecno_comfenalco.pa.features.store.models.StoreModel;
@@ -25,13 +26,13 @@ public class OrderModel {
 
     private List<OrderDetailsModel> orderDetails;
 
-    private Long distributorId;
+    private String distributorId;
 
     public OrderModel() {
     }
 
     public OrderModel(String id, Double iva_percent, Double total, OrderStatus status, StoreModel store,
-            PresalesModel presales, List<OrderDetailsModel> orderDetails, Long distributorId) {
+            PresalesModel presales, List<OrderDetailsModel> orderDetails, String distributorId) {
         this.id = id;
         this.iva_percent = iva_percent;
         this.total = total;
@@ -40,6 +41,26 @@ public class OrderModel {
         this.presales = presales;
         this.orderDetails = orderDetails;
         this.distributorId = distributorId;
+    }
+
+    public static OrderModel createDraft(
+            Double ivaPercent,
+            Double total,
+            OrderStatus status,
+            StoreModel store,
+            PresalesModel presales,
+            List<OrderDetailsModel> orderDetails,
+            String distributorId) {
+
+        return new OrderModel(
+                UUID.randomUUID().toString(), 
+                ivaPercent,
+                total,
+                status,
+                store,
+                presales,
+                orderDetails,
+                distributorId);
     }
 
     public String getId() {
@@ -98,11 +119,11 @@ public class OrderModel {
         this.orderDetails = orderDetails;
     }
 
-    public Long getDistributorId() {
+    public String getDistributorId() {
         return distributorId;
     }
 
-    public void setDistributorId(Long distributorId) {
+    public void setDistributorId(String distributorId) {
         this.distributorId = distributorId;
     }
 

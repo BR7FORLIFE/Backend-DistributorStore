@@ -55,7 +55,7 @@ public class StoreController {
     @PostMapping("/distributor/{distributorId}/register")
     @PreAuthorize("hasAnyRole('ADMIN', 'DISTRIBUTOR')")
     public ResponseEntity<RegisterStoreResponseDto> registerStoreByDistributor(
-            @PathVariable Long distributorId,
+            @PathVariable String distributorId,
             @RequestBody @Valid RegisterStoreByDistributorRequestDto dtoStore) {
 
         Result<RegisterStoreResponseDto, Exception> result = storeService.registerStoreByDistributor(distributorId,
@@ -84,20 +84,20 @@ public class StoreController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EditStoreResponseDto> editStore(@PathVariable Long id,
+    public ResponseEntity<EditStoreResponseDto> editStore(@PathVariable String id,
             @RequestBody @Valid EditStoreRequestDto dtoStore) {
         Result<EditStoreResponseDto, Exception> result = storeService.editStore(id, dtoStore);
         return ResponseEntityHelper.toResponseEntity(result);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StoresResponseDto> showVehicle(@PathVariable Long id) {
+    public ResponseEntity<StoresResponseDto> showVehicle(@PathVariable String id) {
         Result<StoresResponseDto, Exception> result = storeService.showStore(id);
         return ResponseEntityHelper.toResponseEntity(result);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<DisableStoreResponseDto> disableVehicle(@PathVariable Long id) {
+    public ResponseEntity<DisableStoreResponseDto> disableVehicle(@PathVariable String id) {
         Result<DisableStoreResponseDto, Exception> result = storeService.disableStore(id);
         return ResponseEntityHelper.toResponseEntity(result);
     }

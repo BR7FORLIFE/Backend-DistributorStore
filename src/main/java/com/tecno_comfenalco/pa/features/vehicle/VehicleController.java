@@ -44,13 +44,13 @@ public class VehicleController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VehicleResponseDto> showVehicle(@PathVariable Long id) {
+    public ResponseEntity<VehicleResponseDto> showVehicle(@PathVariable String id) {
         Result<VehicleResponseDto, Exception> result = vehicleService.showVehicle(id);
         return ResponseEntityHelper.toResponseEntity(result);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<DisableVehicleResponseDto> disableVehicle(@PathVariable Long id) {
+    public ResponseEntity<DisableVehicleResponseDto> disableVehicle(@PathVariable String id) {
         Result<DisableVehicleResponseDto, Exception> result = vehicleService.disableVehicle(id);
         return ResponseEntityHelper.toResponseEntity(result);
     }

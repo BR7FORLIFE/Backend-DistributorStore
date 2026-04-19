@@ -11,6 +11,7 @@ import com.tecno_comfenalco.pa.features.vehicle.mapper.PostgresVehicleMapper;
 import com.tecno_comfenalco.pa.features.vehicle.models.VehicleModel;
 import com.tecno_comfenalco.pa.features.vehicle.ports.IVehicleRepositoryPort;
 import com.tecno_comfenalco.pa.features.vehicle.repository.postgres.IPostgresVehicleRepository;
+import com.tecno_comfenalco.pa.shared.utils.helper.SafeParser;
 
 @Profile("postgres")
 @Repository
@@ -33,8 +34,14 @@ public class IPostgresVehicleRepositoryAdapter implements IVehicleRepositoryPort
     }
 
     @Override
-    public Optional<VehicleModel> findById(Long id) {
-        Optional<VehicleEntity> entityOpt = repository.findById(id);
+    public Optional<VehicleModel> findById(String id) {
+        Long parseId = SafeParser.safeParseId(id);
+
+        if (parseId == null) {
+            return Optional.empty();
+        }
+
+        Optional<VehicleEntity> entityOpt = repository.findById(parseId);
         return entityOpt.map(mapper::toDto);
     }
 
@@ -52,8 +59,14 @@ public class IPostgresVehicleRepositoryAdapter implements IVehicleRepositoryPort
     }
 
     @Override
-    public void deleteById(Long id) {
-        repository.deleteById(id);
+    public void deleteById(String id) {
+        Long parseId = SafeParser.safeParseId(id);
+
+        if (parseId == null) {
+            return;
+        }
+
+        repository.deleteById(parseId);
     }
 
 }

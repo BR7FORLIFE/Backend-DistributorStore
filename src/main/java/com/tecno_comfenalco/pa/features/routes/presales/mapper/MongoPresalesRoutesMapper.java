@@ -14,6 +14,6 @@ import org.springframework.context.annotation.Profile;
 @Mapper(componentModel = "spring", uses = { MongoPresalesMapper.class })
 public interface MongoPresalesRoutesMapper extends EntityMapper<PresalesRoutesModel, PresalesRoutesDocument> {
     @Override
-    @Mapping(target = "stores", ignore = true) 
+    @Mapping(target = "stores", ignore = true)
     PresalesRoutesModel toDto(PresalesRoutesDocument document);
 }

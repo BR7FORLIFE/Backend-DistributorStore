@@ -11,6 +11,7 @@ import com.tecno_comfenalco.pa.features.category.mapper.PostgresCategoryMapper;
 import com.tecno_comfenalco.pa.features.category.models.CategoryModel;
 import com.tecno_comfenalco.pa.features.category.ports.ICategoryRepositoryPort;
 import com.tecno_comfenalco.pa.features.category.repository.postgres.IPostgresCategoryRepository;
+import com.tecno_comfenalco.pa.shared.utils.helper.SafeParser;
 
 @Profile("postgres")
 @Repository
@@ -32,15 +33,27 @@ public class IPostgresCategoryRepositoryAdapter implements ICategoryRepositoryPo
     }
 
     @Override
-    public Optional<CategoryModel> findById(Long id) {
-        return repository.findById(id)
+    public Optional<CategoryModel> findById(String id) {
+        Long parsedId = SafeParser.safeParseId(id);
+
+        if (parsedId == null) {
+            return Optional.empty();
+        }
+        return repository.findById(parsedId)
                 .map(mapper::toDto);
     }
 
     @Override
-    public List<CategoryModel> findByCatalog_Id(Long catalogId) {
-        return mapper.toDto(repository.findByCatalog_Id(catalogId));
+    public List<CategoryModel> findByCatalog_Id(String id) {
+        Long parseId = SafeParser.safeParseId(id);
 
+        if (parseId == null) {
+            return List.of();
+        }
+
+        return repository.findByCatalog_Id(parseId)
+                .stream()
+                .map(mapper::toDto)
+                .toList();
     }
-
 }

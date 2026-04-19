@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Profile;
 
 @Profile("postgres")
 @Mapper(componentModel = "spring", uses = { PostgresDeliveryRoutesMapper.class, PostgresUserMapper.class,
-        PostgresDistributorMapper.class })
+                PostgresDistributorMapper.class })
 public interface PostgresDeliveryMapper extends EntityMapper<DeliveryModel, DeliveryEntity> {
 
 }

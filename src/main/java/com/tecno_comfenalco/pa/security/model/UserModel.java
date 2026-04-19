@@ -1,15 +1,26 @@
 package com.tecno_comfenalco.pa.security.model;
 
 import java.util.Set;
+import java.util.UUID;
 
 public class UserModel {
-    private Long id;
+    private String id;
     private String username;
     private String password;
     private boolean enabled;
     private Set<String> roles;
 
     public UserModel() {
+    }
+
+    public static UserModel createDraft(String username, String password, Set<String> roles, boolean enabled) {
+        return UserModel.builder()
+                .id(UUID.randomUUID().toString())
+                .username(username)
+                .password(password)
+                .roles(roles)
+                .enabled(enabled)
+                .build();
     }
 
     private UserModel(Builder builder) {
@@ -20,11 +31,11 @@ public class UserModel {
         this.roles = builder.roles;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -65,13 +76,13 @@ public class UserModel {
     }
 
     public static class Builder {
-        private Long id;
+        private String id;
         private String username;
         private String password;
         private boolean enabled;
         private Set<String> roles;
 
-        public Builder id(Long id) {
+        public Builder id(String id) {
             this.id = id;
             return this;
         }

@@ -17,7 +17,6 @@ import com.tecno_comfenalco.pa.security.dto.responses.DisableUserResponseDto;
 import com.tecno_comfenalco.pa.security.dto.responses.ListUserResponseDto;
 import com.tecno_comfenalco.pa.security.dto.responses.RegisterUserResponseDto;
 import com.tecno_comfenalco.pa.security.dto.responses.UserResponseDto;
-import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
 import com.tecno_comfenalco.pa.security.model.UserModel;
 import com.tecno_comfenalco.pa.security.port.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.shared.utils.result.Result;
@@ -40,11 +39,9 @@ public class AuthenticationService {
                     new Exception("Username already taken"));
         }
 
-        UserModel newUser = new UserModel();
-        newUser.setUsername(request.username());
-        newUser.setPassword(new BCryptPasswordEncoder().encode(request.password()));
-        newUser.setRoles(request.roles());
-        newUser.setEnabled(request.enabled());
+        UserModel newUser = UserModel.createDraft(request.username(), request.password(), request.roles(),
+                request.enabled());
+
         userRepository.save(newUser);
 
         return Result.ok(new RegisterUserResponseDto("User registered successfully", newUser.getId()));
@@ -59,13 +56,15 @@ public class AuthenticationService {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             String role = userDetails.getAuthorities().iterator().next().getAuthority().replace("ROLE_", "");
 
+            System.out.println("==========ROLE" + role);
+
             return Result.ok(role);
         } catch (Exception e) {
             return Result.error(new Exception("Error al autenticar usuario: " + e.getMessage()));
         }
     }
 
-    public Result<DisableUserResponseDto, Exception> disableUser(Long userId) {
+    public Result<DisableUserResponseDto, Exception> disableUser(String userId) {
         var userOpt = userRepository.findById(userId);
         if (userOpt.isEmpty()) {
             return Result.error(new Exception("User not found"));
@@ -101,7 +100,7 @@ public class AuthenticationService {
         return Result.ok(new ListUserResponseDto("Users retrieved successfully", users));
     }
 
-    public Result<UserResponseDto, Exception> editUser(Long userId, EditUserRequestDto request) {
+    public Result<UserResponseDto, Exception> editUser(String userId, EditUserRequestDto request) {
         var userOpt = userRepository.findById(userId);
         if (userOpt.isEmpty()) {
             return Result.error(new Exception("User not found"));

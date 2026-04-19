@@ -47,7 +47,7 @@ public class VehicleService {
 
     // Metodo disable vehicle (DELETE).
     // Aqui solo eliminamos la entidad por id.
-    public Result<DisableVehicleResponseDto, Exception> disableVehicle(Long id) {
+    public Result<DisableVehicleResponseDto, Exception> disableVehicle(String id) {
         try {
             return vehicleRepository.findById(id).map(vehicle -> {
                 vehicleRepository.deleteById(id);
@@ -81,7 +81,7 @@ public class VehicleService {
 
     // Metodo show vehicle by id (READ).
     // Usamos el mapper para convertir la entidad a dto.
-    public Result<VehicleResponseDto, Exception> showVehicle(Long id) {
+    public Result<VehicleResponseDto, Exception> showVehicle(String id) {
         try {
             return vehicleRepository.findById(id)
                     .map(vehicleEntity -> {

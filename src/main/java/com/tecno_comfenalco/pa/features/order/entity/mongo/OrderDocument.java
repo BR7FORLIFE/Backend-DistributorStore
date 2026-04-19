@@ -43,5 +43,5 @@ public class OrderDocument {
     @DBRef
     private List<OrderDetailDocument> orderDetails;
 
-    private Long distributorId;
+    private String distributorId;
 }

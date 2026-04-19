@@ -33,7 +33,7 @@ public class IMongoStoreRepositoryAdapter implements IStoreRepositoryRepositoryP
     }
 
     @Override
-    public Optional<StoreModel> findById(Long id) {
+    public Optional<StoreModel> findById(String id) {
         return repository.findById(id.toString()).map(mapper::toDto);
     }
 
@@ -43,7 +43,7 @@ public class IMongoStoreRepositoryAdapter implements IStoreRepositoryRepositoryP
     }
 
     @Override
-    public Optional<StoreModel> findByUser_Id(Long userId) {
+    public Optional<StoreModel> findByUser_Id(String userId) {
         return repository.findByUser_Id(userId).map(mapper::toDto);
     }
 
@@ -61,14 +61,13 @@ public class IMongoStoreRepositoryAdapter implements IStoreRepositoryRepositoryP
     }
 
     @Override
-    public boolean existsById(Long id) {
+    public boolean existsById(String id) {
         return repository.existsById(id.toString());
     }
 
     @Override
-    public void deleteById(Long id) {
-        repository.deleteById(id.toString());
-        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+    public void deleteById(String id) {
+        repository.deleteById(id);
     }
 
 }

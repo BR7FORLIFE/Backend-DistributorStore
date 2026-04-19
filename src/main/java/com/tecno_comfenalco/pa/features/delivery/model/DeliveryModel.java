@@ -1,6 +1,8 @@
 package com.tecno_comfenalco.pa.features.delivery.model;
 
 import java.util.List;
+import java.util.UUID;
+
 
 import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
 import com.tecno_comfenalco.pa.features.routes.models.delivery.DeliveryRoutesModel;
@@ -13,7 +15,7 @@ public class DeliveryModel {
         A1, A2, A3, A4, B1, B2, B3, C1, C2, C3, C4, D1, D2, D3, D4
     }
 
-    private Long id;
+    private String id;
 
     private String name;
 
@@ -34,7 +36,7 @@ public class DeliveryModel {
     public DeliveryModel() {
     }
 
-    public DeliveryModel(Long id, String name, DocumentTypeEnum documentType, Long documentNumber, String phoneNumber,
+    public DeliveryModel(String id, String name, DocumentTypeEnum documentType, Long documentNumber, String phoneNumber,
             String licenseNumber, LicenseTypeEnum licenseType, List<DeliveryRoutesModel> routes, UserModel user,
             DistributorModel distributor) {
         this.id = id;
@@ -49,11 +51,18 @@ public class DeliveryModel {
         this.distributor = distributor;
     }
 
-    public Long getId() {
+    public static DeliveryModel createDraft(String name, DocumentTypeEnum documentTypeEnum, Long documentNumber,
+            String phoneNumber, String licenseNumber, LicenseTypeEnum licenseType, List<DeliveryRoutesModel> routes,
+            UserModel user, DistributorModel distributor) {
+        return new DeliveryModel(UUID.randomUUID().toString(), name, documentTypeEnum, documentNumber, phoneNumber,
+                licenseNumber, licenseType, routes, user, distributor);
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

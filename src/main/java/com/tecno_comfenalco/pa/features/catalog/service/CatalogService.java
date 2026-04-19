@@ -62,7 +62,7 @@ public class CatalogService {
             // Obtener el usuario autenticado
             CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                     .getAuthentication().getPrincipal();
-            Long userId = userDetails.getUserId();
+            String userId = userDetails.getUserId();
 
             // Buscar la distribuidora asociada al usuario
             Optional<DistributorModel> distributorOpt = distributorRepository.findByUser_Id(userId);
@@ -100,12 +100,12 @@ public class CatalogService {
      * Valida automáticamente que la categoría pertenezca al catálogo de la
      * distribuidora autenticada
      */
-    public Result<AddCategoryToCatalogResponseDto, Exception> addProductToCategory(Long categoryId, UUID productId) {
+    public Result<AddCategoryToCatalogResponseDto, Exception> addProductToCategory(String categoryId, String productId) {
         try {
             // Obtener el usuario autenticado
             CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                     .getAuthentication().getPrincipal();
-            Long userId = userDetails.getUserId();
+            String userId = userDetails.getUserId();
 
             // Buscar la distribuidora asociada al usuario
             Optional<DistributorModel> distributorOpt = distributorRepository.findByUser_Id(userId);
@@ -172,7 +172,7 @@ public class CatalogService {
             // Obtener usuario autenticado
             CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                     .getAuthentication().getPrincipal();
-            Long userId = userDetails.getUserId();
+            String userId = userDetails.getUserId();
 
             // 1. Intentar obtener distribuidor por userId
             Optional<DistributorModel> distributorOpt = distributorRepository.findByUser_Id(userId);
@@ -213,7 +213,7 @@ public class CatalogService {
                             cat.getName(),
                             cat.getProducts().stream()
                                     .map(pc -> new ProductDto(
-                                            UUID.fromString(pc.getId()),
+                                            pc.getId(),
                                             pc.getName(),
                                             pc.getPrice(),
                                             pc.getUnit().toString(),
@@ -240,12 +240,12 @@ public class CatalogService {
      * Obtiene los productos de una categoría específica
      * Valida que la categoría pertenezca al catálogo del usuario autenticado
      */
-    public Result<GetCategoryProductsResponseDto, Exception> getProductsByCategory(Long categoryId) {
+    public Result<GetCategoryProductsResponseDto, Exception> getProductsByCategory(String categoryId) {
         try {
             // Obtener el usuario autenticado
             CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                     .getAuthentication().getPrincipal();
-            Long userId = userDetails.getUserId();
+            String userId = userDetails.getUserId();
 
             // Buscar la distribuidora asociada al usuario
             Optional<DistributorModel> distributorOpt = distributorRepository.findByUser_Id(userId);

@@ -1,6 +1,7 @@
 package com.tecno_comfenalco.pa.features.distributor.models;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.tecno_comfenalco.pa.features.store.models.StoreDistributorModel;
 import com.tecno_comfenalco.pa.security.model.UserModel;
@@ -8,7 +9,7 @@ import com.tecno_comfenalco.pa.shared.dto.DirectionDto;
 
 public class DistributorModel {
 
-    private Long id;
+    private String id;
 
     private Long NIT;
 
@@ -25,7 +26,7 @@ public class DistributorModel {
     public DistributorModel() {
     }
 
-    public DistributorModel(Long id, Long nIT, String name, String phoneNumber, String email, DirectionDto direction,
+    public DistributorModel(String id, Long nIT, String name, String phoneNumber, String email, DirectionDto direction,
             UserModel user, List<StoreDistributorModel> storesDistributors) {
         this.id = id;
         NIT = nIT;
@@ -37,11 +38,31 @@ public class DistributorModel {
         this.storesDistributors = storesDistributors;
     }
 
-    public Long getId() {
+    public static DistributorModel createDraft(
+            Long NIT,
+            String name,
+            String phoneNumber,
+            String email,
+            DirectionDto direction,
+            UserModel user,
+            List<StoreDistributorModel> storesDistributors) {
+
+        return new DistributorModel(
+                UUID.randomUUID().toString(),
+                NIT,
+                name,
+                phoneNumber,
+                email,
+                direction,
+                user,
+                storesDistributors);
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

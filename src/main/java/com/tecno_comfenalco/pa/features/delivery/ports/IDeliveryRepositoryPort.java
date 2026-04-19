@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.tecno_comfenalco.pa.features.delivery.model.DeliveryModel;
 
 public interface IDeliveryRepositoryPort {
-    Optional<DeliveryModel> findById(Long id);
+    Optional<DeliveryModel> findById(String id);
 
     Optional<DeliveryModel> findByName(String name);
 

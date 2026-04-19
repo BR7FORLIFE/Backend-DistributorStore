@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.tecno_comfenalco.pa.features.distributor.entity.postgres.DistributorEntity;
 import com.tecno_comfenalco.pa.features.distributor.models.DistributorModel;
+import com.tecno_comfenalco.pa.features.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.features.distributor.repository.IPostgresDistributorRepositoryAdapter;
 import com.tecno_comfenalco.pa.features.order.dto.OrderDto;
 import com.tecno_comfenalco.pa.features.order.dto.OrderProductDto;
@@ -63,7 +64,7 @@ public class OrderService {
     private IStoreDistributorRepositoryPort storesDistributorsRepository;
 
     @Autowired
-    private IPostgresDistributorRepositoryAdapter distributorRepository;
+    private IDistributorRepositoryPort distributorRepository;
 
     public Result<CreateOrderResponseDto, Exception> createOrder(CreateOrderRequestDto dtoOrder) {
         // Validar que la tienda exista
@@ -175,7 +176,7 @@ public class OrderService {
             // Obtener el usuario autenticado
             CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                     .getAuthentication().getPrincipal();
-            Long userId = userDetails.getUserId();
+            String userId = userDetails.getUserId();
 
             // Buscar el pedido
             var orderOpt = orderRepository.findByid(id.toString());
@@ -246,7 +247,7 @@ public class OrderService {
             // Obtener el usuario autenticado
             CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                     .getAuthentication().getPrincipal();
-            Long userId = userDetails.getUserId();
+            String userId = userDetails.getUserId();
 
             List<OrderModel> orderEntities;
 
@@ -295,7 +296,7 @@ public class OrderService {
                             internalClientCode = relationshipOpt.get().getInternalClientCode();
                         }
 
-                        StoreDto storeDto = new StoreDto(Long.parseLong(order.getId()), order.getStore().getNIT(),
+                        StoreDto storeDto = new StoreDto(order.getId(), order.getStore().getNIT(),
                                 order.getStore().getName(), order.getStore().getPhoneNumber(),
                                 order.getStore().getEmail(), order.getStore().getDirection());
 
@@ -310,7 +311,7 @@ public class OrderService {
                         }
 
                         return new OrderDto(
-                                UUID.fromString(order.getId()),
+                                order.getId(),
                                 order.getIva_percent(),
                                 order.getTotal(),
                                 order.getStatus(),
@@ -318,7 +319,7 @@ public class OrderService {
                                 presalesDto,
                                 order.getOrderDetails().stream()
                                         .map(details -> new OrderProductDto(
-                                                UUID.fromString(details.getId().getOrderId()),
+                                                details.getId().getOrderId(),
                                                 details.getQuantity(), details.getUnitPrice()))
                                         .toList(),
                                 internalClientCode,
@@ -341,12 +342,12 @@ public class OrderService {
      * - STORE: Solo puede ver pedidos de su tienda
      * - PRESALES: Solo puede ver pedidos que ha tomado
      */
-    public Result<ShowOrderResponseDto, Exception> showOrder(UUID id) {
+    public Result<ShowOrderResponseDto, Exception> showOrder(String id) {
         try {
             // Obtener el usuario autenticado
             CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                     .getAuthentication().getPrincipal();
-            Long userId = userDetails.getUserId();
+            String userId = userDetails.getUserId();
 
             // Buscar el pedido
             var orderOpt = orderRepository.findByid(id.toString());
@@ -403,7 +404,7 @@ public class OrderService {
                 internalClientCode = relationshipOpt.get().getInternalClientCode();
             }
 
-            StoreDto storeDto = new StoreDto(Long.parseLong(order.getId()), order.getStore().getNIT(),
+            StoreDto storeDto = new StoreDto(order.getId(), order.getStore().getNIT(),
                     order.getStore().getName(), order.getStore().getPhoneNumber(),
                     order.getStore().getEmail(), order.getStore().getDirection());
 
@@ -419,14 +420,14 @@ public class OrderService {
 
             // Mapear a DTO
             OrderDto orderDto = new OrderDto(
-                    UUID.fromString(order.getId()),
+                    order.getId(),
                     order.getIva_percent(),
                     order.getTotal(),
                     order.getStatus(),
                     storeDto,
                     presalesDto,
                     order.getOrderDetails().stream().map(detail -> new OrderProductDto(
-                            UUID.fromString(detail.getProduct().getId()),
+                            detail.getProduct().getId(),
                             detail.getQuantity(),
                             detail.getUnitPrice())).toList(),
                     internalClientCode, // Código interno desde la relación StoresDistributors

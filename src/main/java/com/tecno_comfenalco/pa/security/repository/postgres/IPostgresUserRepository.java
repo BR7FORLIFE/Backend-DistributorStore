@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.tecno_comfenalco.pa.security.entity.postgres.UserEntity;
 
-public interface IPostgresUserRepository extends JpaRepository<UserEntity, Long> {
+public interface IPostgresUserRepository extends JpaRepository<UserEntity, String> {
     Boolean existsByUsername(String username);
 
     Optional<UserEntity> findByUsername(String username);

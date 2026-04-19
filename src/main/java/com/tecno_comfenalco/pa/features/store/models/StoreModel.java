@@ -1,6 +1,7 @@
 package com.tecno_comfenalco.pa.features.store.models;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.tecno_comfenalco.pa.features.routes.models.presales.PresalesRoutesModel;
 import com.tecno_comfenalco.pa.security.model.UserModel;
@@ -8,7 +9,7 @@ import com.tecno_comfenalco.pa.shared.dto.DirectionDto;
 import com.tecno_comfenalco.pa.shared.enums.StoreClaimStatus;
 
 public class StoreModel {
-    private Long id;
+    private String id;
 
     private Long NIT;
 
@@ -32,7 +33,7 @@ public class StoreModel {
     public StoreModel() {
     }
 
-    public StoreModel(Long id, Long nIT, String name, String phoneNumber, String email, DirectionDto direction,
+    public StoreModel(String id, Long nIT, String name, String phoneNumber, String email, DirectionDto direction,
             UserModel user, StoreClaimStatus claimStatus, PresalesRoutesModel presalesRoute,
             List<StoreDistributorModel> storesDistributors) {
         this.id = id;
@@ -47,11 +48,35 @@ public class StoreModel {
         this.storesDistributors = storesDistributors;
     }
 
-    public Long getId() {
+    public static StoreModel createDraft(
+            Long NIT,
+            String name,
+            String phoneNumber,
+            String email,
+            DirectionDto direction,
+            UserModel user,
+            StoreClaimStatus claimStatus,
+            PresalesRoutesModel presalesRoute,
+            List<StoreDistributorModel> storesDistributors) {
+
+        return new StoreModel(
+                UUID.randomUUID().toString(), 
+                NIT,
+                name,
+                phoneNumber,
+                email,
+                direction,
+                user,
+                claimStatus != null ? claimStatus : StoreClaimStatus.PENDING_CLAIM,
+                presalesRoute,
+                storesDistributors);
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

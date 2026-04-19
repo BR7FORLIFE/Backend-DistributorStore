@@ -43,43 +43,43 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class DataSeederService {
-    //@Qualifier("IPostgresUserRepositoryAdapter")
+    // @Qualifier("IPostgresUserRepositoryAdapter")
     @Qualifier("IMongoUserRepositoryAdapter")
     private final IUserRepositoryPort userRepository;
 
-    //@Qualifier("IPostgresDistributorRepositoryAdapter")
+    // @Qualifier("IPostgresDistributorRepositoryAdapter")
     @Qualifier("IMongoDistributorRepositoryAdapter")
     private final IDistributorRepositoryPort distributorRepository;
 
-    //@Qualifier("IPostgresStoreRepositoryAdapter")
+    // @Qualifier("IPostgresStoreRepositoryAdapter")
     @Qualifier("IMongoStoreRepositoryAdapter")
     private final IStoreRepositoryRepositoryPort storeRepository;
 
-    //@Qualifier("IPostgresPresalesRepositoryAdapter")
+    // @Qualifier("IPostgresPresalesRepositoryAdapter")
     @Qualifier("IMongoPresalesRepositoryAdapter")
     private final IPresalesRepositoryPort presalesRepository;
 
-    //@Qualifier("IPostgresCatalogRepositoryAdapter")
+    // @Qualifier("IPostgresCatalogRepositoryAdapter")
     @Qualifier("IMongoCatalogRepositoryAdapter")
     private final ICatalogRepositoryPort catalogRepository;
 
-    //@Qualifier("IPostgresCategoryRepositoryAdapter")
+    // @Qualifier("IPostgresCategoryRepositoryAdapter")
     @Qualifier("IMongoCategoryRepositoryAdapter")
     private final ICategoryRepositoryPort categoryRepository;
 
-    //@Qualifier("IPostgresProductRepositoryAdapter")
+    // @Qualifier("IPostgresProductRepositoryAdapter")
     @Qualifier("IMongoProductRepositoryAdapter")
     private final IProductRepositoryPort productRepository;
 
-    //@Qualifier("IPostgresOrderRepositoryAdapter")
+    // @Qualifier("IPostgresOrderRepositoryAdapter")
     @Qualifier("IMongoOrderRepositoryAdapter")
     private final IOrderRepositoryPort orderRepository;
 
-    //@Qualifier("IPostgresStoresDistributorsRepositoryAdapter")
+    // @Qualifier("IPostgresStoresDistributorsRepositoryAdapter")
     @Qualifier("IMongoStoreDistributorRepositoryAdapter")
     private final IStoreDistributorRepositoryPort storesDistributorsRepository;
 
-    //@Qualifier("IPostgresProductsCatalogRepositoryAdapter")
+    // @Qualifier("IPostgresProductsCatalogRepositoryAdapter")
     @Qualifier("IMongoProductCatalogRepositoryAdapter")
     private final IProductsCatalogRepositoryPort productsCatalogRepository;
 
@@ -89,16 +89,16 @@ public class DataSeederService {
     private final Random random = new Random();
 
     public DataSeederService(
-            @Qualifier("IPostgresUserRepositoryAdapter") IUserRepositoryPort userRepository,
-            @Qualifier("IPostgresDistributorRepositoryAdapter") IDistributorRepositoryPort distributorRepository,
-            @Qualifier("IPostgresStoreRepositoryAdapter") IStoreRepositoryRepositoryPort storeRepository,
-            @Qualifier("IPostgresPresalesRepositoryAdapter") IPresalesRepositoryPort presalesRepository,
-            @Qualifier("IPostgresCatalogRepositoryAdapter") ICatalogRepositoryPort catalogRepository,
-            @Qualifier("IPostgresCategoryRepositoryAdapter") ICategoryRepositoryPort categoryRepository,
-            @Qualifier("IPostgresProductRepositoryAdapter") IProductRepositoryPort productRepository,
-            @Qualifier("IPostgresOrderRepositoryAdapter") IOrderRepositoryPort orderRepository,
-            @Qualifier("IPostgresStoresDistributorsRepositoryAdapter") IStoreDistributorRepositoryPort storesDistributorsRepository,
-            @Qualifier("IPostgresProductsCatalogRepositoryAdapter") IProductsCatalogRepositoryPort productsCatalogRepository,
+            @Qualifier("IMongoUserRepositoryAdapter") IUserRepositoryPort userRepository,
+            @Qualifier("IMongoDistributorRepositoryAdapter") IDistributorRepositoryPort distributorRepository,
+            @Qualifier("IMongoStoreRepositoryAdapter") IStoreRepositoryRepositoryPort storeRepository,
+            @Qualifier("IMongoPresalesRepositoryAdapter") IPresalesRepositoryPort presalesRepository,
+            @Qualifier("IMongoCatalogRepositoryAdapter") ICatalogRepositoryPort catalogRepository,
+            @Qualifier("IMongoCategoryRepositoryAdapter") ICategoryRepositoryPort categoryRepository,
+            @Qualifier("IMongoProductRepositoryAdapter") IProductRepositoryPort productRepository,
+            @Qualifier("IMongoOrderRepositoryAdapter") IOrderRepositoryPort orderRepository,
+            @Qualifier("IMongoStoreDistributorRepositoryAdapter") IStoreDistributorRepositoryPort storesDistributorsRepository,
+            @Qualifier("IMongoProductCatalogRepositoryAdapter") IProductsCatalogRepositoryPort productsCatalogRepository,
             PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.distributorRepository = distributorRepository;
@@ -336,76 +336,92 @@ public class DataSeederService {
         }
 
         int linksCreated = 0;
+
         for (ProductModel product : products) {
-            // Cada producto se asocia con 1-3 categorías aleatorias
+
+            // asegurar que el producto tiene ID persistido
+            if (product.getId() == null) {
+                product = productRepository.save(product);
+            }
+
             int numCategories = random.nextInt(3) + 1;
             Set<CategoryModel> selectedCategories = new HashSet<>();
 
-            // Seleccionar categorías únicas
             while (selectedCategories.size() < numCategories && selectedCategories.size() < categories.size()) {
-                CategoryModel category = categories.get(random.nextInt(categories.size()));
-                selectedCategories.add(category);
+                selectedCategories.add(categories.get(random.nextInt(categories.size())));
             }
 
-            // Crear las asociaciones
+            ProductCatalogModel mainRelation = null;
+
             for (CategoryModel category : selectedCategories) {
+
+                // asegurar que la categoría tiene ID
+                if (category.getId() == null) {
+                    category = categoryRepository.save(category);
+                }
+
                 ProductCatalogModel productCatalog = new ProductCatalogModel();
                 productCatalog.setProduct(product);
                 productCatalog.setCategory(category);
-                productsCatalogRepository.save(productCatalog);
+
+                productCatalog = productsCatalogRepository.save(productCatalog);
+
+                if (mainRelation == null) {
+                    mainRelation = productCatalog;
+                }
+
                 linksCreated++;
             }
 
-            // Asignar una categoría principal al producto (la primera del conjunto)
-            if (!selectedCategories.isEmpty()) {
-                CategoryModel primaryCategory = selectedCategories.iterator().next();
-                // Buscar el ProductsCatalogEntity correspondiente para asignarlo al producto
-                List<ProductCatalogModel> productCatalogs = productsCatalogRepository.findAll();
-                for (ProductCatalogModel pc : productCatalogs) {
-                    if (pc.getProduct().getId().equals(product.getId()) &&
-                            pc.getCategory().getId().equals(primaryCategory.getId())) {
-                        product.setCategoryProduct(pc);
-                        productRepository.save(product);
-                        break;
-                    }
-                }
+            if (mainRelation != null) {
+                product.setCategoryProduct(mainRelation);
+                productRepository.save(product);
             }
         }
+
         log.info("Creados {} vínculos productos-categorías", linksCreated);
     }
 
-    private void createOrders(List<StoreModel> stores, List<PresalesModel> presalesList,
-            List<DistributorModel> distributors, List<ProductModel> products, int count) {
+    private void createOrders(
+            List<StoreModel> stores,
+            List<PresalesModel> presalesList,
+            List<DistributorModel> distributors,
+            List<ProductModel> products,
+            int count) {
+
         OrderModel.OrderStatus[] statuses = OrderModel.OrderStatus.values();
 
         for (int i = 0; i < count; i++) {
+
             OrderModel order = new OrderModel();
             order.setIva_percent(19.0);
             order.setStatus(statuses[random.nextInt(statuses.length)]);
             order.setStore(stores.get(random.nextInt(stores.size())));
 
-            // 70% de las órdenes tienen preventa asignada
             if (random.nextDouble() < 0.7 && !presalesList.isEmpty()) {
                 order.setPresales(presalesList.get(random.nextInt(presalesList.size())));
             }
 
-            order.setDistributorId(distributors.get(random.nextInt(distributors.size())).getId());
+            DistributorModel distributor = distributors.get(random.nextInt(distributors.size()));
+            order.setDistributorId(distributor.getId());
 
-            // Crear detalles de la orden (2-5 productos por orden)
-            // Usar un Set para evitar productos duplicados
             List<OrderDetailsModel> orderDetails = new ArrayList<>();
             Set<ProductModel> selectedProducts = new HashSet<>();
+
             int numProducts = random.nextInt(4) + 2;
             double total = 0.0;
 
-            // Seleccionar productos únicos
             while (selectedProducts.size() < numProducts && selectedProducts.size() < products.size()) {
-                ProductModel product = products.get(random.nextInt(products.size()));
-                selectedProducts.add(product);
+                selectedProducts.add(products.get(random.nextInt(products.size())));
             }
 
-            // Crear detalles de orden para cada producto único
             for (ProductModel product : selectedProducts) {
+
+                // asegurar persistencia del producto
+                if (product.getId() == null) {
+                    product = productRepository.save(product);
+                }
+
                 OrderDetaildEmbeddedModel detailId = new OrderDetaildEmbeddedModel();
                 detailId.setProductId(product.getId());
 

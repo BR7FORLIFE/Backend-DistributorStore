@@ -26,7 +26,7 @@ public class IMongoDistributorRepositoryAdapter implements IDistributorRepositor
     }
 
     @Override
-    public Optional<DistributorModel> findById(Long id) {
+    public Optional<DistributorModel> findById(String id) {
         return repository.findById(id.toString())
                 .map(mapper::toDto);
     }
@@ -50,7 +50,7 @@ public class IMongoDistributorRepositoryAdapter implements IDistributorRepositor
     }
 
     @Override
-    public Optional<DistributorModel> findByUser_Id(Long userId) {
+    public Optional<DistributorModel> findByUser_Id(String userId) {
         return repository.findByUser_Id(userId.toString())
                 .map(mapper::toDto);
     }
@@ -63,7 +63,10 @@ public class IMongoDistributorRepositoryAdapter implements IDistributorRepositor
 
     @Override
     public List<DistributorModel> findAll() {
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        return repository.findAll()
+                .stream()
+                .map(distributor -> mapper.toDto(distributor))
+                .toList();
     }
 
 }
