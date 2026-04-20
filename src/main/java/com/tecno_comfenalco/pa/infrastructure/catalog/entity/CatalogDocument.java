@@ -1,0 +1,27 @@
+package com.tecno_comfenalco.pa.infrastructure.catalog.entity;
+
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.tecno_comfenalco.pa.infrastructure.category.entity.CategoryEmbeddedEntity;
+
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Document(collection = "catalog")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class CatalogDocument {
+    @Id
+    private UUID id;
+    private UUID distributorId;
+    private String name;
+    private List<CategoryEmbeddedEntity> categories;
+}
