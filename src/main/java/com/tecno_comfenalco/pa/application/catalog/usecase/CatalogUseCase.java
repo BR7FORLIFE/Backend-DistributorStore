@@ -19,5 +19,5 @@ public interface CatalogUseCase {
 
     GetProductByCategoryCommandResult getProductsByCategory(GetProductByCategoryCommand cmd);
 
-    CreateCatalogCommandResult createCategory(CreateCatalogCommand cmd);
+    CreateCatalogCommandResult createCatalog(CreateCatalogCommand cmd);
 }
