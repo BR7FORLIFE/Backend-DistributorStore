@@ -8,21 +8,25 @@ import com.tecno_comfenalco.pa.domain.category.models.CategoryModel;
 public class CatalogModel {
     private UUID id;
     private UUID distributorId;
+    private String catalogCode;
     private String name;
     private List<CategoryModel> categories;
 
-    public CatalogModel(UUID id, UUID distributorId, String name, List<CategoryModel> categories) {
+    public CatalogModel(UUID id, UUID distributorId, String catalogCode, String name, List<CategoryModel> categories) {
         this.id = id;
+        this.catalogCode = catalogCode;
         this.name = name;
         this.categories = categories;
     }
 
-    public static CatalogModel createDraft(UUID distributorId, String name, List<CategoryModel> categories) {
-        return new CatalogModel(UUID.randomUUID(), distributorId, name, categories);
+    public static CatalogModel createDraft(UUID distributorId, String catalogCode, String name,
+            List<CategoryModel> categories) {
+        return new CatalogModel(UUID.randomUUID(), distributorId, catalogCode, name, categories);
     }
 
-    public static CatalogModel createNew(UUID id, UUID distributorId, String name, List<CategoryModel> categories) {
-        return new CatalogModel(id, distributorId, name, categories);
+    public static CatalogModel createNew(UUID id, UUID distributorId, String catalogCode, String name,
+            List<CategoryModel> categories) {
+        return new CatalogModel(id, distributorId, catalogCode, name, categories);
     }
 
     public UUID getId() {
@@ -39,5 +43,9 @@ public class CatalogModel {
 
     public UUID getDistributorId() {
         return distributorId;
+    }
+
+    public String getCatalogCode() {
+        return catalogCode;
     }
 }
