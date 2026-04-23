@@ -12,11 +12,11 @@ import com.tecno_comfenalco.pa.infrastructure.product.entity.ProductDocument;
 public interface ProductRepository extends MongoRepository<ProductDocument, UUID> {
     boolean existsByDistributorIdAndSku(UUID distributorId, String sku);
 
-    boolean existsByIdAndDistributorId(UUID productId, UUID distributorId);
+    boolean existsByIdAndDistributorId(UUID id, UUID distributorId);
 
     void deleteByIdAndDistributorId(UUID productId, UUID distributorId);
 
     Page<ProductDocument> findByDistributorId(UUID distributorId, Pageable pageable);
 
-    Optional<ProductDocument> findByDistributorIdAndId(UUID distributorId, UUID productId);
+    Optional<ProductDocument> findByDistributorIdAndId(UUID distributorId, UUID id);
 }
