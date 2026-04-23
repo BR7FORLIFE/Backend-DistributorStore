@@ -1,30 +1,77 @@
 package com.tecno_comfenalco.pa.infrastructure.catalog.controller;
 
+import java.util.UUID;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import com.tecno_comfenalco.pa.application.catalog.command.actions.AddCategoryToCatalogCommand;
+import com.tecno_comfenalco.pa.application.catalog.command.actions.CreateCatalogCommand;
+import com.tecno_comfenalco.pa.application.catalog.command.responses.AddCategoryToCatalogCommandResult;
+import com.tecno_comfenalco.pa.application.catalog.command.responses.CreateCatalogCommandResult;
+import com.tecno_comfenalco.pa.application.catalog.dto.request.AddCategoryToCatalogRequestDto;
+import com.tecno_comfenalco.pa.application.catalog.dto.request.AddExistingProductToCategoryRequestDto;
+import com.tecno_comfenalco.pa.application.catalog.dto.request.CreateCatalogRequestDto;
+import com.tecno_comfenalco.pa.application.catalog.dto.response.AddCategoryToCatalogResponseDto;
+import com.tecno_comfenalco.pa.application.catalog.dto.response.CreateCatalogResponseDto;
+import com.tecno_comfenalco.pa.application.catalog.dto.response.GetCatalogResponseDto;
+import com.tecno_comfenalco.pa.application.catalog.dto.response.GetCategoryProductsResponseDto;
+import com.tecno_comfenalco.pa.application.catalog.usecase.CatalogUseCase;
+import com.tecno_comfenalco.pa.infrastructure.security.CustomUserDetails;
+
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/catalogs")
 public class CatalogController {
+
+    private final CatalogUseCase catalogUseCase;
+
+    public CatalogController(CatalogUseCase catalogUseCase) {
+        this.catalogUseCase = catalogUseCase;
+    }
+
     /**
      * Agrega una categoría al catálogo de la distribuidora autenticada
      * Solo DISTRIBUTOR puede ejecutar este método
      * El catálogo se detecta automáticamente según el usuario logueado
      */
+
+    @PreAuthorize("hasRole('DISTRIBUTOR')")
+    @PostMapping
+    public ResponseEntity<CreateCatalogResponseDto> createCatalog(@RequestBody CreateCatalogRequestDto dto,
+            Authentication authentication) {
+        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+        UUID distributorId = details.getUserId();
+
+        CreateCatalogCommand cmd = new CreateCatalogCommand(distributorId, dto.name(), dto.catalogCode());
+        CreateCatalogCommandResult result = catalogUseCase.createCatalog(cmd);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new CreateCatalogResponseDto(result.catalog(), result.message()));
+    }
+
     @PostMapping("/categories")
     @PreAuthorize("hasRole('DISTRIBUTOR')")
     public ResponseEntity<AddCategoryToCatalogResponseDto> addCategoryToCatalog(
-            @RequestBody @Valid AddCategoryToCatalogRequestDto request) {
-        Result<AddCategoryToCatalogResponseDto, Exception> result = catalogService.addCategoryToCatalog(
-                request.name());
-        return ResponseEntityHelper.toResponseEntity(result);
+            @RequestBody @Valid AddCategoryToCatalogRequestDto request, Authentication authentication) {
+        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+        UUID distributorId = details.getUserId();
+
+        AddCategoryToCatalogCommand cmd = new AddCategoryToCatalogCommand(distributorId, request.catalogId(),
+                request.name(), request.products());
+
+        AddCategoryToCatalogCommandResult result = catalogUseCase.addCategoryToCatalog(cmd);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new AddCategoryToCatalogResponseDto(result.message()));
     }
 
     /**
@@ -36,11 +83,9 @@ public class CatalogController {
     @PostMapping("/categories/{categoryId}/products")
     @PreAuthorize("hasRole('DISTRIBUTOR')")
     public ResponseEntity<AddCategoryToCatalogResponseDto> addProductToCategory(
-            @PathVariable String categoryId,
+            @PathVariable UUID categoryId,
             @RequestBody @Valid AddExistingProductToCategoryRequestDto request) {
-        Result<AddCategoryToCatalogResponseDto, Exception> result = catalogService.addProductToCategory(categoryId,
-                request.productId());
-        return ResponseEntityHelper.toResponseEntity(result);
+        return null;
     }
 
     /**
@@ -50,8 +95,7 @@ public class CatalogController {
     @GetMapping
     @PreAuthorize("hasAnyRole('DISTRIBUTOR', 'PRESALES')")
     public ResponseEntity<GetCatalogResponseDto> getMyCatalog() {
-        Result<GetCatalogResponseDto, Exception> result = catalogService.getCatalogForAuthenticatedUser();
-        return ResponseEntityHelper.toResponseEntity(result);
+        return null;
     }
 
     /**
@@ -61,8 +105,7 @@ public class CatalogController {
      */
     @GetMapping("/{categoryId}/products")
     @PreAuthorize("hasAnyRole('DISTRIBUTOR', 'PRESALES')")
-    public ResponseEntity<GetCategoryProductsResponseDto> getProductsByCategory(@PathVariable String categoryId) {
-        Result<GetCategoryProductsResponseDto, Exception> result = catalogService.getProductsByCategory(categoryId);
-        return ResponseEntityHelper.toResponseEntity(result);
+    public ResponseEntity<GetCategoryProductsResponseDto> getProductsByCategory(@PathVariable UUID categoryId) {
+        return null;
     }
 }
