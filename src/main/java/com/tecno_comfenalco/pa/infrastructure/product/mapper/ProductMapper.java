@@ -1,26 +1,27 @@
 package com.tecno_comfenalco.pa.infrastructure.product.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-
 import com.tecno_comfenalco.pa.domain.product.model.ProductModel;
+import com.tecno_comfenalco.pa.domain.product.model.ProductSummaryModel;
 import com.tecno_comfenalco.pa.infrastructure.product.entity.ProductDocument;
-import com.tecno_comfenalco.pa.shared.mapper.EntityMapper;
 
-@Mapper(componentModel = "spring")
-public interface ProductMapper extends EntityMapper<ProductModel, ProductDocument> {
-    @Override
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "distributorId", target = "distributorId")
-    @Mapping(source = "sku", target = "sku")
-    @Mapping(source = "name", target = "name")
-    @Mapping(source = "unit", target = "unit")
-    ProductDocument toEntity(ProductModel dto);
+public class ProductMapper {
+    public static ProductDocument toEntity(ProductModel productModel) {
+        ProductDocument productDocument = new ProductDocument();
+        productDocument.setId(productModel.getId());
+        productDocument.setDistributorId(productModel.getDistributorId());
+        productDocument.setName(productModel.getName());
+        productDocument.setSku(productModel.getSku());
+        productDocument.setUnit(productModel.getUnit());
+        productDocument.setPrice(productModel.getPrice());
 
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "distributorId", target = "distributorId")
-    @Mapping(source = "sku", target = "sku")
-    @Mapping(source = "name", target = "name")
-    @Mapping(source = "unit", target = "unit")
-    ProductModel toDto(ProductDocument entity);
+        return productDocument;
+    }
+
+    public static ProductModel toDomain(ProductDocument productDocument) {
+        ProductModel productModel = ProductModel.createNew(productDocument.getId(), productDocument.getDistributorId(),
+                productDocument.getSku(), productDocument.getName(), productDocument.getUnit(),
+                productDocument.getPrice());
+
+        return productModel;
+    }
 }

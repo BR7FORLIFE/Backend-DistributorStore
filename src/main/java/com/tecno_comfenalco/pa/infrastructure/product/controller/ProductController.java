@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +36,6 @@ import com.tecno_comfenalco.pa.application.product.dto.response.RegisterProductR
 import com.tecno_comfenalco.pa.application.product.usecases.ProductUseCase;
 import com.tecno_comfenalco.pa.infrastructure.security.CustomUserDetails;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 
 @PreAuthorize("hasRole('DISTRIBUTOR')")
@@ -52,7 +52,6 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<RegisterProductResponseDto> registerProduct(
             @RequestBody @Valid RegisterProductRequestDto dtoProduct, Authentication authentication) {
-
         CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
         UUID distributorId = details.getUserId();
 
@@ -65,13 +64,13 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EditProductResponseDto> editProduct(@PathVariable String id,
+    public ResponseEntity<EditProductResponseDto> editProduct(@PathVariable UUID id,
             @RequestBody @Valid EditProductRequestDto dtoProduct, Authentication authentication) {
         CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
         UUID distributorId = details.getUserId();
 
-        EditProductCommand cmd = new EditProductCommand(distributorId, dtoProduct.productId(), dtoProduct.sku(),
-                dtoProduct.name(), dtoProduct.unit());
+        EditProductCommand cmd = new EditProductCommand(id, distributorId, dtoProduct.sku(),
+                dtoProduct.name(), dtoProduct.unit(), dtoProduct.price());
 
         EditProductCommandResult result = productUseCase.editProduct(cmd);
 
@@ -93,9 +92,9 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<ListProductsResponseDto> listProducts(
-            @RequestParam(required = false) int page,
-            @RequestParam(required = false, defaultValue = "10") int size,
-            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size,
+            @RequestParam(required = false, defaultValue = "name") String sortBy,
             @RequestParam(required = false, defaultValue = "DESC") String direction,
             Authentication authentication
 

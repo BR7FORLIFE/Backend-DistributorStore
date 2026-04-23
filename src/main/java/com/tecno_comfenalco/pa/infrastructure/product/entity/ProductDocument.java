@@ -18,10 +18,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ProductDocument {
-    @Id    
+    @Id
     private UUID id;
     private UUID distributorId;
     private String sku;
     private String name;
     private Unit unit;
+    private Double price;
 }
