@@ -16,22 +16,17 @@ import com.tecno_comfenalco.pa.infrastructure.catalog.entity.CatalogDocument;
 import com.tecno_comfenalco.pa.infrastructure.catalog.mapper.CatalogMapper;
 import com.tecno_comfenalco.pa.infrastructure.catalog.repository.mongo.CatalogRepository;
 import com.tecno_comfenalco.pa.infrastructure.category.entity.CategoryEmbeddedEntity;
-import com.tecno_comfenalco.pa.infrastructure.category.mapper.CategoryMapper;
+import com.tecno_comfenalco.pa.infrastructure.category.mapper.CategoryEmbeddedMapper;
 
 @Repository
 public class CatalogRepositoryAdapter implements ICatalogRepositoryPort {
 
     private final CatalogRepository catalogRepository;
-    private final CatalogMapper catalogMapper;
-    private final CategoryMapper categoryMapper;
     private final MongoTemplate mongoTemplate;
 
-    public CatalogRepositoryAdapter(CatalogRepository catalogRepository, CatalogMapper catalogMapper,
-            MongoTemplate mongoTemplate, CategoryMapper categoryMapper) {
+    public CatalogRepositoryAdapter(CatalogRepository catalogRepository, MongoTemplate mongoTemplate) {
         this.catalogRepository = catalogRepository;
-        this.catalogMapper = catalogMapper;
         this.mongoTemplate = mongoTemplate;
-        this.categoryMapper = categoryMapper;
     }
 
     @Override
@@ -41,10 +36,10 @@ public class CatalogRepositoryAdapter implements ICatalogRepositoryPort {
 
     @Override
     public CatalogModel save(CatalogModel catalogModel) {
-        CatalogDocument catalogDocument = catalogMapper.toEntity(catalogModel);
+        CatalogDocument catalogDocument = CatalogMapper.toEntity(catalogModel);
         CatalogDocument saved = catalogRepository.save(catalogDocument);
 
-        return catalogMapper.toDto(saved);
+        return CatalogMapper.toDomain(saved);
     }
 
     @Override
@@ -55,7 +50,7 @@ public class CatalogRepositoryAdapter implements ICatalogRepositoryPort {
     @Override
     public void addCategoryToCatalog(UUID catalogId, CategoryModel categoryModel) {
         Query query = new Query(Criteria.where("_id").is(catalogId));
-        CategoryEmbeddedEntity categoryEmbeddedEntity = categoryMapper.toEntity(categoryModel);
+        CategoryEmbeddedEntity categoryEmbeddedEntity = CategoryEmbeddedMapper.toEntity(categoryModel);
 
         Update update = new Update().push("categories", categoryEmbeddedEntity);
         mongoTemplate.updateFirst(query, update, CatalogDocument.class);

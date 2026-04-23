@@ -13,19 +13,19 @@ import org.springframework.stereotype.Repository;
 
 import com.tecno_comfenalco.pa.application.product.ports.IProductRepositoryPort;
 import com.tecno_comfenalco.pa.domain.product.model.ProductModel;
+import com.tecno_comfenalco.pa.domain.product.model.ProductSummaryModel;
 import com.tecno_comfenalco.pa.infrastructure.product.entity.ProductDocument;
 import com.tecno_comfenalco.pa.infrastructure.product.mapper.ProductMapper;
+import com.tecno_comfenalco.pa.infrastructure.product.mapper.ProductSummaryMapper;
 import com.tecno_comfenalco.pa.infrastructure.product.repository.mongo.ProductRepository;
 
 @Repository
 public class ProductRepositoryAdapter implements IProductRepositoryPort {
 
     private final ProductRepository productRepository;
-    private final ProductMapper productMapper;
 
-    public ProductRepositoryAdapter(ProductRepository productRepository, ProductMapper productMapper) {
+    public ProductRepositoryAdapter(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.productMapper = productMapper;
     }
 
     @Override
@@ -35,10 +35,10 @@ public class ProductRepositoryAdapter implements IProductRepositoryPort {
 
     @Override
     public ProductModel save(ProductModel productModel) {
-        ProductDocument productDocument = productMapper.toEntity(productModel);
+        ProductDocument productDocument = ProductMapper.toEntity(productModel);
         ProductDocument saved = productRepository.save(productDocument);
 
-        return productMapper.toDto(saved);
+        return ProductMapper.toDomain(saved);
     }
 
     @Override
@@ -52,7 +52,8 @@ public class ProductRepositoryAdapter implements IProductRepositoryPort {
     }
 
     @Override
-    public List<ProductModel> findAllPaged(UUID distributorId, int page, int size, String sortBy, String direction) {
+    public List<ProductModel> findAllPaged(UUID distributorId, Integer page, Integer size, String sortBy,
+            String direction) {
         Sort.Direction sortDirection = direction.equalsIgnoreCase("asc")
                 ? Sort.Direction.ASC
                 : Sort.Direction.DESC;
@@ -63,13 +64,21 @@ public class ProductRepositoryAdapter implements IProductRepositoryPort {
 
         return result.getContent()
                 .stream()
-                .map(productMapper::toDto)
+                .map(ProductMapper::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<ProductModel> findByProductId(UUID productId, UUID distributorId) {
+    public Optional<ProductModel> findByProductId(UUID distributorId, UUID productId) {
         return productRepository.findByDistributorIdAndId(distributorId, productId)
-                .map(productMapper::toDto);
+                .map(ProductMapper::toDomain);
+    }
+
+    @Override
+    public List<ProductSummaryModel> findAllByIds(List<UUID> ids) {
+        return productRepository.findAllById(ids)
+                .stream()
+                .map(ProductSummaryMapper::toSummary)
+                .toList();
     }
 }
