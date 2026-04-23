@@ -15,11 +15,9 @@ import com.tecno_comfenalco.pa.infrastructure.auth.repository.mongo.IMongoUserRe
 @Repository
 public class IMongoUserRepositoryAdapter implements IUserRepositoryPort {
     private final IMongoUserRepository iMongoUserRepository;
-    private final UserMapper userMapper;
 
-    public IMongoUserRepositoryAdapter(IMongoUserRepository iMongoUserRepository, UserMapper userMapper) {
+    public IMongoUserRepositoryAdapter(IMongoUserRepository iMongoUserRepository) {
         this.iMongoUserRepository = iMongoUserRepository;
-        this.userMapper = userMapper;
     }
 
     @Override
@@ -29,28 +27,28 @@ public class IMongoUserRepositoryAdapter implements IUserRepositoryPort {
 
     @Override
     public UserModel save(UserModel userModel) {
-        UserDocument userDocument = userMapper.toEntity(userModel);
+        UserDocument userDocument = UserMapper.toEntity(userModel);
         UserDocument saved = iMongoUserRepository.save(userDocument);
 
-        return userMapper.toDto(saved);
+        return UserMapper.toDomain(saved);
     }
 
     @Override
     public Optional<UserModel> findByUserId(UUID id) {
         return iMongoUserRepository.findById(id)
-                .map(userMapper::toDto);
+                .map(UserMapper::toDomain);
     }
 
     @Override
     public List<UserModel> findAll() {
         return iMongoUserRepository.findAll()
                 .stream()
-                .map(userMapper::toDto)
+                .map(UserMapper::toDomain)
                 .toList();
     }
 
     @Override
     public Optional<UserModel> findByUsername(String username) {
-        return iMongoUserRepository.findByUsername(username).map(userMapper::toDto);
+        return iMongoUserRepository.findByUsername(username).map(UserMapper::toDomain);
     }
 }
