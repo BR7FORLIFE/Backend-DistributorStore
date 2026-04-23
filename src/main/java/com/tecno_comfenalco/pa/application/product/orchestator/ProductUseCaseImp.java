@@ -1,13 +1,10 @@
 package com.tecno_comfenalco.pa.application.product.orchestator;
 
-import com.tecno_comfenalco.pa.infrastructure.product.repository.mongo.ProductRepository;
-
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.tecno_comfenalco.pa.application.catalog.command.actions.GetProductByCategoryCommand;
 import com.tecno_comfenalco.pa.application.product.command.actions.DisabledProductCommand;
 import com.tecno_comfenalco.pa.application.product.command.actions.EditProductCommand;
 import com.tecno_comfenalco.pa.application.product.command.actions.GetProductByIdCommand;
@@ -40,7 +37,8 @@ public class ProductUseCaseImp implements ProductUseCase {
         if (existsProduct) {
             throw new ProductExistsException();
         }
-        ProductModel productModel = ProductModel.createDraft(cmd.distributorId(), cmd.sku(), cmd.name(), cmd.unit());
+        ProductModel productModel = ProductModel.createDraft(cmd.distributorId(), cmd.sku(), cmd.name(), cmd.unit(),
+                cmd.price());
 
         iProductRepositoryPort.save(productModel);
 
@@ -58,7 +56,7 @@ public class ProductUseCaseImp implements ProductUseCase {
         }
 
         ProductModel updateProduct = ProductModel.createNew(cmd.productId(), cmd.distributorId(), cmd.sku(), cmd.name(),
-                cmd.unit());
+                cmd.unit(), cmd.price());
 
         iProductRepositoryPort.save(updateProduct);
 
@@ -90,7 +88,7 @@ public class ProductUseCaseImp implements ProductUseCase {
 
     @Override
     public GetProductByIdCommandResult getProductById(GetProductByIdCommand cmd) {
-        Optional<ProductModel> product = iProductRepositoryPort.findByProductId(cmd.productId(), cmd.distributorId());
+        Optional<ProductModel> product = iProductRepositoryPort.findByProductId(cmd.distributorId(), cmd.productId());
 
         if (product.isEmpty()) {
             throw new ProductNotFoundException();
