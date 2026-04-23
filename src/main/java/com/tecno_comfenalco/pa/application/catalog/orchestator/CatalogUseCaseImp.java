@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.application.catalog.orchestator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -17,16 +18,22 @@ import com.tecno_comfenalco.pa.application.catalog.exceptions.CatalogExistsExcep
 import com.tecno_comfenalco.pa.application.catalog.exceptions.CategoryExistsException;
 import com.tecno_comfenalco.pa.application.catalog.port.ICatalogRepositoryPort;
 import com.tecno_comfenalco.pa.application.catalog.usecase.CatalogUseCase;
+import com.tecno_comfenalco.pa.application.product.exceptions.ProductNotFoundException;
+import com.tecno_comfenalco.pa.application.product.ports.IProductRepositoryPort;
 import com.tecno_comfenalco.pa.domain.catalog.models.CatalogModel;
 import com.tecno_comfenalco.pa.domain.category.models.CategoryModel;
+import com.tecno_comfenalco.pa.domain.product.model.ProductSummaryModel;
 
 @Service
 public class CatalogUseCaseImp implements CatalogUseCase {
 
     private final ICatalogRepositoryPort catalogRepositoryPort;
+    private final IProductRepositoryPort iProductRepositoryPort;
 
-    public CatalogUseCaseImp(ICatalogRepositoryPort iCatalogRepositoryPort) {
+    public CatalogUseCaseImp(ICatalogRepositoryPort iCatalogRepositoryPort,
+            IProductRepositoryPort iProductRepositoryPort) {
         this.catalogRepositoryPort = iCatalogRepositoryPort;
+        this.iProductRepositoryPort = iProductRepositoryPort;
     }
 
     @Override
@@ -58,13 +65,17 @@ public class CatalogUseCaseImp implements CatalogUseCase {
             throw new CategoryExistsException();
         }
 
-        // validar que los productos que me envie el cliente existan para insertarlos
+        List<ProductSummaryModel> summaries = new ArrayList<>();
 
-        // validar que los productos no esten en dicha categoria
+        if (cmd.products() != null && !cmd.products().isEmpty()) {
+            summaries = iProductRepositoryPort.findAllByIds(cmd.products());
 
-        CategoryModel categoryModel = cmd.products() != null
-                ? CategoryModel.createDraft(categoryLowercase, cmd.products())
-                : CategoryModel.createDraft(categoryLowercase, null);
+            if (summaries.size() != cmd.products().size()) {
+                throw new ProductNotFoundException();
+            }
+        }
+
+        CategoryModel categoryModel = CategoryModel.createDraft(categoryLowercase, summaries);
 
         catalogRepositoryPort.addCategoryToCatalog(cmd.catalogId(), categoryModel);
 
