@@ -20,6 +20,8 @@ import com.tecno_comfenalco.pa.application.product.exceptions.ProductNotFoundExc
 import com.tecno_comfenalco.pa.application.product.ports.IProductRepositoryPort;
 import com.tecno_comfenalco.pa.application.product.usecases.ProductUseCase;
 import com.tecno_comfenalco.pa.domain.product.model.ProductModel;
+import com.tecno_comfenalco.pa.shared.utils.helper.ValidateQueryParams;
+import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 
 @Service
 public class ProductUseCaseImp implements ProductUseCase {
@@ -40,9 +42,9 @@ public class ProductUseCaseImp implements ProductUseCase {
         ProductModel productModel = ProductModel.createDraft(cmd.distributorId(), cmd.sku(), cmd.name(), cmd.unit(),
                 cmd.price());
 
-        iProductRepositoryPort.save(productModel);
+        ProductModel result = iProductRepositoryPort.save(productModel);
 
-        return new RegisterProductCommandResult("Product created succesfull!");
+        return new RegisterProductCommandResult(result.getId(), result.getSku(), "Product created succesfull!");
     }
 
     @Override
@@ -79,11 +81,16 @@ public class ProductUseCaseImp implements ProductUseCase {
 
     @Override
     public ListProductCommandResult listAll(ListProductCommand cmd) {
-        List<ProductModel> products = iProductRepositoryPort.findAllPaged(cmd.distributorId(), cmd.page(), cmd.size(),
-                cmd.sortBy(),
-                cmd.direction());
+        // validar los query params
+        ValidateQueryParams.validate(cmd.params());
 
-        return new ListProductCommandResult(products, "Products obtain sucessfull");
+        PagedResult<ProductModel> products = iProductRepositoryPort.findAllPaged(cmd.distributorId(),
+                cmd.params().page(),
+                cmd.params().size(),
+                cmd.params().sortBy(),
+                cmd.params().direction().name());
+
+        return new ListProductCommandResult(products.data(), products.meta(), "Products obtain sucessfull");
     }
 
     @Override
