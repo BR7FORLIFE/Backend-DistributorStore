@@ -1,0 +1,18 @@
+package com.tecno_comfenalco.pa.application.delivery.dto.request;
+
+import com.tecno_comfenalco.pa.shared.enums.DocumentTypeEnum;
+import com.tecno_comfenalco.pa.shared.enums.LicenseTypeEnum;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+public record RegisterDeliveryRequestDto(
+        @NotBlank(message = "El nombre no debe ser nulo ni vacio!") String name,
+        DocumentTypeEnum documentType,
+        @NotNull(message = "El numero de documento no debe ser nulo!") @Positive(message = "El numero de documento debe ser positivo!") Long documentNumber,
+        @NotBlank(message = "El telefono no debe ser nulo ni vacio!") Long phoneNumber,
+        @NotBlank(message = "El numero de licencia no debe ser nulo ni vacio!") Long licenseNumber,
+        LicenseTypeEnum licenseType) {
+
+}
