@@ -1,0 +1,105 @@
+package com.tecno_comfenalco.pa.application.presales.orchestator;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+
+import com.tecno_comfenalco.pa.application.presales.command.actions.EditPresalesCommand;
+import com.tecno_comfenalco.pa.application.presales.command.actions.GetPresalesInfoCommand;
+import com.tecno_comfenalco.pa.application.presales.command.actions.ListPresalesCommand;
+import com.tecno_comfenalco.pa.application.presales.command.actions.RegisterPresalesCommand;
+import com.tecno_comfenalco.pa.application.presales.command.response.EditPresalesCommandResult;
+import com.tecno_comfenalco.pa.application.presales.command.response.GetPresalesByIdCommandResult;
+import com.tecno_comfenalco.pa.application.presales.command.response.GetPresalesInfoCommandResult;
+import com.tecno_comfenalco.pa.application.presales.command.response.ListPresalesCommandResult;
+import com.tecno_comfenalco.pa.application.presales.command.response.RegisterPresalesCommandResult;
+import com.tecno_comfenalco.pa.application.presales.exceptions.PresalesAlreadyExistsException;
+import com.tecno_comfenalco.pa.application.presales.exceptions.PresalesNotFoundException;
+import com.tecno_comfenalco.pa.application.presales.ports.IPresalesRepositoryPort;
+import com.tecno_comfenalco.pa.application.presales.usecases.PresalesUseCase;
+import com.tecno_comfenalco.pa.domain.presales.model.PresalesModel;
+import com.tecno_comfenalco.pa.shared.utils.helper.ValidateQueryParams;
+import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
+
+@Service
+public class PresalesUseCaseImp implements PresalesUseCase {
+
+    private final IPresalesRepositoryPort presalesRepositoryPort;
+
+    public PresalesUseCaseImp(IPresalesRepositoryPort presalesRepositoryPort) {
+        this.presalesRepositoryPort = presalesRepositoryPort;
+    }
+
+    @Override
+    public RegisterPresalesCommandResult registerPresales(RegisterPresalesCommand cmd) {
+
+        if (presalesRepositoryPort.existsPresalesbyDocumentNumber(cmd.documentNumber())) {
+            throw new PresalesAlreadyExistsException();
+        }
+
+        PresalesModel newPresales = PresalesModel.createDraft(cmd.distributorId(), cmd.name(), cmd.phoneNumber(),
+                cmd.email(), cmd.documentType(), cmd.documentNumber());
+
+        PresalesModel result = presalesRepositoryPort.save(newPresales);
+
+        return new RegisterPresalesCommandResult(result.getId(), result.getDistributorId(),
+                "Presales register succesfull!");
+    }
+
+    @Override
+    public EditPresalesCommandResult editPresales(EditPresalesCommand cmd) {
+        Optional<PresalesModel> optPresales = presalesRepositoryPort.findPresalesById(cmd.distributorId(),
+                cmd.presalesId());
+
+        if (optPresales.isEmpty()) {
+            throw new PresalesNotFoundException();
+        }
+
+        PresalesModel updatePresales = PresalesModel.createNew(optPresales.get().getId(),
+                optPresales.get().getDistributorId(), optPresales.get().getName(), cmd.phoneNumber(),
+                optPresales.get().getEmail(), optPresales.get().getDocumentTypeEnum(),
+                optPresales.get().getDocumentNumber());
+
+        PresalesModel result = presalesRepositoryPort.save(updatePresales);
+
+        return new EditPresalesCommandResult(result.getDistributorId(), result.getId(), "Presales update succesfull!");
+    }
+
+    @Override
+    public ListPresalesCommandResult listPresales(ListPresalesCommand cmd) {
+        ValidateQueryParams.validate(cmd.params());
+
+        PagedResult<PresalesModel> presalesModels = presalesRepositoryPort.findAllPaged(cmd.distributorId(),
+                cmd.params().page(),
+                cmd.params().size(), cmd.params().sortBy(), cmd.params().direction().name());
+
+        return new ListPresalesCommandResult(presalesModels.data(), presalesModels.meta(),
+                "Presales obtain succesfull!");
+    }
+
+    @Override
+    public GetPresalesByIdCommandResult showPresales(UUID distributorId, UUID presalesId) {
+        Optional<PresalesModel> optPresalesModel = presalesRepositoryPort.findPresalesById(distributorId, presalesId);
+
+        if (optPresalesModel.isEmpty()) {
+            throw new PresalesNotFoundException();
+        }
+
+        return new GetPresalesByIdCommandResult(optPresalesModel.get(), "Presale obtain succesfull!");
+    }
+
+    @Override
+    public GetPresalesInfoCommandResult getPresalesInfo(GetPresalesInfoCommand cmd) {
+
+        Optional<PresalesModel> optPresales = presalesRepositoryPort.findPresalesByIdAndDistributorId(cmd.presaleId(),
+                cmd.distributorId());
+
+        if (optPresales.isEmpty()) {
+            throw new PresalesNotFoundException();
+        }
+
+        return new GetPresalesInfoCommandResult(optPresales.get(), "Presale info obtain succesfull!");
+    }
+}
