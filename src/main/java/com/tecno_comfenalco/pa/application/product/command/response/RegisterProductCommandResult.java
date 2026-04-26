@@ -1,5 +1,7 @@
 package com.tecno_comfenalco.pa.application.product.command.response;
 
-public record RegisterProductCommandResult(String message) {
+import java.util.UUID;
+
+public record RegisterProductCommandResult(UUID productId, String sku, String message) {
 
 }

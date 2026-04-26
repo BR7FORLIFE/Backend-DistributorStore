@@ -1,5 +1,7 @@
 package com.tecno_comfenalco.pa.application.product.dto.response;
 
-public record RegisterProductResponseDto(String message) {
+import java.util.UUID;
+
+public record RegisterProductResponseDto(UUID productId, String sku, String message) {
 
 }
