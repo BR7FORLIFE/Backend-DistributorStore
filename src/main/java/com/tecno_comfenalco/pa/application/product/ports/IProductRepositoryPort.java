@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.tecno_comfenalco.pa.domain.product.model.ProductModel;
 import com.tecno_comfenalco.pa.domain.product.model.ProductSummaryModel;
+import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 
 public interface IProductRepositoryPort {
     boolean existsByDistributorIdAndSku(UUID distributorId, String sku);
@@ -16,7 +17,8 @@ public interface IProductRepositoryPort {
 
     void deleteProductByIdAndDistributorId(UUID productId, UUID distributorId);
 
-    List<ProductModel> findAllPaged(UUID distributorId, Integer page, Integer size, String sortBy, String direction);
+    PagedResult<ProductModel> findAllPaged(UUID distributorId, Integer page, Integer size, String sortBy,
+            String direction);
 
     Optional<ProductModel> findByProductId(UUID distributorId, UUID productId);
 

@@ -1,0 +1,66 @@
+package com.tecno_comfenalco.pa.domain.presales.model;
+
+import java.util.UUID;
+
+import com.tecno_comfenalco.pa.shared.enums.DocumentTypeEnum;
+
+public class PresalesModel {
+    private UUID id;
+    private UUID distributorId;
+    private String name;
+    private Long phoneNumber;
+    private String email;
+    private DocumentTypeEnum documentTypeEnum;
+    private Long documentNumber;
+
+    public static PresalesModel createNew(UUID id, UUID distributorId, String name, Long phoneNumber, String email,
+            DocumentTypeEnum documentTypeEnum, Long documentNumber) {
+        return new PresalesModel(id, distributorId, name, phoneNumber, email, documentTypeEnum, documentNumber);
+    }
+
+    public static PresalesModel createDraft(UUID distributorId, String name, Long phoneNumber, String email,
+            DocumentTypeEnum documentTypeEnum, Long documentNumber) {
+        return new PresalesModel(UUID.randomUUID(), distributorId, name, phoneNumber, email, documentTypeEnum,
+                documentNumber);
+    }
+
+    public PresalesModel(UUID id, UUID distributorId, String name, Long phoneNumber, String email,
+            DocumentTypeEnum documentTypeEnum, Long documentNumber) {
+        this.id = id;
+        this.distributorId = distributorId;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.documentTypeEnum = documentTypeEnum;
+        this.documentNumber = documentNumber;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public UUID getDistributorId() {
+        return distributorId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Long getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public DocumentTypeEnum getDocumentTypeEnum() {
+        return documentTypeEnum;
+    }
+
+    public Long getDocumentNumber() {
+        return documentNumber;
+    }
+
+}

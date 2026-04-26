@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.shared.dto;
 
-public record DirectionDto(String street, String city, String neighborhood) {
+public record DirectionDto(String street, String neighborhood, String number, String city,
+        String department) {
 
 }

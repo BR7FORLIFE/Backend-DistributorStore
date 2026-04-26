@@ -2,6 +2,7 @@ spring:
   data:
     mongodb:
       uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@localhost:27017/${MONGO_DB}?authSource=admin
+      uuid-representation: standard
 
   autoconfigure:
     exclude:

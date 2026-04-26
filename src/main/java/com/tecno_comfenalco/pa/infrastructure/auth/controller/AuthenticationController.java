@@ -4,9 +4,8 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +17,7 @@ import com.tecno_comfenalco.pa.application.auth.command.response.LoginUserComman
 import com.tecno_comfenalco.pa.application.auth.dto.requests.LoginRequestDto;
 import com.tecno_comfenalco.pa.application.auth.dto.responses.LoginResponseDto;
 import com.tecno_comfenalco.pa.application.auth.usecases.AuthenticationUseCase;
+import com.tecno_comfenalco.pa.infrastructure.security.CustomUserDetails;
 import com.tecno_comfenalco.pa.infrastructure.security.services.cookies.CookiesService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -65,7 +65,8 @@ public class AuthenticationController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
-    public ResponseEntity<Map<String, String>> me(@AuthenticationPrincipal UserDetails user) {
-        return ResponseEntity.ok().body(Map.of("username", user.getUsername()));
+    public ResponseEntity<Map<String, CustomUserDetails>> me(Authentication authentication) {
+        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+        return ResponseEntity.ok().body(Map.of("user", details));
     }
 }

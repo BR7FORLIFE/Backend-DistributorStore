@@ -35,6 +35,9 @@ import com.tecno_comfenalco.pa.application.product.dto.response.ListProductsResp
 import com.tecno_comfenalco.pa.application.product.dto.response.RegisterProductResponseDto;
 import com.tecno_comfenalco.pa.application.product.usecases.ProductUseCase;
 import com.tecno_comfenalco.pa.infrastructure.security.CustomUserDetails;
+import com.tecno_comfenalco.pa.shared.utils.http.DirectionEnum;
+import com.tecno_comfenalco.pa.shared.utils.http.PaginationMeta;
+import com.tecno_comfenalco.pa.shared.utils.http.RequestParams;
 
 import jakarta.validation.Valid;
 
@@ -60,7 +63,8 @@ public class ProductController {
 
         RegisterProductCommandResult result = productUseCase.registerProduct(cmd);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new RegisterProductResponseDto(result.message()));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new RegisterProductResponseDto(result.productId(), result.sku(), result.message()));
     }
 
     @PutMapping("/{id}")
@@ -95,17 +99,19 @@ public class ProductController {
             @RequestParam(required = false, defaultValue = "0") Integer page,
             @RequestParam(required = false, defaultValue = "10") Integer size,
             @RequestParam(required = false, defaultValue = "name") String sortBy,
-            @RequestParam(required = false, defaultValue = "DESC") String direction,
-            Authentication authentication
-
-    ) {
+            @RequestParam(required = false, defaultValue = "DESC") DirectionEnum direction,
+            Authentication authentication) {
         CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
         UUID distributorId = details.getUserId();
 
-        ListProductCommand cmd = new ListProductCommand(distributorId, page, size, sortBy, direction);
+        RequestParams params = new RequestParams(page, size, sortBy, direction);
+
+        ListProductCommand cmd = new ListProductCommand(distributorId, params);
+
         ListProductCommandResult result = productUseCase.listAll(cmd);
 
-        return ResponseEntity.ok().body(new ListProductsResponseDto(result.products(), result.message()));
+        return ResponseEntity.ok()
+                .body(new ListProductsResponseDto(result.products(), result.meta(), result.message()));
     }
 
     @GetMapping("/{id}")

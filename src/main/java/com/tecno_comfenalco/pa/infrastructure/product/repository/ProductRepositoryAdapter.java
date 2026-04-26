@@ -18,6 +18,8 @@ import com.tecno_comfenalco.pa.infrastructure.product.entity.ProductDocument;
 import com.tecno_comfenalco.pa.infrastructure.product.mapper.ProductMapper;
 import com.tecno_comfenalco.pa.infrastructure.product.mapper.ProductSummaryMapper;
 import com.tecno_comfenalco.pa.infrastructure.product.repository.mongo.ProductRepository;
+import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
+import com.tecno_comfenalco.pa.shared.utils.http.PaginationMeta;
 
 @Repository
 public class ProductRepositoryAdapter implements IProductRepositoryPort {
@@ -52,7 +54,7 @@ public class ProductRepositoryAdapter implements IProductRepositoryPort {
     }
 
     @Override
-    public List<ProductModel> findAllPaged(UUID distributorId, Integer page, Integer size, String sortBy,
+    public PagedResult<ProductModel> findAllPaged(UUID distributorId, Integer page, Integer size, String sortBy,
             String direction) {
         Sort.Direction sortDirection = direction.equalsIgnoreCase("asc")
                 ? Sort.Direction.ASC
@@ -62,10 +64,15 @@ public class ProductRepositoryAdapter implements IProductRepositoryPort {
 
         Page<ProductDocument> result = productRepository.findByDistributorId(distributorId, pageable);
 
-        return result.getContent()
+        List<ProductModel> models = result.getContent()
                 .stream()
                 .map(ProductMapper::toDomain)
                 .collect(Collectors.toList());
+
+        PaginationMeta meta = new PaginationMeta(result.getNumber(), result.getSize(), result.getTotalElements(),
+                result.getTotalPages(), result.hasNext());
+
+        return new PagedResult<ProductModel>(models, meta);
     }
 
     @Override
