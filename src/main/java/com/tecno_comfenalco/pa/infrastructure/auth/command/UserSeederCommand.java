@@ -21,16 +21,21 @@ public class UserSeederCommand implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Seed initial users 
-        userRepository.save(UserModel.createDraft("admin", passwordEncoder.encode("password"), Set.of("ADMIN"), true));
+        // Seed initial users
+        userRepository
+                .save(UserModel.createDraft("admin", passwordEncoder.encode("password"), Set.of("ADMIN"), "", true));
 
-        userRepository.save(UserModel.createDraft("presales", passwordEncoder.encode("password"), Set.of("PRESALES"), true));
+        userRepository.save(
+                UserModel.createDraft("presales", passwordEncoder.encode("password"), Set.of("PRESALES"), "", true));
 
-        userRepository.save(UserModel.createDraft("distributor", passwordEncoder.encode("password"), Set.of("DISTRIBUTOR"), true));
+        userRepository.save(UserModel.createDraft("distributor", passwordEncoder.encode("password"),
+                Set.of("DISTRIBUTOR"), "", true));
 
-        userRepository.save(UserModel.createDraft("delivery", passwordEncoder.encode("password"), Set.of("DELIVERY"), true));
+        userRepository.save(
+                UserModel.createDraft("delivery", passwordEncoder.encode("password"), Set.of("DELIVERY"), "", true));
 
-        userRepository.save(UserModel.createDraft("store", passwordEncoder.encode("password"), Set.of("STORE"), true));
+        userRepository
+                .save(UserModel.createDraft("store", passwordEncoder.encode("password"), Set.of("STORE"), "", true));
 
         System.out.println("🟩____Users seeded____🟩");
     }
