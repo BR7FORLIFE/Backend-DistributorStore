@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.infrastructure.presales.entity;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
@@ -24,6 +25,8 @@ public class PresalesDocument {
     private String name;
     private Long phoneNumber;
     private String email;
+    private Instant createAt;
+    private Instant updateAt;
     private DocumentTypeEnum documentTypeEnum;
     private Long documentNumber;
 }

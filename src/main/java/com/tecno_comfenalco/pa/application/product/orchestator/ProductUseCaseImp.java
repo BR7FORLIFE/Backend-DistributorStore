@@ -1,6 +1,6 @@
 package com.tecno_comfenalco.pa.application.product.orchestator;
 
-import java.util.List;
+import java.time.Instant;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -50,15 +50,16 @@ public class ProductUseCaseImp implements ProductUseCase {
     @Override
     public EditProductCommandResult editProduct(EditProductCommand cmd) {
 
-        boolean existsProduct = iProductRepositoryPort.existsByProductIdAndDistributorId(cmd.productId(),
+        Optional<ProductModel> optProduct = iProductRepositoryPort.findByProductId(cmd.productId(),
                 cmd.distributorId());
 
-        if (!existsProduct) {
+        if (optProduct.isEmpty()) {
             throw new ProductNotFoundException();
         }
 
-        ProductModel updateProduct = ProductModel.createNew(cmd.productId(), cmd.distributorId(), cmd.sku(), cmd.name(),
-                cmd.unit(), cmd.price());
+        ProductModel updateProduct = ProductModel.createNew(optProduct.get().getId(),
+                optProduct.get().getDistributorId(), cmd.sku(), cmd.name(),
+                cmd.unit(), cmd.price(), optProduct.get().getCreateAt(), Instant.now());
 
         iProductRepositoryPort.save(updateProduct);
 

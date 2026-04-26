@@ -6,7 +6,7 @@ import com.tecno_comfenalco.pa.infrastructure.auth.entity.UserDocument;
 public class UserMapper {
     public static UserModel toDomain(UserDocument userDocument) {
         UserModel userModel = UserModel.createNew(userDocument.getId(), userDocument.getUsername(),
-                userDocument.getPassword(), userDocument.getRoles(), userDocument.isEnabled());
+                userDocument.getPassword(), userDocument.getRoles(), userDocument.getEmail(), userDocument.isEnabled());
         return userModel;
     }
 
@@ -16,6 +16,7 @@ public class UserMapper {
         userDocument.setUsername(userModel.getUsername());
         userDocument.setPassword(userModel.getPassword());
         userDocument.setRoles(userModel.getRoles());
+        userDocument.setEmail(userModel.getEmail());
         userDocument.setEnabled(userModel.isEnabled());
 
         return userDocument;

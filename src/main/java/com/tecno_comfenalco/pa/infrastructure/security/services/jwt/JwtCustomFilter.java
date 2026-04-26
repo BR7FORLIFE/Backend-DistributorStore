@@ -51,7 +51,6 @@ public class JwtCustomFilter extends OncePerRequestFilter {
                 username = jwtUtils.decode(token);
             } catch (Exception e) {
                 System.out.println("Invalid JWT from cookie: " + e.getMessage());
-                // Si el token es inválido, limpiar la cookie inmediatamente
                 Cookie invalidCookie = new Cookie("jwt", "");
                 invalidCookie.setHttpOnly(true);
                 invalidCookie.setSecure(false);
@@ -59,7 +58,7 @@ public class JwtCustomFilter extends OncePerRequestFilter {
                 invalidCookie.setMaxAge(0);
                 invalidCookie.setAttribute("SameSite", "None");
                 response.addCookie(invalidCookie);
-                token = null; // Marcar token como nulo para no procesarlo más
+                token = null;
             }
         }
 
@@ -73,7 +72,6 @@ public class JwtCustomFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             } catch (Exception e) {
-                // Usuario no encontrado o token inválido - limpiar la cookie
                 System.out.println("Error loading user from JWT: " + e.getMessage());
                 Cookie invalidCookie = new Cookie("jwt", "");
                 invalidCookie.setHttpOnly(true);
@@ -82,7 +80,6 @@ public class JwtCustomFilter extends OncePerRequestFilter {
                 invalidCookie.setMaxAge(0);
                 invalidCookie.setAttribute("SameSite", "None");
                 response.addCookie(invalidCookie);
-                // No establecer autenticación - continuar como usuario anónimo
             }
         }
 

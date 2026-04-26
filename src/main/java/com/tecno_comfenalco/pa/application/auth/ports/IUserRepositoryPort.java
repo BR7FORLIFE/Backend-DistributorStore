@@ -9,6 +9,8 @@ import com.tecno_comfenalco.pa.domain.auth.models.UserModel;
 public interface IUserRepositoryPort {
     boolean existsByUsername(String username);
 
+    boolean existsByEmail(String email);
+
     UserModel save(UserModel userModel);
 
     Optional<UserModel> findByUserId(UUID id);

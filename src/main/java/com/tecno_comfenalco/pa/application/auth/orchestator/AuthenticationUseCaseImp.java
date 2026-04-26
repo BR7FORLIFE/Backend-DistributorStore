@@ -2,13 +2,20 @@ package com.tecno_comfenalco.pa.application.auth.orchestator;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
+import com.tecno_comfenalco.pa.application.auth.Exceptions.BadCredentialException;
+import com.tecno_comfenalco.pa.application.auth.Exceptions.UserNotEnabledException;
 import com.tecno_comfenalco.pa.application.auth.Exceptions.UserNotFoundException;
 import com.tecno_comfenalco.pa.application.auth.command.actions.EditUserCommand;
 import com.tecno_comfenalco.pa.application.auth.command.actions.LoginUserCommand;
@@ -38,27 +45,40 @@ public class AuthenticationUseCaseImp implements AuthenticationUseCase {
 
     @Override
     public RegisterUserCommandResult registerUser(RegisterUserCommand cmd) {
-        boolean existsUser = userRepositoryPort.existsByUsername(cmd.username());
+        boolean existsUser = userRepositoryPort.existsByEmail(cmd.email());
 
-        if (!existsUser) {
+        if (existsUser) {
             throw new UserNotFoundException();
         }
 
-        UserModel user = UserModel.createDraft(cmd.username(), cmd.password(), cmd.roles(), cmd.enabled());
+        UserModel user = UserModel.createDraft(cmd.username(), cmd.password(), Set.of("USER"), cmd.email(), false);
+
         userRepositoryPort.save(user);
 
-        return new RegisterUserCommandResult("User registered successfully", user.getId());
+        return new RegisterUserCommandResult(user.getId(), "User registered wait the admin aceptation!");
     }
 
     @Override
     public LoginUserCommandResult loginUser(LoginUserCommand cmd) {
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(cmd.username(), cmd.password()));
+        try {
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(cmd.username(), cmd.password()));
 
-        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
-        String role = details.getAuthorities().iterator().next().getAuthority().replace("ROLE_", "");
+            CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
 
-        return new LoginUserCommandResult(role);
+            Set<String> roles = details.getAuthorities().stream()
+                    .map(auth -> auth.getAuthority().replace("ROLE_", ""))
+                    .collect(Collectors.toSet());
+
+            return new LoginUserCommandResult(roles);
+
+        } catch (DisabledException e) {
+            throw new UserNotEnabledException();
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialException();
+        } catch (AuthenticationException authenticationException) {
+            throw new com.tecno_comfenalco.pa.application.auth.Exceptions.AuthenticationException();
+        }
     }
 
     @Override
@@ -99,6 +119,7 @@ public class AuthenticationUseCaseImp implements AuthenticationUseCase {
 
         UserModel user = UserModel.createNew(userOpt.get().getId(), cmd.username(), cmd.password(),
                 userOpt.get().getRoles(),
+                userOpt.get().getEmail(),
                 userOpt.get().isEnabled());
 
         userRepositoryPort.save(user);

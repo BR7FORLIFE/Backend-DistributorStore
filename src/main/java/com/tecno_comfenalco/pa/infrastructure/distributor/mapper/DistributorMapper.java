@@ -8,8 +8,10 @@ public class DistributorMapper {
     public static DistributorModel toDomain(DistributorDocument distributorDocument) {
         DistributorModel distributorModel = DistributorModel.createNew(distributorDocument.getId(),
                 distributorDocument.getUserId(), distributorDocument.getNit(), distributorDocument.getName(),
-                distributorDocument.getPhoneNumber(), distributorDocument.getEmail(),
-                distributorDocument.getDirectionDto(), null); // necesito el mapper de vehicle para la lista
+                distributorDocument.getPhoneNumber(), distributorDocument.getEmail(), distributorDocument.getCreateAt(),
+                distributorDocument.getUpdateAt(), distributorDocument.getDirectionDto(), null); // necesito el mapper
+                                                                                                 // de vehicle para la
+                                                                                                 // lista
 
         return distributorModel;
     }
@@ -22,6 +24,8 @@ public class DistributorMapper {
         distributorDocument.setName(distributorModel.getName());
         distributorDocument.setPhoneNumber(distributorModel.getPhoneNumber());
         distributorDocument.setEmail(distributorModel.getEmail());
+        distributorDocument.setCreateAt(distributorDocument.getCreateAt());
+        distributorDocument.setUpdateAt(distributorModel.getUpdateAt());
         distributorDocument.setDirectionDto(distributorModel.getDirectionDto());
         distributorDocument.setVehicleDocuments(null); // usar el mapper para la lista de vehiculos
 

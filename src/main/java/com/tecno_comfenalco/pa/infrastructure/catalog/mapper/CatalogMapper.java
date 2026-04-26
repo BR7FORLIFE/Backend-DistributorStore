@@ -20,7 +20,8 @@ public class CatalogMapper {
                 .toList();
 
         CatalogModel catalogModel = CatalogModel.createNew(catalogDocument.getId(), catalogDocument.getDistributorId(),
-                catalogDocument.getCatalogCode(), catalogDocument.getName(), categoryModels);
+                catalogDocument.getCatalogCode(), catalogDocument.getName(), catalogDocument.getCreateAt(),
+                catalogDocument.getUpdateAt(), categoryModels);
 
         return catalogModel;
     }
@@ -32,7 +33,8 @@ public class CatalogMapper {
                 .toList();
 
         CatalogDocument catalogDocument = new CatalogDocument(catalogModel.getId(), catalogModel.getDistributorId(),
-                catalogModel.getCatalogCode(), catalogModel.getName(), categoryEmbeddedEntities);
+                catalogModel.getCatalogCode(), catalogModel.getName(), catalogModel.getCreateAt(),
+                catalogModel.getUpdateAt(), categoryEmbeddedEntities);
 
         return catalogDocument;
     }

@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.infrastructure.catalog.entity;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,5 +25,7 @@ public class CatalogDocument {
     private UUID distributorId;
     private String catalogCode;
     private String name;
+    private Instant createAt;
+    private Instant updateAt;
     private List<CategoryEmbeddedEntity> categories;
 }

@@ -1,27 +1,42 @@
-package com.tecno_comfenalco.pa.domain.vehicle.model;
+package com.tecno_comfenalco.pa.infrastructure.vehicle.entity;
 
 import java.util.UUID;
 
-public class VehicleModel {
+public class VehicleSummaryDocument {
     private UUID id;
     private UUID distributorId;
     private String licensePlate;
     private String model;
     private String brand;
 
-    public static VehicleModel createDraft(UUID distributorId, String licensePlate, String model, String brand) {
-        return new VehicleModel(UUID.randomUUID(), distributorId, licensePlate, model, brand);
+    public VehicleSummaryDocument() {
     }
 
-    public static VehicleModel createNew(UUID id, UUID distributorId, String licensePlate, String model, String brand) {
-        return new VehicleModel(id, distributorId, licensePlate, model, brand);
-    }
-
-    public VehicleModel(UUID id, UUID distributorId, String licensePlate, String model, String brand) {
+    public VehicleSummaryDocument(UUID id, UUID distributorId, String licensePlate, String model, String brand) {
         this.id = id;
         this.distributorId = distributorId;
         this.licensePlate = licensePlate;
         this.model = model;
+        this.brand = brand;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setDistributorId(UUID distributorId) {
+        this.distributorId = distributorId;
+    }
+
+    public void setLicensePlate(String licensePlate) {
+        this.licensePlate = licensePlate;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public void setBrand(String brand) {
         this.brand = brand;
     }
 

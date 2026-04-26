@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.application.distributor.orchestator;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -99,7 +100,8 @@ public class DistributorUseCaseImp implements DistributorUseCase {
 
         DistributorModel updateDistributor = DistributorModel.createNew(cmd.distributorId(),
                 optDistributorModel.get().getUserId(), optDistributorModel.get().getNit(), cmd.name(),
-                cmd.phoneNumber(), optDistributorModel.get().getEmail(), cmd.direction(),
+                cmd.phoneNumber(), optDistributorModel.get().getEmail(), optDistributorModel.get().getCreateAt(),
+                Instant.now(), cmd.direction(),
                 optDistributorModel.get().getVehicles());
 
         distributorRepositoryPort.save(updateDistributor);

@@ -11,4 +11,6 @@ public interface IMongoUserRepository extends MongoRepository<UserDocument, UUID
     Boolean existsByUsername(String username);
 
     Optional<UserDocument> findByUsername(String username);
+
+    Boolean existsByEmail(String Email);
 }

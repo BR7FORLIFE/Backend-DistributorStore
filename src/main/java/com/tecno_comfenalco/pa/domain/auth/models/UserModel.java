@@ -8,26 +8,31 @@ public class UserModel {
     private String username;
     private String password;
     private boolean enabled;
+    private String email;
     private Set<String> roles;
 
     public UserModel() {
     }
 
-    public static UserModel createNew(UUID id, String username, String password, Set<String> roles, boolean enabled) {
+    public static UserModel createNew(UUID id, String username, String password, Set<String> roles, String email,
+            boolean enabled) {
         return UserModel.builder()
                 .id(id)
                 .username(username)
                 .password(password)
+                .email(email)
                 .roles(roles)
                 .enabled(enabled)
                 .build();
     }
 
-    public static UserModel createDraft(String username, String password, Set<String> roles, boolean enabled) {
+    public static UserModel createDraft(String username, String password, Set<String> roles, String email,
+            boolean enabled) {
         return UserModel.builder()
                 .id(UUID.randomUUID())
                 .username(username)
                 .password(password)
+                .email(email)
                 .roles(roles)
                 .enabled(enabled)
                 .build();
@@ -37,6 +42,7 @@ public class UserModel {
         this.id = builder.id;
         this.username = builder.username;
         this.password = builder.password;
+        this.email = builder.email;
         this.enabled = builder.enabled;
         this.roles = builder.roles;
     }
@@ -95,11 +101,16 @@ public class UserModel {
         return new Builder();
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public static class Builder {
         private UUID id;
         private String username;
         private String password;
         private boolean enabled;
+        private String email;
         private Set<String> roles;
 
         public Builder id(UUID id) {
@@ -124,6 +135,11 @@ public class UserModel {
 
         public Builder roles(Set<String> roles) {
             this.roles = roles;
+            return this;
+        }
+
+        public Builder email(String email) {
+            this.email = email;
             return this;
         }
 

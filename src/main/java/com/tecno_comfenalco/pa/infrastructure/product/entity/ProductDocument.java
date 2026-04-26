@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.infrastructure.product.entity;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
@@ -25,4 +26,6 @@ public class ProductDocument {
     private String name;
     private Unit unit;
     private Double price;
+    private Instant createAt;
+    private Instant updateAt;
 }

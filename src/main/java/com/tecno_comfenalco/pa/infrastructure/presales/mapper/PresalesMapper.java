@@ -8,7 +8,8 @@ public class PresalesMapper {
     public static PresalesModel toDomain(PresalesDocument presalesDocument) {
         PresalesModel presalesModel = PresalesModel.createNew(presalesDocument.getId(),
                 presalesDocument.getDistributorId(), presalesDocument.getName(), presalesDocument.getPhoneNumber(),
-                presalesDocument.getEmail(), presalesDocument.getDocumentTypeEnum(),
+                presalesDocument.getEmail(), presalesDocument.getCreateAt(), presalesDocument.getUpdateAt(),
+                presalesDocument.getDocumentTypeEnum(),
                 presalesDocument.getDocumentNumber());
 
         return presalesModel;
@@ -21,6 +22,8 @@ public class PresalesMapper {
         presalesDocument.setName(presalesModel.getName());
         presalesDocument.setPhoneNumber(presalesModel.getPhoneNumber());
         presalesDocument.setEmail(presalesModel.getEmail());
+        presalesDocument.setCreateAt(presalesModel.getCreateAt());
+        presalesDocument.setUpdateAt(presalesModel.getUpdateAt());
         presalesDocument.setDocumentTypeEnum(presalesModel.getDocumentTypeEnum());
         presalesDocument.setDocumentNumber(presalesModel.getDocumentNumber());
 

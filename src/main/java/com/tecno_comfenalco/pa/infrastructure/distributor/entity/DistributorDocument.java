@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.infrastructure.distributor.entity;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,6 +28,8 @@ public class DistributorDocument {
     private String name;
     private Long phoneNumber;
     private String email;
+    private Instant createAt;
+    private Instant updateAt;
     private DirectionDto directionDto;
     private List<VehicleDocument> vehicleDocuments;
 }

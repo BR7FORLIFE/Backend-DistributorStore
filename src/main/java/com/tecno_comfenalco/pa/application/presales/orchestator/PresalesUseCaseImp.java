@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.application.presales.orchestator;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -59,7 +60,8 @@ public class PresalesUseCaseImp implements PresalesUseCase {
 
         PresalesModel updatePresales = PresalesModel.createNew(optPresales.get().getId(),
                 optPresales.get().getDistributorId(), optPresales.get().getName(), cmd.phoneNumber(),
-                optPresales.get().getEmail(), optPresales.get().getDocumentTypeEnum(),
+                optPresales.get().getEmail(), optPresales.get().getCreateAt(), Instant.now(),
+                optPresales.get().getDocumentTypeEnum(),
                 optPresales.get().getDocumentNumber());
 
         PresalesModel result = presalesRepositoryPort.save(updatePresales);
