@@ -1,7 +1,6 @@
 name: 01-webflux-compose
 
 services:
-
   mongo: 
     image: mongo:noble
     container_name: districore-database-mongo
@@ -18,26 +17,6 @@ services:
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
-      timeout: 5s
-      retries: 5
-
-### base de datos
-  postgres:
-    image: postgres:17
-    container_name: districore-database-posgresql
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    networks:
-      - backend-net
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_NAME}"]
-      interval: 5s
       timeout: 5s
       retries: 5
 
@@ -58,7 +37,6 @@ services:
       - .env
 
 volumes:
-  pgdata:
   mongo_data:
 
 networks:
