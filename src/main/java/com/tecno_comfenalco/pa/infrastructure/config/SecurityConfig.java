@@ -54,13 +54,15 @@ public class SecurityConfig {
                 }))
                 .authorizeHttpRequests(http -> {
                     http.requestMatchers(
+                            "/auth/**",
                             "/api/v3/api-docs/**",
                             "/v3/api-docs/**",
                             "/v3/api-docs",
                             "/swagger-ui/**",
                             "/swagger-ui.html",
                             "/webjars/**",
-                            "/swagger-resources/**").permitAll()
+                            "/swagger-resources/**",
+                            "/api/auth/**").permitAll()
                             .anyRequest().authenticated();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
