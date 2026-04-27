@@ -20,7 +20,9 @@ import com.tecno_comfenalco.pa.application.delivery.ports.IDeliveryRepositoryPor
 import com.tecno_comfenalco.pa.application.delivery.usecases.DeliveryUseCase;
 import com.tecno_comfenalco.pa.domain.delivery.model.DeliveryModel;
 import com.tecno_comfenalco.pa.domain.vehicle.model.VehicleSummaryModel;
+import com.tecno_comfenalco.pa.shared.utils.helper.ValidateQueryParams;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
+import com.tecno_comfenalco.pa.shared.utils.http.RequestParams;
 
 @Service
 public class DeliveryUseCaseImp implements DeliveryUseCase {
@@ -52,6 +54,7 @@ public class DeliveryUseCaseImp implements DeliveryUseCase {
 
     @Override
     public ListAllDeliveryCommandResult listAllDeliveries(ListAllDeliveryCommand cmd) {
+        ValidateQueryParams.validate(cmd.params());
 
         PagedResult<DeliveryModel> deliveries = deliveryRepositoryPort.findAllPaged(cmd.distributorId(),
                 cmd.params().page(), cmd.params().size(), cmd.params().sortBy(), cmd.params().direction().name());
