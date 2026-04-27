@@ -12,33 +12,35 @@ public class DeliveryMapper {
 
     public static DeliveryModel toDomain(DeliveryDocument deliveryDocument) {
 
-        List<VehicleSummaryModel> vehiclesModel = null;
+        List<VehicleSummaryModel> vehiclesModel = (deliveryDocument.getVehicles() == null)
+                ? List.of()
+                : deliveryDocument.getVehicles()
+                        .stream()
+                        .map(VehicleMapper::toSummaryModel)
+                        .toList();
 
-        if (!deliveryDocument.getVehicles().isEmpty()) {
-            vehiclesModel = deliveryDocument.getVehicles()
-                    .stream()
-                    .map(VehicleMapper::toSummaryModel)
-                    .toList();
-        }
-
-        DeliveryModel delivery = DeliveryModel.createNew(deliveryDocument.getId(), deliveryDocument.getDistributorId(),
-                deliveryDocument.getName(), deliveryDocument.getDocumentType(), deliveryDocument.getDocumentNumber(),
-                deliveryDocument.getPhoneNumber(), deliveryDocument.getLicenseNumber(),
-                deliveryDocument.getLicenseType(), vehiclesModel);
-
-        return delivery;
+        return DeliveryModel.createNew(
+                deliveryDocument.getId(),
+                deliveryDocument.getDistributorId(),
+                deliveryDocument.getName(),
+                deliveryDocument.getDocumentType(),
+                deliveryDocument.getDocumentNumber(),
+                deliveryDocument.getPhoneNumber(),
+                deliveryDocument.getLicenseNumber(),
+                deliveryDocument.getLicenseType(),
+                vehiclesModel,
+                deliveryDocument.getCreateAt(),
+                deliveryDocument.getUpdateAt());
     }
 
     public static DeliveryDocument toEntity(DeliveryModel deliveryModel) {
-
-        List<VehicleSummaryDocument> vehicles = null;
-
-        if (!deliveryModel.getVehicles().isEmpty()) {
-            vehicles = deliveryModel.getVehicles()
-                    .stream()
-                    .map(VehicleMapper::toSummaryEntity)
-                    .toList();
-        }
+        
+        List<VehicleSummaryDocument> vehicles = (deliveryModel.getVehicles() == null)
+                ? List.of()
+                : deliveryModel.getVehicles()
+                        .stream()
+                        .map(VehicleMapper::toSummaryEntity)
+                        .toList();
 
         DeliveryDocument delivery = new DeliveryDocument();
 
@@ -51,6 +53,8 @@ public class DeliveryMapper {
         delivery.setLicenseNumber(deliveryModel.getLicenseNumber());
         delivery.setLicenseType(deliveryModel.getLicenseType());
         delivery.setVehicles(vehicles);
+        delivery.setCreateAt(deliveryModel.getCreateAt());
+        delivery.setUpdateAt(deliveryModel.getUpdateAt());
 
         return delivery;
     }

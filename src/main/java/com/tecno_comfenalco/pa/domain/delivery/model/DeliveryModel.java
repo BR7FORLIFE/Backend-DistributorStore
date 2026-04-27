@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.domain.delivery.model;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,23 +18,26 @@ public class DeliveryModel {
     private Long licenseNumber;
     private LicenseTypeEnum licenseType;
     private List<VehicleSummaryModel> vehicles;
+    private Instant createAt;
+    private Instant updateAt;
 
     public static DeliveryModel createDraft(UUID distributorId, String name, DocumentTypeEnum documentTypeEnum,
             Long documentNumber, Long phoneNumber, Long licenseNumber, LicenseTypeEnum licenseTypeEnum,
             List<VehicleSummaryModel> vehicles) {
         return new DeliveryModel(UUID.randomUUID(), distributorId, name, documentTypeEnum, documentNumber, phoneNumber,
-                licenseNumber, licenseTypeEnum, vehicles);
+                licenseNumber, licenseTypeEnum, vehicles, Instant.now(), Instant.now());
     }
 
     public static DeliveryModel createNew(UUID id, UUID distributorId, String name, DocumentTypeEnum documentTypeEnum,
             Long documentNumber, Long phoneNumber, Long licenseNumber, LicenseTypeEnum licenseTypeEnum,
-            List<VehicleSummaryModel> vehicles) {
+            List<VehicleSummaryModel> vehicles, Instant createAt, Instant updateAt) {
         return new DeliveryModel(id, distributorId, name, documentTypeEnum, documentNumber, phoneNumber, licenseNumber,
-                licenseTypeEnum, vehicles);
+                licenseTypeEnum, vehicles, createAt, updateAt);
     }
 
     public DeliveryModel(UUID id, UUID distributorId, String name, DocumentTypeEnum documentType, Long documentNumber,
-            Long phoneNumber, Long licenseNumber, LicenseTypeEnum licenseType, List<VehicleSummaryModel> vehicles) {
+            Long phoneNumber, Long licenseNumber, LicenseTypeEnum licenseType, List<VehicleSummaryModel> vehicles,
+            Instant createAt, Instant updateAt) {
         this.id = id;
         this.distributorId = distributorId;
         this.name = name;
@@ -43,6 +47,8 @@ public class DeliveryModel {
         this.licenseNumber = licenseNumber;
         this.licenseType = licenseType;
         this.vehicles = vehicles;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
     }
 
     public UUID getId() {
@@ -79,6 +85,14 @@ public class DeliveryModel {
 
     public List<VehicleSummaryModel> getVehicles() {
         return vehicles;
+    }
+
+    public Instant getCreateAt() {
+        return createAt;
+    }
+
+    public Instant getUpdateAt() {
+        return updateAt;
     }
 
 }

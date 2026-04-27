@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.infrastructure.delivery.entity;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,4 +32,6 @@ public class DeliveryDocument {
     private Long licenseNumber;
     private LicenseTypeEnum licenseType;
     private List<VehicleSummaryDocument> vehicles;
+    private Instant createAt;
+    private Instant updateAt;
 }

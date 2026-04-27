@@ -39,28 +39,30 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.userDetailsService(customUserDetailsService)
-                // Deshabilita la autenticacion con formulario
                 .formLogin(AbstractHttpConfigurer::disable)
-                // Deshabilita CSRF, que no es necesario para APIs sin estado
                 .csrf(AbstractHttpConfigurer::disable)
-                // Deshabilita CORS
                 .cors(t -> t.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowCredentials(true);
                     config.addAllowedOrigin("http://localhost:8080");
                     config.addAllowedOrigin("http://localhost:4000");
                     config.addAllowedOrigin("http://localhost:4200");
-                    config.addAllowedOrigin("null"); // 💡 Añade 'null' para permitir peticiones desde about:blank o
-                                                     // archivos locales
+                    config.addAllowedOrigin("null");
                     config.addAllowedHeader("*");
                     config.addAllowedMethod("*");
                     return config;
                 }))
                 .authorizeHttpRequests(http -> {
-                    http.anyRequest()
-                            .permitAll();
+                    http.requestMatchers(
+                            "/api/v3/api-docs/**",
+                            "/v3/api-docs/**",
+                            "/v3/api-docs",
+                            "/swagger-ui/**",
+                            "/swagger-ui.html",
+                            "/webjars/**",
+                            "/swagger-resources/**").permitAll()
+                            .anyRequest().authenticated();
                 })
-                // Establece la politica de sesion como sin estado
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         httpSecurity.addFilterBefore(jwtCustomFilter, UsernamePasswordAuthenticationFilter.class);

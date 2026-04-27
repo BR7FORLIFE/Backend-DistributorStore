@@ -27,22 +27,30 @@ public class VehicleMapper {
     }
 
     public static VehicleSummaryModel toSummaryModel(VehicleSummaryDocument vehicleSummaryDocument) {
-        VehicleSummaryModel vehicleSummary = VehicleSummaryModel.createNew(vehicleSummaryDocument.getId(),
-                vehicleSummaryDocument.getDistributorId(), vehicleSummaryDocument.getLicensePlate(),
-                vehicleSummaryDocument.getModel(), vehicleSummaryDocument.getBrand());
+        if (vehicleSummaryDocument != null) {
+            VehicleSummaryModel vehicleSummary = VehicleSummaryModel.createNew(vehicleSummaryDocument.getId(),
+                    vehicleSummaryDocument.getDistributorId(), vehicleSummaryDocument.getLicensePlate(),
+                    vehicleSummaryDocument.getModel(), vehicleSummaryDocument.getBrand());
 
-        return vehicleSummary;
+            return vehicleSummary;
+        }
+
+        return null;
     }
 
     public static VehicleSummaryDocument toSummaryEntity(VehicleSummaryModel vehicleSummaryModel) {
-        VehicleSummaryDocument vehicleSummary = new VehicleSummaryDocument();
+        if (vehicleSummaryModel != null) {
+            VehicleSummaryDocument vehicleSummary = new VehicleSummaryDocument();
 
-        vehicleSummary.setId(vehicleSummaryModel.getId());
-        vehicleSummary.setDistributorId(vehicleSummaryModel.getDistributorId());
-        vehicleSummary.setLicensePlate(vehicleSummaryModel.getLicensePlate());
-        vehicleSummary.setModel(vehicleSummaryModel.getModel());
-        vehicleSummary.setBrand(vehicleSummaryModel.getBrand());
+            vehicleSummary.setId(vehicleSummaryModel.getId());
+            vehicleSummary.setDistributorId(vehicleSummaryModel.getDistributorId());
+            vehicleSummary.setLicensePlate(vehicleSummaryModel.getLicensePlate());
+            vehicleSummary.setModel(vehicleSummaryModel.getModel());
+            vehicleSummary.setBrand(vehicleSummaryModel.getBrand());
 
-        return vehicleSummary;
+            return vehicleSummary;
+        }
+
+        return null;
     }
 }

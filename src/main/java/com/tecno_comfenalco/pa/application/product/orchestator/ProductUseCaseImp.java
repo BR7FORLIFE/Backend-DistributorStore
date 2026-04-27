@@ -50,8 +50,8 @@ public class ProductUseCaseImp implements ProductUseCase {
     @Override
     public EditProductCommandResult editProduct(EditProductCommand cmd) {
 
-        Optional<ProductModel> optProduct = iProductRepositoryPort.findByProductId(cmd.productId(),
-                cmd.distributorId());
+        Optional<ProductModel> optProduct = iProductRepositoryPort.findByProductId(cmd.distributorId(),
+                cmd.productId());
 
         if (optProduct.isEmpty()) {
             throw new ProductNotFoundException();
