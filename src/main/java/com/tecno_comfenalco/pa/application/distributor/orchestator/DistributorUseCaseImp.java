@@ -3,10 +3,14 @@ package com.tecno_comfenalco.pa.application.distributor.orchestator;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.tecno_comfenalco.pa.application.auth.Exceptions.UserNotFoundException;
+import com.tecno_comfenalco.pa.application.auth.ports.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.application.distributor.command.actions.EditDistributorCommand;
 import com.tecno_comfenalco.pa.application.distributor.command.actions.ListAllDistributorsCommand;
 import com.tecno_comfenalco.pa.application.distributor.command.actions.RegisterDistributorCommand;
@@ -19,6 +23,7 @@ import com.tecno_comfenalco.pa.application.distributor.exceptions.DistributorAlr
 import com.tecno_comfenalco.pa.application.distributor.exceptions.DistributorNotFoundException;
 import com.tecno_comfenalco.pa.application.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.application.distributor.usecase.DistributorUseCase;
+import com.tecno_comfenalco.pa.domain.auth.models.UserModel;
 import com.tecno_comfenalco.pa.domain.distributor.model.DistributorModel;
 import com.tecno_comfenalco.pa.shared.utils.helper.ValidateQueryParams;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
@@ -27,11 +32,15 @@ import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 public class DistributorUseCaseImp implements DistributorUseCase {
 
     private final IDistributorRepositoryPort distributorRepositoryPort;
+    private final IUserRepositoryPort userRepositoryPort;
 
-    public DistributorUseCaseImp(IDistributorRepositoryPort iDistributorRepositoryPort) {
+    public DistributorUseCaseImp(IDistributorRepositoryPort iDistributorRepositoryPort,
+            IUserRepositoryPort userRepositoryPort) {
         this.distributorRepositoryPort = iDistributorRepositoryPort;
+        this.userRepositoryPort = userRepositoryPort;
     }
 
+    @Transactional
     @Override
     public RegisterDistributorCommandResult registerDistributor(RegisterDistributorCommand cmd) {
 
@@ -41,16 +50,30 @@ public class DistributorUseCaseImp implements DistributorUseCase {
         }
 
         // validamos que no exista un email asociado
-        if (distributorRepositoryPort.existsDistributorByEmail(cmd.email())) {
+        if (distributorRepositoryPort.existsDistributorByEmail(cmd.email())
+                || distributorRepositoryPort.existsDistributorByNit(cmd.nit())) {
             throw new DistributorAlreadyExists();
         }
 
-        DistributorModel newDistributorModel = DistributorModel.createDraft(cmd.userId(), cmd.nit(), cmd.name(),
+        Optional<UserModel> optUser = userRepositoryPort.findByUserId(cmd.userId());
+
+        if (optUser.isEmpty()) {
+            throw new UserNotFoundException();
+        }
+
+        DistributorModel newDistributorModel = DistributorModel.createDraft(optUser.get().getId(), cmd.nit(),
+                cmd.name(),
                 cmd.phoneNumber(), cmd.email(), cmd.directionDto(), List.of());
 
         DistributorModel result = distributorRepositoryPort.save(newDistributorModel);
 
-        return new RegisterDistributorCommandResult(result.getId(), result.getUserId(),
+        UserModel changeRolForUser = UserModel.createNew(optUser.get().getId(), result.getId(),
+                optUser.get().getUsername(), optUser.get().getPassword(), Set.of("DISTRIBUTOR"),
+                optUser.get().getEmail(), optUser.get().isEnabled());
+
+        UserModel saved = userRepositoryPort.save(changeRolForUser);
+
+        return new RegisterDistributorCommandResult(result.getId(), saved.getId(),
                 "Distributor created succesfull!");
     }
 

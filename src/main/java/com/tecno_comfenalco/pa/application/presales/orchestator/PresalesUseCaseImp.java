@@ -1,12 +1,15 @@
 package com.tecno_comfenalco.pa.application.presales.orchestator;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.tecno_comfenalco.pa.application.auth.Exceptions.UserAlreadyExistsException;
+import com.tecno_comfenalco.pa.application.auth.ports.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.application.presales.command.actions.EditPresalesCommand;
 import com.tecno_comfenalco.pa.application.presales.command.actions.GetPresalesInfoCommand;
 import com.tecno_comfenalco.pa.application.presales.command.actions.ListPresalesCommand;
@@ -20,6 +23,7 @@ import com.tecno_comfenalco.pa.application.presales.exceptions.PresalesAlreadyEx
 import com.tecno_comfenalco.pa.application.presales.exceptions.PresalesNotFoundException;
 import com.tecno_comfenalco.pa.application.presales.ports.IPresalesRepositoryPort;
 import com.tecno_comfenalco.pa.application.presales.usecases.PresalesUseCase;
+import com.tecno_comfenalco.pa.domain.auth.models.UserModel;
 import com.tecno_comfenalco.pa.domain.presales.model.PresalesModel;
 import com.tecno_comfenalco.pa.shared.utils.helper.ValidateQueryParams;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
@@ -28,9 +32,14 @@ import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 public class PresalesUseCaseImp implements PresalesUseCase {
 
     private final IPresalesRepositoryPort presalesRepositoryPort;
+    private final IUserRepositoryPort userRepositoryPort;
+    private final PasswordEncoder passwordEncoder;
 
-    public PresalesUseCaseImp(IPresalesRepositoryPort presalesRepositoryPort) {
+    public PresalesUseCaseImp(IPresalesRepositoryPort presalesRepositoryPort, IUserRepositoryPort userRepositoryPort,
+            PasswordEncoder passwordEncoder) {
         this.presalesRepositoryPort = presalesRepositoryPort;
+        this.userRepositoryPort = userRepositoryPort;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -40,12 +49,23 @@ public class PresalesUseCaseImp implements PresalesUseCase {
             throw new PresalesAlreadyExistsException();
         }
 
-        PresalesModel newPresales = PresalesModel.createDraft(cmd.distributorId(), cmd.name(), cmd.phoneNumber(),
+        if (userRepositoryPort.existsByEmail(cmd.email()) || userRepositoryPort.existsByUsername(cmd.username())) {
+            throw new UserAlreadyExistsException();
+        }
+
+        UserModel newUserPresales = UserModel.createDraft(cmd.distributorId(), cmd.username(),
+                passwordEncoder.encode(cmd.password()),
+                Set.of("PRESALES"), cmd.email(), true);
+
+        UserModel saved = userRepositoryPort.save(newUserPresales);
+
+        PresalesModel newPresales = PresalesModel.createDraft(cmd.distributorId(), saved.getId(), cmd.name(),
+                cmd.phoneNumber(),
                 cmd.email(), cmd.documentType(), cmd.documentNumber());
 
         PresalesModel result = presalesRepositoryPort.save(newPresales);
 
-        return new RegisterPresalesCommandResult(result.getId(), result.getDistributorId(),
+        return new RegisterPresalesCommandResult(result.getId(), result.getDistributorId(), saved.getId(),
                 "Presales register succesfull!");
     }
 
@@ -59,7 +79,8 @@ public class PresalesUseCaseImp implements PresalesUseCase {
         }
 
         PresalesModel updatePresales = PresalesModel.createNew(optPresales.get().getId(),
-                optPresales.get().getDistributorId(), optPresales.get().getName(), cmd.phoneNumber(),
+                optPresales.get().getDistributorId(), optPresales.get().getUserId(), optPresales.get().getName(),
+                cmd.phoneNumber(),
                 optPresales.get().getEmail(), optPresales.get().getCreateAt(), Instant.now(),
                 optPresales.get().getDocumentTypeEnum(),
                 optPresales.get().getDocumentNumber());

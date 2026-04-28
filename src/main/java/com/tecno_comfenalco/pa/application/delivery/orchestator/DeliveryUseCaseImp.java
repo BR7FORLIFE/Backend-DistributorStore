@@ -3,9 +3,14 @@ package com.tecno_comfenalco.pa.application.delivery.orchestator;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.tecno_comfenalco.pa.application.auth.Exceptions.UserAlreadyExistsException;
+import com.tecno_comfenalco.pa.application.auth.ports.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.application.delivery.command.actions.GetDeliveryByIdCommand;
 import com.tecno_comfenalco.pa.application.delivery.command.actions.ListAllDeliveryCommand;
 import com.tecno_comfenalco.pa.application.delivery.command.actions.RegisterDeliveryCommand;
@@ -18,37 +23,53 @@ import com.tecno_comfenalco.pa.application.delivery.exceptions.DeliveryAlreadyEx
 import com.tecno_comfenalco.pa.application.delivery.exceptions.DeliveryNotFoundException;
 import com.tecno_comfenalco.pa.application.delivery.ports.IDeliveryRepositoryPort;
 import com.tecno_comfenalco.pa.application.delivery.usecases.DeliveryUseCase;
+import com.tecno_comfenalco.pa.domain.auth.models.UserModel;
 import com.tecno_comfenalco.pa.domain.delivery.model.DeliveryModel;
 import com.tecno_comfenalco.pa.domain.vehicle.model.VehicleSummaryModel;
 import com.tecno_comfenalco.pa.shared.utils.helper.ValidateQueryParams;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
-import com.tecno_comfenalco.pa.shared.utils.http.RequestParams;
 
 @Service
 public class DeliveryUseCaseImp implements DeliveryUseCase {
 
     private final IDeliveryRepositoryPort deliveryRepositoryPort;
+    private final IUserRepositoryPort userRepositoryPort;
+    private final PasswordEncoder passwordEncoder;
 
-    public DeliveryUseCaseImp(IDeliveryRepositoryPort iDeliveryRepositoryPort) {
+    public DeliveryUseCaseImp(IDeliveryRepositoryPort iDeliveryRepositoryPort, IUserRepositoryPort userRepositoryPort,
+            PasswordEncoder passwordEncoder) {
         this.deliveryRepositoryPort = iDeliveryRepositoryPort;
+        this.userRepositoryPort = userRepositoryPort;
+        this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     @Override
     public RegisterDeliveryCommandResult registerDelivery(RegisterDeliveryCommand cmd) {
         if (deliveryRepositoryPort.existsByDocumentNumber(cmd.documentNumber())) {
             throw new DeliveryAlreadyExistsException();
         }
 
+        if (userRepositoryPort.existsByEmail(cmd.email()) || userRepositoryPort.existsByUsername(cmd.username())) {
+            throw new UserAlreadyExistsException();
+        }
+
         List<VehicleSummaryModel> vehicles = cmd.vehicles() == null
                 ? List.of()
                 : cmd.vehicles();
 
-        DeliveryModel newDelivery = DeliveryModel.createDraft(cmd.distributorId(), cmd.name(), cmd.documentTypeEnum(),
+        UserModel changeRolForUser = UserModel.createDraft(cmd.distributorId(), cmd.username(),
+                passwordEncoder.encode(cmd.password()), Set.of("DELIVERY"), cmd.email(), true);
+
+        UserModel saved = userRepositoryPort.save(changeRolForUser);
+
+        DeliveryModel newDelivery = DeliveryModel.createDraft(cmd.distributorId(), saved.getId(), cmd.name(),
+                cmd.email(), cmd.documentTypeEnum(),
                 cmd.documentNumber(), cmd.phoneNumber(), cmd.licenseNumber(), cmd.licenseTypeEnum(), vehicles);
 
-        DeliveryModel saved = deliveryRepositoryPort.save(newDelivery);
+        DeliveryModel savedDelivery = deliveryRepositoryPort.save(newDelivery);
 
-        return new RegisterDeliveryCommandResult(saved.getDistributorId(), saved.getId(),
+        return new RegisterDeliveryCommandResult(savedDelivery.getDistributorId(), savedDelivery.getId(), saved.getId(),
                 "Delivery register succesfull!");
     }
 
@@ -84,7 +105,9 @@ public class DeliveryUseCaseImp implements DeliveryUseCase {
         }
 
         DeliveryModel updateDelivery = DeliveryModel.createNew(optDelivery.get().getId(),
-                optDelivery.get().getDistributorId(), cmd.name(), optDelivery.get().getDocumentType(),
+                optDelivery.get().getDistributorId(), optDelivery.get().getUserId(), cmd.name(),
+                optDelivery.get().getEmail(),
+                optDelivery.get().getDocumentType(),
                 optDelivery.get().getDocumentNumber(), cmd.phoneNumber(), optDelivery.get().getLicenseNumber(),
                 cmd.licenseTypeEnum(), cmd.vehicles(), optDelivery.get().getCreateAt(), Instant.now());
 

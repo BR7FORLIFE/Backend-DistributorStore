@@ -12,9 +12,11 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.tecno_comfenalco.pa.application.auth.Exceptions.BadCredentialException;
+import com.tecno_comfenalco.pa.application.auth.Exceptions.UserAlreadyExistsException;
 import com.tecno_comfenalco.pa.application.auth.Exceptions.UserNotEnabledException;
 import com.tecno_comfenalco.pa.application.auth.Exceptions.UserNotFoundException;
 import com.tecno_comfenalco.pa.application.auth.command.actions.EditUserCommand;
@@ -36,11 +38,13 @@ public class AuthenticationUseCaseImp implements AuthenticationUseCase {
 
     private final IUserRepositoryPort userRepositoryPort;
     private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
     public AuthenticationUseCaseImp(IUserRepositoryPort iUserRepositoryPort,
-            AuthenticationManager authenticationManager) {
+            AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder) {
         this.userRepositoryPort = iUserRepositoryPort;
         this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -48,10 +52,12 @@ public class AuthenticationUseCaseImp implements AuthenticationUseCase {
         boolean existsUser = userRepositoryPort.existsByEmail(cmd.email());
 
         if (existsUser) {
-            throw new UserNotFoundException();
+            throw new UserAlreadyExistsException();
         }
 
-        UserModel user = UserModel.createDraft(cmd.username(), cmd.password(), Set.of("USER"), cmd.email(), false);
+        UserModel user = UserModel.createDraft(null, cmd.username(), passwordEncoder.encode(cmd.password()),
+                Set.of("USER"), cmd.email(),
+                true);
 
         userRepositoryPort.save(user);
 
@@ -70,7 +76,7 @@ public class AuthenticationUseCaseImp implements AuthenticationUseCase {
                     .map(auth -> auth.getAuthority().replace("ROLE_", ""))
                     .collect(Collectors.toSet());
 
-            return new LoginUserCommandResult(roles);
+            return new LoginUserCommandResult(roles, details.getDistributorId());
 
         } catch (DisabledException e) {
             throw new UserNotEnabledException();
@@ -117,7 +123,8 @@ public class AuthenticationUseCaseImp implements AuthenticationUseCase {
             throw new UserNotFoundException();
         }
 
-        UserModel user = UserModel.createNew(userOpt.get().getId(), cmd.username(), cmd.password(),
+        UserModel user = UserModel.createNew(userOpt.get().getDistributorId(), userOpt.get().getId(), cmd.username(),
+                cmd.password(),
                 userOpt.get().getRoles(),
                 userOpt.get().getEmail(),
                 userOpt.get().isEnabled());
