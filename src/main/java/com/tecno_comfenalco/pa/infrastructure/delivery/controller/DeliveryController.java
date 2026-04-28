@@ -52,7 +52,8 @@ public class DeliveryController {
                         @RequestBody @Valid RegisterDeliveryRequestDto dto, Authentication authentication) {
                 CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
 
-                RegisterDeliveryCommand cmd = new RegisterDeliveryCommand(details.getUserId(), dto.name(),
+                RegisterDeliveryCommand cmd = new RegisterDeliveryCommand(details.getUserId(), dto.username(),
+                                dto.password(), dto.email(), dto.name(),
                                 dto.documentType(),
                                 dto.documentNumber(), dto.phoneNumber(), dto.licenseNumber(), dto.licenseType(),
                                 dto.vehicles());

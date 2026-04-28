@@ -43,4 +43,7 @@ public class CustomUserDetails implements UserDetails {
         return userModel.getId();
     }
 
+    public UUID getDistributorId() {
+        return userModel.getDistributorId();
+    }
 }

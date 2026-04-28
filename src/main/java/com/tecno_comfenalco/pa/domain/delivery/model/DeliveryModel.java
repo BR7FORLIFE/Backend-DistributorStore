@@ -11,7 +11,9 @@ import com.tecno_comfenalco.pa.shared.enums.LicenseTypeEnum;
 public class DeliveryModel {
     private UUID id;
     private UUID distributorId;
+    private UUID userId;
     private String name;
+    private String email;
     private DocumentTypeEnum documentType;
     private Long documentNumber;
     private Long phoneNumber;
@@ -21,26 +23,35 @@ public class DeliveryModel {
     private Instant createAt;
     private Instant updateAt;
 
-    public static DeliveryModel createDraft(UUID distributorId, String name, DocumentTypeEnum documentTypeEnum,
+    public static DeliveryModel createDraft(UUID distributorId, UUID userId, String name, String email,
+            DocumentTypeEnum documentTypeEnum,
             Long documentNumber, Long phoneNumber, Long licenseNumber, LicenseTypeEnum licenseTypeEnum,
             List<VehicleSummaryModel> vehicles) {
-        return new DeliveryModel(UUID.randomUUID(), distributorId, name, documentTypeEnum, documentNumber, phoneNumber,
+        return new DeliveryModel(UUID.randomUUID(), distributorId, userId, name, email, documentTypeEnum,
+                documentNumber,
+                phoneNumber,
                 licenseNumber, licenseTypeEnum, vehicles, Instant.now(), Instant.now());
     }
 
-    public static DeliveryModel createNew(UUID id, UUID distributorId, String name, DocumentTypeEnum documentTypeEnum,
+    public static DeliveryModel createNew(UUID id, UUID distributorId, UUID userId, String name, String email,
+            DocumentTypeEnum documentTypeEnum,
             Long documentNumber, Long phoneNumber, Long licenseNumber, LicenseTypeEnum licenseTypeEnum,
             List<VehicleSummaryModel> vehicles, Instant createAt, Instant updateAt) {
-        return new DeliveryModel(id, distributorId, name, documentTypeEnum, documentNumber, phoneNumber, licenseNumber,
+        return new DeliveryModel(id, distributorId, userId, name, email, documentTypeEnum, documentNumber, phoneNumber,
+                licenseNumber,
                 licenseTypeEnum, vehicles, createAt, updateAt);
     }
 
-    public DeliveryModel(UUID id, UUID distributorId, String name, DocumentTypeEnum documentType, Long documentNumber,
+    public DeliveryModel(UUID id, UUID distributorId, UUID userId, String name, String email,
+            DocumentTypeEnum documentType,
+            Long documentNumber,
             Long phoneNumber, Long licenseNumber, LicenseTypeEnum licenseType, List<VehicleSummaryModel> vehicles,
             Instant createAt, Instant updateAt) {
         this.id = id;
         this.distributorId = distributorId;
+        this.userId = userId;
         this.name = name;
+        this.email = email;
         this.documentType = documentType;
         this.documentNumber = documentNumber;
         this.phoneNumber = phoneNumber;
@@ -59,8 +70,16 @@ public class DeliveryModel {
         return distributorId;
     }
 
+    public UUID getUserId() {
+        return userId;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public DocumentTypeEnum getDocumentType() {

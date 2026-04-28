@@ -25,7 +25,9 @@ public class DeliveryDocument {
     @Id
     private UUID id;
     private UUID distributorId;
+    private UUID userId;
     private String name;
+    private String email;
     private DocumentTypeEnum documentType;
     private Long documentNumber;
     private Long phoneNumber;

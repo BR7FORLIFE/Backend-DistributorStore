@@ -20,11 +20,10 @@ public class UserDocument {
 
     @Id
     private UUID id;
-
+    private UUID distributorId;
     private String username;
     private String password;
     private String email;
-
     private boolean enabled;
 
     private Set<String> roles;

@@ -22,7 +22,9 @@ public class DeliveryMapper {
         return DeliveryModel.createNew(
                 deliveryDocument.getId(),
                 deliveryDocument.getDistributorId(),
+                deliveryDocument.getUserId(),
                 deliveryDocument.getName(),
+                deliveryDocument.getEmail(),
                 deliveryDocument.getDocumentType(),
                 deliveryDocument.getDocumentNumber(),
                 deliveryDocument.getPhoneNumber(),
@@ -34,7 +36,7 @@ public class DeliveryMapper {
     }
 
     public static DeliveryDocument toEntity(DeliveryModel deliveryModel) {
-        
+
         List<VehicleSummaryDocument> vehicles = (deliveryModel.getVehicles() == null)
                 ? List.of()
                 : deliveryModel.getVehicles()
@@ -46,7 +48,9 @@ public class DeliveryMapper {
 
         delivery.setId(deliveryModel.getId());
         delivery.setDistributorId(deliveryModel.getDistributorId());
+        delivery.setUserId(deliveryModel.getUserId());
         delivery.setName(deliveryModel.getName());
+        delivery.setEmail(deliveryModel.getEmail());
         delivery.setDocumentType(deliveryModel.getDocumentType());
         delivery.setDocumentNumber(deliveryModel.getDocumentNumber());
         delivery.setPhoneNumber(deliveryModel.getPhoneNumber());

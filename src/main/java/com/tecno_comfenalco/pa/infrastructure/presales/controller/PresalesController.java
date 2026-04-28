@@ -43,78 +43,82 @@ import jakarta.validation.Valid;
 @RequestMapping("/presales")
 public class PresalesController {
 
-    private final PresalesUseCase presalesUseCase;
+        private final PresalesUseCase presalesUseCase;
 
-    public PresalesController(PresalesUseCase presalesUseCase) {
-        this.presalesUseCase = presalesUseCase;
-    }
+        public PresalesController(PresalesUseCase presalesUseCase) {
+                this.presalesUseCase = presalesUseCase;
+        }
 
-    @PostMapping
-    public ResponseEntity<RegisterPresalesResponseDto> newPresales(
-            @RequestBody @Valid RegisterPresalesRequestDto dtoPresales, Authentication authentication) {
+        @PostMapping
+        public ResponseEntity<RegisterPresalesResponseDto> newPresales(
+                        @RequestBody @Valid RegisterPresalesRequestDto dtoPresales, Authentication authentication) {
 
-        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+                CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
 
-        RegisterPresalesCommand cmd = new RegisterPresalesCommand(details.getUserId(), dtoPresales.name(),
-                dtoPresales.phoneNumber(),
-                dtoPresales.email(), dtoPresales.documentType(), dtoPresales.documentNumber());
+                RegisterPresalesCommand cmd = new RegisterPresalesCommand(details.getUserId(), dtoPresales.username(),
+                                dtoPresales.password(), dtoPresales.name(),
+                                dtoPresales.phoneNumber(),
+                                dtoPresales.email(), dtoPresales.documentType(), dtoPresales.documentNumber());
 
-        RegisterPresalesCommandResult result = presalesUseCase.registerPresales(cmd);
+                RegisterPresalesCommandResult result = presalesUseCase.registerPresales(cmd);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new RegisterPresalesResponseDto(result.presalesId(), result.distributorId(), result.message()));
-    }
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(new RegisterPresalesResponseDto(result.presalesId(), result.distributorId(),
+                                                result.message()));
+        }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<EditPresalesResponseDto> editPresales(@PathVariable UUID id,
-            @RequestBody @Valid EditPresalesRequestDto dtoPresales, Authentication authentication) {
-        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+        @PutMapping("/{id}")
+        public ResponseEntity<EditPresalesResponseDto> editPresales(@PathVariable UUID id,
+                        @RequestBody @Valid EditPresalesRequestDto dtoPresales, Authentication authentication) {
+                CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
 
-        EditPresalesCommand cmd = new EditPresalesCommand(details.getUserId(), id, dtoPresales.name(),
-                dtoPresales.phoneNumber());
+                EditPresalesCommand cmd = new EditPresalesCommand(details.getUserId(), id, dtoPresales.name(),
+                                dtoPresales.phoneNumber());
 
-        EditPresalesCommandResult result = presalesUseCase.editPresales(cmd);
+                EditPresalesCommandResult result = presalesUseCase.editPresales(cmd);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new EditPresalesResponseDto(result.distributorId(), result.presalesId(), result.message()));
-    }
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(new EditPresalesResponseDto(result.distributorId(), result.presalesId(),
+                                                result.message()));
+        }
 
-    @GetMapping
-    public ResponseEntity<ListPresalesResponseDto> listPresales(
-            @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false, defaultValue = "10") Integer size,
-            @RequestParam(required = false, defaultValue = "name") String sortBy,
-            @RequestParam(required = false, defaultValue = "DESC") DirectionEnum direction,
-            Authentication authentication) {
-        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+        @GetMapping
+        public ResponseEntity<ListPresalesResponseDto> listPresales(
+                        @RequestParam(required = false, defaultValue = "0") Integer page,
+                        @RequestParam(required = false, defaultValue = "10") Integer size,
+                        @RequestParam(required = false, defaultValue = "name") String sortBy,
+                        @RequestParam(required = false, defaultValue = "DESC") DirectionEnum direction,
+                        Authentication authentication) {
+                CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
 
-        RequestParams params = new RequestParams(page, size, sortBy, direction);
-        ListPresalesCommand cmd = new ListPresalesCommand(details.getUserId(), params);
+                RequestParams params = new RequestParams(page, size, sortBy, direction);
+                ListPresalesCommand cmd = new ListPresalesCommand(details.getUserId(), params);
 
-        ListPresalesCommandResult result = presalesUseCase.listPresales(cmd);
+                ListPresalesCommandResult result = presalesUseCase.listPresales(cmd);
 
-        return ResponseEntity.ok()
-                .body(new ListPresalesResponseDto(result.presalesModels(), result.meta(), result.message()));
-    }
+                return ResponseEntity.ok()
+                                .body(new ListPresalesResponseDto(result.presalesModels(), result.meta(),
+                                                result.message()));
+        }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<GetPresalesByIdResponseDto> showPresales(@PathVariable UUID id,
-            Authentication authentication) {
-        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
-        GetPresalesByIdCommandResult result = presalesUseCase.showPresales(details.getUserId(), id);
+        @GetMapping("/{id}")
+        public ResponseEntity<GetPresalesByIdResponseDto> showPresales(@PathVariable UUID id,
+                        Authentication authentication) {
+                CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+                GetPresalesByIdCommandResult result = presalesUseCase.showPresales(details.getUserId(), id);
 
-        return ResponseEntity.ok().body(new GetPresalesByIdResponseDto(result.presales(), result.message()));
-    }
+                return ResponseEntity.ok().body(new GetPresalesByIdResponseDto(result.presales(), result.message()));
+        }
 
-    @PreAuthorize("hasRole('PRESALES')")
-    @GetMapping("/{distributorId}/info")
-    public ResponseEntity<GetPresaleInfoResponseDto> getAuthenticatedPresalesId(@PathVariable UUID distributorId,
-            Authentication authentication) {
-        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
-        GetPresalesInfoCommand cmd = new GetPresalesInfoCommand(details.getUserId(), distributorId);
+        @PreAuthorize("hasRole('PRESALES')")
+        @GetMapping("/{distributorId}/info")
+        public ResponseEntity<GetPresaleInfoResponseDto> getAuthenticatedPresalesId(@PathVariable UUID distributorId,
+                        Authentication authentication) {
+                CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+                GetPresalesInfoCommand cmd = new GetPresalesInfoCommand(details.getUserId(), distributorId);
 
-        GetPresalesInfoCommandResult result = presalesUseCase.getPresalesInfo(cmd);
+                GetPresalesInfoCommandResult result = presalesUseCase.getPresalesInfo(cmd);
 
-        return ResponseEntity.ok().body(new GetPresaleInfoResponseDto(result.presale(), result.message()));
-    }
+                return ResponseEntity.ok().body(new GetPresaleInfoResponseDto(result.presale(), result.message()));
+        }
 }

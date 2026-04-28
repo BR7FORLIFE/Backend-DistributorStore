@@ -56,4 +56,10 @@ public class IMongoUserRepositoryAdapter implements IUserRepositoryPort {
     public boolean existsByEmail(String email) {
         return iMongoUserRepository.existsByEmail(email);
     }
+
+    @Override
+    public Optional<UserModel> findByEmail(String email) {
+        return iMongoUserRepository.findByEmail(email)
+                .map(UserMapper::toDomain);
+    }
 }

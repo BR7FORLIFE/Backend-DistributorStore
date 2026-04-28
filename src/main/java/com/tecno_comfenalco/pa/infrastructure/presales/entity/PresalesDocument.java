@@ -22,6 +22,7 @@ public class PresalesDocument {
     @Id
     private UUID id;
     private UUID distributorId;
+    private UUID userId;
     private String name;
     private Long phoneNumber;
     private String email;

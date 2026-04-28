@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,7 +62,8 @@ public class AuthenticationController {
 
         cookiesService.sendCookie(response, request);
 
-        return ResponseEntity.ok(new LoginResponseDto("Usuario exitosamente autenticado", result.role()));
+        return ResponseEntity
+                .ok(new LoginResponseDto("Usuario exitosamente autenticado", result.role(), result.distributorId()));
     }
 
     @PostMapping("/logout")

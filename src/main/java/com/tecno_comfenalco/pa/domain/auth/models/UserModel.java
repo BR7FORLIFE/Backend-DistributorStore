@@ -5,6 +5,7 @@ import java.util.UUID;
 
 public class UserModel {
     private UUID id;
+    private UUID distributorId;
     private String username;
     private String password;
     private boolean enabled;
@@ -14,10 +15,12 @@ public class UserModel {
     public UserModel() {
     }
 
-    public static UserModel createNew(UUID id, String username, String password, Set<String> roles, String email,
+    public static UserModel createNew(UUID id, UUID distributorId, String username, String password, Set<String> roles,
+            String email,
             boolean enabled) {
         return UserModel.builder()
                 .id(id)
+                .distributorId(distributorId)
                 .username(username)
                 .password(password)
                 .email(email)
@@ -26,10 +29,12 @@ public class UserModel {
                 .build();
     }
 
-    public static UserModel createDraft(String username, String password, Set<String> roles, String email,
+    public static UserModel createDraft(UUID distributorId, String username, String password, Set<String> roles,
+            String email,
             boolean enabled) {
         return UserModel.builder()
                 .id(UUID.randomUUID())
+                .distributorId(distributorId)
                 .username(username)
                 .password(password)
                 .email(email)
@@ -40,6 +45,7 @@ public class UserModel {
 
     private UserModel(Builder builder) {
         this.id = builder.id;
+        this.distributorId = builder.distributorId;
         this.username = builder.username;
         this.password = builder.password;
         this.email = builder.email;
@@ -105,8 +111,13 @@ public class UserModel {
         return email;
     }
 
+    public UUID getDistributorId() {
+        return distributorId;
+    }
+
     public static class Builder {
         private UUID id;
+        private UUID distributorId;
         private String username;
         private String password;
         private boolean enabled;
@@ -115,6 +126,11 @@ public class UserModel {
 
         public Builder id(UUID id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder distributorId(UUID distributorId) {
+            this.distributorId = distributorId;
             return this;
         }
 
