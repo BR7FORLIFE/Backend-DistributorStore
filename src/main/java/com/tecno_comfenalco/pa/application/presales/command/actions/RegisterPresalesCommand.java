@@ -4,8 +4,9 @@ import java.util.UUID;
 
 import com.tecno_comfenalco.pa.shared.enums.DocumentTypeEnum;
 
-public record RegisterPresalesCommand(UUID distributorId, String name, Long phoneNumber, String email,
-                DocumentTypeEnum documentType,
-                Long documentNumber) {
+public record RegisterPresalesCommand(UUID distributorId, String username, String password, String name,
+        Long phoneNumber, String email,
+        DocumentTypeEnum documentType,
+        Long documentNumber) {
 
 }

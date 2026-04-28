@@ -8,9 +8,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public record RegisterPresalesRequestDto(
-        @NotBlank(message = "El nombre del preventista no debe ser nulo ni vacio!") String name,
-        @NotBlank(message = "El numero de telefono no puede ser nulo ni vacio!") Long phoneNumber,
-        @Email(message = "El email debe tener un formato correcto!") String email,
-        DocumentTypeEnum documentType,
-        @NotNull(message = "El numero de documento de identidad no debe ser nulo!") @Positive(message = "El numero de documento de identidad debe ser positivo!") Long documentNumber) {
+                @NotBlank(message = "el username del preventista no puede ser nulo ni vacio") String username,
+                @NotBlank(message = "el password no puede nulo ni vacio") String password,
+                @NotBlank(message = "El nombre del preventista no debe ser nulo ni vacio!") String name,
+                @NotBlank(message = "El numero de telefono no puede ser nulo ni vacio!") Long phoneNumber,
+                @Email(message = "El email debe tener un formato correcto!") String email,
+                DocumentTypeEnum documentType,
+                @NotNull(message = "El numero de documento de identidad no debe ser nulo!") @Positive(message = "El numero de documento de identidad debe ser positivo!") Long documentNumber) {
 }

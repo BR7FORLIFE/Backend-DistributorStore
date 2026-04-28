@@ -11,11 +11,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public record RegisterDeliveryRequestDto(
-                @NotBlank(message = "El nombre no debe ser nulo ni vacio!") String name,
-                DocumentTypeEnum documentType,
-                @NotNull(message = "El numero de documento no debe ser nulo!") @Positive(message = "El numero de documento debe ser positivo!") Long documentNumber,
-                @NotBlank(message = "El telefono no debe ser nulo ni vacio!") Long phoneNumber,
-                @NotBlank(message = "El numero de licencia no debe ser nulo ni vacio!") Long licenseNumber,
-                LicenseTypeEnum licenseType, List<VehicleSummaryModel> vehicles) {
+        @NotBlank(message = "el username no puede ser nulo ni vacio") String username,
+        @NotBlank(message = "la contraseña no puede ser nulo ni vacio") String password,
+        @NotBlank(message = "el email no puede ser nulo ni vacio") String email,
+        @NotBlank(message = "El nombre no debe ser nulo ni vacio!") String name,
+        DocumentTypeEnum documentType,
+        @NotNull(message = "El numero de documento no debe ser nulo!") @Positive(message = "El numero de documento debe ser positivo!") Long documentNumber,
+        @NotBlank(message = "El telefono no debe ser nulo ni vacio!") Long phoneNumber,
+        @NotBlank(message = "El numero de licencia no debe ser nulo ni vacio!") Long licenseNumber,
+        LicenseTypeEnum licenseType, List<VehicleSummaryModel> vehicles) {
 
 }
