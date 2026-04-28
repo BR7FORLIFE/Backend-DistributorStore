@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.tecno_comfenalco.pa.application.auth.Exceptions.AuthenticationException;
 import com.tecno_comfenalco.pa.application.auth.Exceptions.BadCredentialException;
+import com.tecno_comfenalco.pa.application.auth.Exceptions.UserAlreadyExistsException;
 import com.tecno_comfenalco.pa.application.auth.Exceptions.UserNotEnabledException;
 import com.tecno_comfenalco.pa.application.auth.Exceptions.UserNotFoundException;
 import com.tecno_comfenalco.pa.shared.utils.helper.ApiError;
@@ -43,5 +44,12 @@ public class AuthGlobalAdviceException {
             AuthenticationException ex,
             HttpServletRequest request) {
         return StaticError.buildError(HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ApiError> handleUserAlreadyExists(
+            UserAlreadyExistsException ex,
+            HttpServletRequest request) {
+        return StaticError.buildError(HttpStatus.NOT_ACCEPTABLE, ex.getMessage(), request);
     }
 }
