@@ -18,4 +18,6 @@ public interface IUserRepositoryPort {
     List<UserModel> findAll();
 
     Optional<UserModel> findByUsername(String username);
+
+    Optional<UserModel> findByEmail(String email);
 }
