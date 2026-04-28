@@ -11,7 +11,7 @@
 			"name": "01 - Authentication",
 			"item": [
 				{
-					"name": "Login as Admin",
+					"name": "Login",
 					"event": [
 						{
 							"listen": "test",
@@ -169,7 +169,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"jose\",\n    \"password\": \"12345\",\n    \"email\": \"jaksjkaska@gmail.com\"\n}",
+							"raw": "{\n    \"username\": \"jose\",\n    \"password\": \"12345\",\n    \"email\": \"jaksjkaskas@gmail.com\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -234,7 +234,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"NIT\": 900123456,\n  \"name\": \"Distribuidora Central\",\n  \"phoneNumber\": 3001234567,\n  \"email\": \"contacto@distcentral.com\",\n  \"direction\": {\n    \"street\": \"Calle 50\",\n    \"number\": \"23-45\",\n    \"neighborhood\": \"Centro\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  },\n  \"userId\": \"fd543e2a-aa16-42ae-9add-9b4a3924b26e\"\n}"
+							"raw": "{\n  \"NIT\": 900123456,\n  \"name\": \"Distribuidora Central\",\n  \"phoneNumber\": 3001234567,\n  \"email\": \"contacto@distcentral.com\",\n  \"direction\": {\n    \"street\": \"Calle 50\",\n    \"number\": \"23-45\",\n    \"neighborhood\": \"Centro\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  },\n  \"userId\": \"e6034e76-a30e-4aba-91f2-2a03d050dc19\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/distributor",
@@ -392,7 +392,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Juan Pérez\",\n  \"phoneNumber\": 3109876543,\n  \"email\": \"juan.perez@distcentral.com\",\n  \"documentType\": \"CC\",\n  \"documentNumber\": 1234567890\n}"
+							"raw": "{\n  \"username\": \"pepito\",\n  \"password\": \"pepito123\",\n  \"name\": \"Juan Pérez\",\n  \"email\": \"juan.perez@distcentral.com\",\n  \"phoneNumber\": 3109876543,\n  \"documentType\": \"CC\",\n  \"documentNumber\": 1234567890\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/presales",
@@ -550,7 +550,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Carlos Rodríguez\",\n  \"documentType\": \"CC\",\n  \"documentNumber\": 9876543210,\n  \"phoneNumber\": 3204567890,\n  \"licenseNumber\": 464512345678,\n  \"licenseType\": \"B1\"\n}"
+							"raw": "{\n  \"username\": \"camilo\",\n  \"password\": \"12345\",\n  \"email\": \"camilo@gmail.com\",\n  \"name\": \"Carlos Rodríguez\",\n  \"documentType\": \"CC\",\n  \"documentNumber\": 9876543210,\n  \"phoneNumber\": 3204567890,\n  \"licenseNumber\": 464512345678,\n  \"licenseType\": \"B1\",\n  \"vehicles\": null\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/deliveries",
