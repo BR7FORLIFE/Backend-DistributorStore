@@ -47,6 +47,7 @@ public class SecurityConfig {
                     config.addAllowedOrigin("http://localhost:8080");
                     config.addAllowedOrigin("http://localhost:4000");
                     config.addAllowedOrigin("http://localhost:4200");
+                    config.addAllowedOrigin("https://districore.up.railway.app/");
                     config.addAllowedOrigin("null");
                     config.addAllowedHeader("*");
                     config.addAllowedMethod("*");
