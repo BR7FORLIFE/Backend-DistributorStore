@@ -13,7 +13,7 @@ public interface IPresalesRepositoryPort {
 
     Optional<PresalesModel> findPresalesByIdAndDistributorId(UUID presaleId, UUID distributorId);
 
-    PagedResult<PresalesModel> findAllPaged(UUID distributorId, Integer page, Integer size, String sortBy,
+    PagedResult<PresalesModel> findAllPaged(UUID distributorId, String name, Integer page, Integer size, String sortBy,
             String direction);
 
     PresalesModel save(PresalesModel presalesModel);

@@ -95,6 +95,7 @@ public class PresalesUseCaseImp implements PresalesUseCase {
         ValidateQueryParams.validate(cmd.params());
 
         PagedResult<PresalesModel> presalesModels = presalesRepositoryPort.findAllPaged(cmd.distributorId(),
+                cmd.params().name(),
                 cmd.params().page(),
                 cmd.params().size(), cmd.params().sortBy(), cmd.params().direction().name());
 

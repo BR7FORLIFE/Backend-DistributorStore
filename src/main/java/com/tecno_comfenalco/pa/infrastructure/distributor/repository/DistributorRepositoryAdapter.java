@@ -47,14 +47,22 @@ public class DistributorRepositoryAdapter implements IDistributorRepositoryPort 
     }
 
     @Override
-    public PagedResult<DistributorModel> findAllPaged(Integer page, Integer size, String sortBy, String direction) {
+    public PagedResult<DistributorModel> findAllPaged(String name, Integer page, Integer size, String sortBy,
+            String direction) {
         Sort.Direction sortDirection = direction.equalsIgnoreCase("asc")
                 ? Sort.Direction.ASC
                 : Sort.Direction.DESC;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
 
-        Page<DistributorDocument> result = distributorRepository.findAll(pageable);
+        Page<DistributorDocument> result;
+
+        if (name != null && !name.isBlank()) {
+            result = distributorRepository.findByNameContainingIgnoreCase(name, pageable);
+
+        } else {
+            result = distributorRepository.findAll(pageable);
+        }
 
         List<DistributorModel> models = result.getContent()
                 .stream()

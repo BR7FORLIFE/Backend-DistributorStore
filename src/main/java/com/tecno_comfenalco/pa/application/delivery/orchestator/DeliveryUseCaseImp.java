@@ -78,6 +78,7 @@ public class DeliveryUseCaseImp implements DeliveryUseCase {
         ValidateQueryParams.validate(cmd.params());
 
         PagedResult<DeliveryModel> deliveries = deliveryRepositoryPort.findAllPaged(cmd.distributorId(),
+                cmd.params().name(),
                 cmd.params().page(), cmd.params().size(), cmd.params().sortBy(), cmd.params().direction().name());
 
         return new ListAllDeliveryCommandResult(deliveries.data(), deliveries.meta(), "Deliveries obtain succesfull!");

@@ -84,6 +84,7 @@ public class PresalesController {
 
         @GetMapping
         public ResponseEntity<ListPresalesResponseDto> listPresales(
+                        @RequestParam(required = false) String name,
                         @RequestParam(required = false, defaultValue = "0") Integer page,
                         @RequestParam(required = false, defaultValue = "10") Integer size,
                         @RequestParam(required = false, defaultValue = "name") String sortBy,
@@ -91,7 +92,7 @@ public class PresalesController {
                         Authentication authentication) {
                 CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
 
-                RequestParams params = new RequestParams(page, size, sortBy, direction);
+                RequestParams params = new RequestParams(name, page, size, sortBy, direction);
                 ListPresalesCommand cmd = new ListPresalesCommand(details.getUserId(), params);
 
                 ListPresalesCommandResult result = presalesUseCase.listPresales(cmd);

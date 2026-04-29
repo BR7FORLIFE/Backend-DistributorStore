@@ -54,7 +54,8 @@ public class ProductRepositoryAdapter implements IProductRepositoryPort {
     }
 
     @Override
-    public PagedResult<ProductModel> findAllPaged(UUID distributorId, Integer page, Integer size, String sortBy,
+    public PagedResult<ProductModel> findAllPaged(UUID distributorId, String name, Integer page, Integer size,
+            String sortBy,
             String direction) {
         Sort.Direction sortDirection = direction.equalsIgnoreCase("asc")
                 ? Sort.Direction.ASC
@@ -62,7 +63,14 @@ public class ProductRepositoryAdapter implements IProductRepositoryPort {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
 
-        Page<ProductDocument> result = productRepository.findByDistributorId(distributorId, pageable);
+        Page<ProductDocument> result;
+
+        if (name != null && !name.isBlank()) {
+            result = productRepository.findByDistributorIdAndNameContainingIgnoreCase(distributorId, name, pageable);
+
+        } else {
+            result = productRepository.findByDistributorId(distributorId, pageable);
+        }
 
         List<ProductModel> models = result.getContent()
                 .stream()

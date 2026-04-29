@@ -96,6 +96,7 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<ListProductsResponseDto> listProducts(
+            @RequestParam(required = false) String name,
             @RequestParam(required = false, defaultValue = "0") Integer page,
             @RequestParam(required = false, defaultValue = "10") Integer size,
             @RequestParam(required = false, defaultValue = "name") String sortBy,
@@ -104,7 +105,7 @@ public class ProductController {
         CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
         UUID distributorId = details.getUserId();
 
-        RequestParams params = new RequestParams(page, size, sortBy, direction);
+        RequestParams params = new RequestParams(name, page, size, sortBy, direction);
 
         ListProductCommand cmd = new ListProductCommand(distributorId, params);
 

@@ -14,7 +14,8 @@ public interface IDistributorRepositoryPort {
 
     DistributorModel save(DistributorModel distributorModel);
 
-    PagedResult<DistributorModel> findAllPaged(Integer page, Integer size, String sortBy, String direction);
+    PagedResult<DistributorModel> findAllPaged(String name, Integer page, Integer size, String sortBy,
+            String direction);
 
     Optional<DistributorModel> findById(UUID id);
 

@@ -17,7 +17,7 @@ public interface IProductRepositoryPort {
 
     void deleteProductByIdAndDistributorId(UUID productId, UUID distributorId);
 
-    PagedResult<ProductModel> findAllPaged(UUID distributorId, Integer page, Integer size, String sortBy,
+    PagedResult<ProductModel> findAllPaged(UUID distributorId, String name, Integer page, Integer size, String sortBy,
             String direction);
 
     Optional<ProductModel> findByProductId(UUID distributorId, UUID productId);

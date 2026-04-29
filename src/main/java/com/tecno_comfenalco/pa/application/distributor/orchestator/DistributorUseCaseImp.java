@@ -82,7 +82,8 @@ public class DistributorUseCaseImp implements DistributorUseCase {
         // Validar los queryparams
         ValidateQueryParams.validate(cmd.params());
 
-        PagedResult<DistributorModel> distributorModels = distributorRepositoryPort.findAllPaged(cmd.params().page(),
+        PagedResult<DistributorModel> distributorModels = distributorRepositoryPort.findAllPaged(cmd.params().name(),
+                cmd.params().page(),
                 cmd.params().size(),
                 cmd.params().sortBy(), cmd.params().direction().name());
 

@@ -15,4 +15,7 @@ public interface PresalesRepository extends MongoRepository<PresalesDocument, UU
     Optional<PresalesDocument> findByIdAndDistributorId(UUID Id, UUID DistributorId);
 
     Page<PresalesDocument> findByDistributorId(UUID distributorId, Pageable pageable);
+
+    Page<PresalesDocument> findByDistributorIdAndNameContainingIgnoreCase(UUID distributorId, String name,
+            Pageable pageable);
 }

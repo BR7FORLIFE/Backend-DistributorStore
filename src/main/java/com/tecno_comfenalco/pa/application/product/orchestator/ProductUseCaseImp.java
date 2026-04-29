@@ -86,6 +86,7 @@ public class ProductUseCaseImp implements ProductUseCase {
         ValidateQueryParams.validate(cmd.params());
 
         PagedResult<ProductModel> products = iProductRepositoryPort.findAllPaged(cmd.distributorId(),
+                cmd.params().name(),
                 cmd.params().page(),
                 cmd.params().size(),
                 cmd.params().sortBy(),

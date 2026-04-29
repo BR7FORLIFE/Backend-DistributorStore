@@ -11,7 +11,7 @@ public interface IDeliveryRepositoryPort {
 
     DeliveryModel save(DeliveryModel deliveryModel);
 
-    PagedResult<DeliveryModel> findAllPaged(UUID distributorId, Integer page, Integer size, String sortBy,
+    PagedResult<DeliveryModel> findAllPaged(UUID distributorId, String name, Integer page, Integer size, String sortBy,
             String direction);
 
     Optional<DeliveryModel> findByIdAndDistributorId(UUID id, UUID distributorId);

@@ -15,4 +15,7 @@ public interface DeliveryRepository extends MongoRepository<DeliveryDocument, UU
     Page<DeliveryDocument> findByDistributorId(UUID DistributorId, Pageable pageable);
 
     Optional<DeliveryDocument> findByIdAndDistributorId(UUID Id, UUID DistributorId);
+
+    Page<DeliveryDocument> findByDistributorIdAndNameContainingIgnoreCase(UUID distributorId, String name,
+            Pageable pageable);
 }

@@ -42,14 +42,22 @@ public class DeliveryRepositoryAdapter implements IDeliveryRepositoryPort {
     }
 
     @Override
-    public PagedResult<DeliveryModel> findAllPaged(UUID distributorId, Integer page, Integer size, String sortBy,
+    public PagedResult<DeliveryModel> findAllPaged(UUID distributorId, String name, Integer page, Integer size,
+            String sortBy,
             String direction) {
         Sort.Direction sortDirection = direction.equalsIgnoreCase("asc")
                 ? Sort.Direction.ASC
                 : Sort.Direction.DESC;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
-        Page<DeliveryDocument> result = deliveryRepository.findByDistributorId(distributorId, pageable);
+        Page<DeliveryDocument> result;
+
+        if (name != null && !name.isBlank()) {
+            result = deliveryRepository.findByDistributorIdAndNameContainingIgnoreCase(distributorId, name, pageable);
+
+        } else {
+            result = deliveryRepository.findByDistributorId(distributorId, pageable);
+        }
 
         List<DeliveryModel> models = result.getContent()
                 .stream()

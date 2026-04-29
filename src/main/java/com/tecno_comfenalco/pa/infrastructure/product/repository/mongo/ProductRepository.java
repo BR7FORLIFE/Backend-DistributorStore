@@ -18,5 +18,8 @@ public interface ProductRepository extends MongoRepository<ProductDocument, UUID
 
     Page<ProductDocument> findByDistributorId(UUID distributorId, Pageable pageable);
 
+    Page<ProductDocument> findByDistributorIdAndNameContainingIgnoreCase(UUID distributorId, String name,
+            Pageable pageable);
+
     Optional<ProductDocument> findByDistributorIdAndId(UUID distributorId, UUID id);
 }

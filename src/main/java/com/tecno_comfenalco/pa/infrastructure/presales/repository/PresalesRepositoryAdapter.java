@@ -42,7 +42,8 @@ public class PresalesRepositoryAdapter implements IPresalesRepositoryPort {
     }
 
     @Override
-    public PagedResult<PresalesModel> findAllPaged(UUID distributorId, Integer page, Integer size, String sortBy,
+    public PagedResult<PresalesModel> findAllPaged(UUID distributorId, String name, Integer page, Integer size,
+            String sortBy,
             String direction) {
         Sort.Direction sortDirection = direction.equalsIgnoreCase("asc")
                 ? Sort.Direction.ASC
@@ -50,7 +51,13 @@ public class PresalesRepositoryAdapter implements IPresalesRepositoryPort {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
 
-        Page<PresalesDocument> result = presalesRepository.findByDistributorId(distributorId, pageable);
+        Page<PresalesDocument> result;
+
+        if (name != null && !name.isBlank()) {
+            result = presalesRepository.findByDistributorIdAndNameContainingIgnoreCase(distributorId, name, pageable);
+        } else {
+            result = presalesRepository.findByDistributorId(distributorId, pageable);
+        }
 
         List<PresalesModel> models = result.getContent()
                 .stream()

@@ -71,12 +71,13 @@ public class DistributorController {
 
     @GetMapping
     public ResponseEntity<ListDistributorResponseDto> listDistributors(
+            @RequestParam(required = false) String name,
             @RequestParam(required = false, defaultValue = "0") Integer page,
             @RequestParam(required = false, defaultValue = "10") Integer size,
             @RequestParam(required = false, defaultValue = "name") String sortBy,
             @RequestParam(required = false, defaultValue = "DESC") DirectionEnum direction) {
 
-        RequestParams params = new RequestParams(page, size, sortBy, direction);
+        RequestParams params = new RequestParams(name, page, size, sortBy, direction);
         ListAllDistributorsCommand cmd = new ListAllDistributorsCommand(params);
 
         ListAllDistributorsCommandResult result = distributorUseCase.listAllDistributors(cmd);
