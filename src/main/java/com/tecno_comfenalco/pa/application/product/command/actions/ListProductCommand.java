@@ -4,6 +4,6 @@ import java.util.UUID;
 
 import com.tecno_comfenalco.pa.shared.utils.http.RequestParams;
 
-public record ListProductCommand(UUID distributorId, RequestParams params) {
+public record ListProductCommand(UUID userDistributorId, RequestParams params) {
 
 }

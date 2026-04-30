@@ -86,4 +86,10 @@ public class DistributorRepositoryAdapter implements IDistributorRepositoryPort 
         return distributorRepository.findByNit(NIT)
                 .map(DistributorMapper::toDomain);
     }
+
+    @Override
+    public Optional<DistributorModel> findByUserId(UUID userId) {
+        return distributorRepository.findByUserId(userId)
+                .map(DistributorMapper::toDomain);
+    }
 }

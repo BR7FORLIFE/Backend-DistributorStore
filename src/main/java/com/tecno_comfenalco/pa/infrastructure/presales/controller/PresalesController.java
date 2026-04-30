@@ -32,6 +32,11 @@ import com.tecno_comfenalco.pa.application.presales.dto.response.GetPresalesById
 import com.tecno_comfenalco.pa.application.presales.dto.response.ListPresalesResponseDto;
 import com.tecno_comfenalco.pa.application.presales.dto.response.RegisterPresalesResponseDto;
 import com.tecno_comfenalco.pa.application.presales.usecases.PresalesUseCase;
+import com.tecno_comfenalco.pa.application.store.command.storeBinding.actions.SendBindingCommand;
+import com.tecno_comfenalco.pa.application.store.command.storeBinding.response.SendBindingCommandResult;
+import com.tecno_comfenalco.pa.application.store.dto.storeBinding.request.SendBindingStoreRequestDto;
+import com.tecno_comfenalco.pa.application.store.dto.storeBinding.response.SendBindingStoreResponseDto;
+import com.tecno_comfenalco.pa.application.store.usecases.StoreBindingUseCase;
 import com.tecno_comfenalco.pa.infrastructure.security.CustomUserDetails;
 import com.tecno_comfenalco.pa.shared.utils.http.DirectionEnum;
 import com.tecno_comfenalco.pa.shared.utils.http.RequestParams;
@@ -44,9 +49,11 @@ import jakarta.validation.Valid;
 public class PresalesController {
 
         private final PresalesUseCase presalesUseCase;
+        private final StoreBindingUseCase storeBindingUseCase;
 
-        public PresalesController(PresalesUseCase presalesUseCase) {
+        public PresalesController(PresalesUseCase presalesUseCase, StoreBindingUseCase storeBindingUseCase) {
                 this.presalesUseCase = presalesUseCase;
+                this.storeBindingUseCase = storeBindingUseCase;
         }
 
         @PostMapping
@@ -112,14 +119,28 @@ public class PresalesController {
         }
 
         @PreAuthorize("hasRole('PRESALES')")
-        @GetMapping("/{distributorId}/info")
-        public ResponseEntity<GetPresaleInfoResponseDto> getAuthenticatedPresalesId(@PathVariable UUID distributorId,
-                        Authentication authentication) {
+        @GetMapping("/info")
+        public ResponseEntity<GetPresaleInfoResponseDto> getAuthenticatedPresalesId(Authentication authentication) {
                 CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
-                GetPresalesInfoCommand cmd = new GetPresalesInfoCommand(details.getUserId(), distributorId);
+                GetPresalesInfoCommand cmd = new GetPresalesInfoCommand(details.getUserId(),
+                                details.getDistributorId());
 
                 GetPresalesInfoCommandResult result = presalesUseCase.getPresalesInfo(cmd);
 
                 return ResponseEntity.ok().body(new GetPresaleInfoResponseDto(result.presale(), result.message()));
+        }
+
+        @PreAuthorize("hasRole('PRESALES')")
+        @PostMapping("/send-binding")
+        public ResponseEntity<SendBindingStoreResponseDto> sendBindingStoreRequest(Authentication authentication,
+                        @RequestBody @Valid SendBindingStoreRequestDto dto) {
+                CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+
+                SendBindingCommand cmd = new SendBindingCommand(details.getUserId(), dto.nit(), dto.tempName());
+
+                SendBindingCommandResult result = storeBindingUseCase.sendBindingStoreRequest(cmd);
+
+                return ResponseEntity.ok().body(new SendBindingStoreResponseDto(result.bindingId(),
+                                result.distributorId(), result.status(), result.createAt()));
         }
 }

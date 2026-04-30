@@ -7,6 +7,9 @@ import com.tecno_comfenalco.pa.domain.presales.model.PresalesModel;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 
 public interface IPresalesRepositoryPort {
+
+    Optional<PresalesModel> findPresalesByUserIdAndDistributorId(UUID userId, UUID distributorId);
+
     boolean existsPresalesbyDocumentNumber(Long documentNumber);
 
     Optional<PresalesModel> findPresalesById(UUID distributorId, UUID presalesId);

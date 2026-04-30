@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.tecno_comfenalco.pa.application.auth.Exceptions.UserAlreadyExistsException;
 import com.tecno_comfenalco.pa.application.auth.ports.IUserRepositoryPort;
+import com.tecno_comfenalco.pa.application.distributor.exceptions.DistributorNotFoundException;
+import com.tecno_comfenalco.pa.application.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.application.presales.command.actions.EditPresalesCommand;
 import com.tecno_comfenalco.pa.application.presales.command.actions.GetPresalesInfoCommand;
 import com.tecno_comfenalco.pa.application.presales.command.actions.ListPresalesCommand;
@@ -24,6 +26,7 @@ import com.tecno_comfenalco.pa.application.presales.exceptions.PresalesNotFoundE
 import com.tecno_comfenalco.pa.application.presales.ports.IPresalesRepositoryPort;
 import com.tecno_comfenalco.pa.application.presales.usecases.PresalesUseCase;
 import com.tecno_comfenalco.pa.domain.auth.models.UserModel;
+import com.tecno_comfenalco.pa.domain.distributor.model.DistributorModel;
 import com.tecno_comfenalco.pa.domain.presales.model.PresalesModel;
 import com.tecno_comfenalco.pa.shared.utils.helper.ValidateQueryParams;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
@@ -31,19 +34,29 @@ import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 @Service
 public class PresalesUseCaseImp implements PresalesUseCase {
 
+    private final IDistributorRepositoryPort distributorRepositoryPort;
     private final IPresalesRepositoryPort presalesRepositoryPort;
     private final IUserRepositoryPort userRepositoryPort;
     private final PasswordEncoder passwordEncoder;
 
-    public PresalesUseCaseImp(IPresalesRepositoryPort presalesRepositoryPort, IUserRepositoryPort userRepositoryPort,
+    public PresalesUseCaseImp(IDistributorRepositoryPort distributorRepositoryPort,
+            IPresalesRepositoryPort presalesRepositoryPort, IUserRepositoryPort userRepositoryPort,
             PasswordEncoder passwordEncoder) {
         this.presalesRepositoryPort = presalesRepositoryPort;
         this.userRepositoryPort = userRepositoryPort;
         this.passwordEncoder = passwordEncoder;
+        this.distributorRepositoryPort = distributorRepositoryPort;
     }
 
     @Override
     public RegisterPresalesCommandResult registerPresales(RegisterPresalesCommand cmd) {
+
+        // buscamos la distribuidora vinculada por el userId
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userDistributorId());
+
+        if (optDistributor.isEmpty()) {
+            throw new DistributorNotFoundException();
+        }
 
         if (presalesRepositoryPort.existsPresalesbyDocumentNumber(cmd.documentNumber())) {
             throw new PresalesAlreadyExistsException();
@@ -53,13 +66,13 @@ public class PresalesUseCaseImp implements PresalesUseCase {
             throw new UserAlreadyExistsException();
         }
 
-        UserModel newUserPresales = UserModel.createDraft(cmd.distributorId(), cmd.username(),
+        UserModel newUserPresales = UserModel.createDraft(optDistributor.get().getId(), cmd.username(),
                 passwordEncoder.encode(cmd.password()),
                 Set.of("PRESALES"), cmd.email(), true);
 
         UserModel saved = userRepositoryPort.save(newUserPresales);
 
-        PresalesModel newPresales = PresalesModel.createDraft(cmd.distributorId(), saved.getId(), cmd.name(),
+        PresalesModel newPresales = PresalesModel.createDraft(optDistributor.get().getId(), saved.getId(), cmd.name(),
                 cmd.phoneNumber(),
                 cmd.email(), cmd.documentType(), cmd.documentNumber());
 
@@ -71,7 +84,14 @@ public class PresalesUseCaseImp implements PresalesUseCase {
 
     @Override
     public EditPresalesCommandResult editPresales(EditPresalesCommand cmd) {
-        Optional<PresalesModel> optPresales = presalesRepositoryPort.findPresalesById(cmd.distributorId(),
+
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userDistributorId());
+
+        if (optDistributor.isEmpty()) {
+            throw new DistributorNotFoundException();
+        }
+
+        Optional<PresalesModel> optPresales = presalesRepositoryPort.findPresalesById(optDistributor.get().getId(),
                 cmd.presalesId());
 
         if (optPresales.isEmpty()) {
@@ -94,7 +114,13 @@ public class PresalesUseCaseImp implements PresalesUseCase {
     public ListPresalesCommandResult listPresales(ListPresalesCommand cmd) {
         ValidateQueryParams.validate(cmd.params());
 
-        PagedResult<PresalesModel> presalesModels = presalesRepositoryPort.findAllPaged(cmd.distributorId(),
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userDistributorId());
+
+        if (optDistributor.isEmpty()) {
+            throw new DistributorNotFoundException();
+        }
+
+        PagedResult<PresalesModel> presalesModels = presalesRepositoryPort.findAllPaged(optDistributor.get().getId(),
                 cmd.params().name(),
                 cmd.params().page(),
                 cmd.params().size(), cmd.params().sortBy(), cmd.params().direction().name());
@@ -104,8 +130,16 @@ public class PresalesUseCaseImp implements PresalesUseCase {
     }
 
     @Override
-    public GetPresalesByIdCommandResult showPresales(UUID distributorId, UUID presalesId) {
-        Optional<PresalesModel> optPresalesModel = presalesRepositoryPort.findPresalesById(distributorId, presalesId);
+    public GetPresalesByIdCommandResult showPresales(UUID userDistributorId, UUID presalesId) {
+
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(userDistributorId);
+
+        if (optDistributor.isEmpty()) {
+            throw new DistributorNotFoundException();
+        }
+
+        Optional<PresalesModel> optPresalesModel = presalesRepositoryPort.findPresalesById(optDistributor.get().getId(),
+                presalesId);
 
         if (optPresalesModel.isEmpty()) {
             throw new PresalesNotFoundException();
@@ -117,7 +151,8 @@ public class PresalesUseCaseImp implements PresalesUseCase {
     @Override
     public GetPresalesInfoCommandResult getPresalesInfo(GetPresalesInfoCommand cmd) {
 
-        Optional<PresalesModel> optPresales = presalesRepositoryPort.findPresalesByIdAndDistributorId(cmd.presaleId(),
+        Optional<PresalesModel> optPresales = presalesRepositoryPort.findPresalesByUserIdAndDistributorId(
+                cmd.userPresaleId(),
                 cmd.distributorId());
 
         if (optPresales.isEmpty()) {

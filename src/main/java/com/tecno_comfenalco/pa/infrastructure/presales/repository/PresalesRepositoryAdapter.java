@@ -81,4 +81,10 @@ public class PresalesRepositoryAdapter implements IPresalesRepositoryPort {
         return presalesRepository.findByIdAndDistributorId(presaleId, distributorId)
                 .map(PresalesMapper::toDomain);
     }
+
+    @Override
+    public Optional<PresalesModel> findPresalesByUserIdAndDistributorId(UUID userId, UUID distributorId) {
+        return presalesRepository.findByUserIdAndDistributorId(userId, distributorId)
+                .map(PresalesMapper::toDomain);
+    }
 }

@@ -17,6 +17,8 @@ public interface IDistributorRepositoryPort {
     PagedResult<DistributorModel> findAllPaged(String name, Integer page, Integer size, String sortBy,
             String direction);
 
+    Optional<DistributorModel> findByUserId(UUID userId);
+
     Optional<DistributorModel> findById(UUID id);
 
     Optional<DistributorModel> findByNIT(String NIT);

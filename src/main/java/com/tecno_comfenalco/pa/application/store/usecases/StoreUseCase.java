@@ -4,9 +4,12 @@ import java.util.UUID;
 
 import com.tecno_comfenalco.pa.application.store.command.actions.ListAllStoresCommand;
 import com.tecno_comfenalco.pa.application.store.command.actions.RegisterStoreCommand;
+import com.tecno_comfenalco.pa.application.store.command.actions.UpdateStoreCommand;
+import com.tecno_comfenalco.pa.application.store.command.response.DisabledStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.GetStoreByIdCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.ListAllStoresCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.RegisterStoreCommandResult;
+import com.tecno_comfenalco.pa.application.store.command.response.UpdateStoreCommandResult;
 
 public interface StoreUseCase {
     RegisterStoreCommandResult registerStore(RegisterStoreCommand cmd);
@@ -14,4 +17,8 @@ public interface StoreUseCase {
     ListAllStoresCommandResult listAllStores(ListAllStoresCommand cmd);
 
     GetStoreByIdCommandResult getStoreById(UUID storeId);
+
+    UpdateStoreCommandResult updateStore(UpdateStoreCommand cmd);
+
+    DisabledStoreCommandResult disabledStore(UUID id);
 }

@@ -11,9 +11,12 @@ import com.tecno_comfenalco.pa.application.auth.Exceptions.UserNotFoundException
 import com.tecno_comfenalco.pa.application.auth.ports.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.application.store.command.actions.ListAllStoresCommand;
 import com.tecno_comfenalco.pa.application.store.command.actions.RegisterStoreCommand;
+import com.tecno_comfenalco.pa.application.store.command.actions.UpdateStoreCommand;
+import com.tecno_comfenalco.pa.application.store.command.response.DisabledStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.GetStoreByIdCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.ListAllStoresCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.RegisterStoreCommandResult;
+import com.tecno_comfenalco.pa.application.store.command.response.UpdateStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.exceptions.StoreAlreadyExistsException;
 import com.tecno_comfenalco.pa.application.store.exceptions.StoreNotFoundException;
 import com.tecno_comfenalco.pa.application.store.ports.IStoreRepositoryPort;
@@ -66,7 +69,8 @@ public class StoreUseCaseImp implements StoreUseCase {
         // validamos los query params
         ValidateQueryParams.validate(cmd.params());
 
-        PagedResult<StoreModel> storesModels = storeRepositoryPort.findAllpaged(cmd.params().page(),
+        PagedResult<StoreModel> storesModels = storeRepositoryPort.findAllpaged(cmd.params().name(),
+                cmd.params().page(),
                 cmd.params().size(), cmd.params().sortBy(), cmd.params().direction().name());
 
         return new ListAllStoresCommandResult(storesModels.data(), storesModels.meta(), "stores obtain succesfull!");
@@ -81,5 +85,57 @@ public class StoreUseCaseImp implements StoreUseCase {
         }
 
         return new GetStoreByIdCommandResult(optStore.get(), "Store obtain succesfull!");
+    }
+
+    @Override
+    public UpdateStoreCommandResult updateStore(UpdateStoreCommand cmd) {
+
+        Optional<StoreModel> optStore = storeRepositoryPort.findById(cmd.storeId());
+
+        if (optStore.isEmpty()) {
+            throw new StoreNotFoundException();
+        }
+
+        StoreModel updateStore = StoreModel.createNew(
+                optStore.get().getId(),
+                optStore.get().getUserId(),
+                cmd.name(),
+                optStore.get().getNit(),
+                cmd.phoneNumber(),
+                optStore.get().getEmail(),
+                cmd.direction(),
+                optStore.get().getCreateAt(),
+                Instant.now());
+
+        StoreModel saved = storeRepositoryPort.save(updateStore);
+
+        return new UpdateStoreCommandResult(saved.getId(), "store update succesfull!");
+    }
+
+    @Override
+    public DisabledStoreCommandResult disabledStore(UUID id) {
+
+        Optional<StoreModel> optStore = storeRepositoryPort.findById(id);
+
+        // validamos que exista la tienda
+        if (optStore.isEmpty()) {
+            throw new StoreNotFoundException();
+        }
+
+        Optional<UserModel> updateRolByStore = userRepositoryPort.findByUserId(optStore.get().getUserId());
+
+        UserModel updateUser = UserModel.createNew(
+                updateRolByStore.get().getId(),
+                null,
+                updateRolByStore.get().getUsername(),
+                updateRolByStore.get().getPassword(),
+                Set.of("USER"),
+                updateRolByStore.get().getEmail(),
+                updateRolByStore.get().isEnabled());
+
+        storeRepositoryPort.deleteStoreById(id); // borramos la tienda vinculado al usuario
+        userRepositoryPort.save(updateUser); // guardamos el usuario actualizaco con rol USER
+
+        return new DisabledStoreCommandResult(updateRolByStore.get().getId(), "store disabled succesfull!");
     }
 }

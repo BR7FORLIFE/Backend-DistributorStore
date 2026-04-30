@@ -23,8 +23,11 @@ import com.tecno_comfenalco.pa.application.delivery.exceptions.DeliveryAlreadyEx
 import com.tecno_comfenalco.pa.application.delivery.exceptions.DeliveryNotFoundException;
 import com.tecno_comfenalco.pa.application.delivery.ports.IDeliveryRepositoryPort;
 import com.tecno_comfenalco.pa.application.delivery.usecases.DeliveryUseCase;
+import com.tecno_comfenalco.pa.application.distributor.exceptions.DistributorNotFoundException;
+import com.tecno_comfenalco.pa.application.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.domain.auth.models.UserModel;
 import com.tecno_comfenalco.pa.domain.delivery.model.DeliveryModel;
+import com.tecno_comfenalco.pa.domain.distributor.model.DistributorModel;
 import com.tecno_comfenalco.pa.domain.vehicle.model.VehicleSummaryModel;
 import com.tecno_comfenalco.pa.shared.utils.helper.ValidateQueryParams;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
@@ -32,20 +35,30 @@ import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 @Service
 public class DeliveryUseCaseImp implements DeliveryUseCase {
 
+    private final IDistributorRepositoryPort distributorRepositoryPort;
     private final IDeliveryRepositoryPort deliveryRepositoryPort;
     private final IUserRepositoryPort userRepositoryPort;
     private final PasswordEncoder passwordEncoder;
 
-    public DeliveryUseCaseImp(IDeliveryRepositoryPort iDeliveryRepositoryPort, IUserRepositoryPort userRepositoryPort,
+    public DeliveryUseCaseImp(IDistributorRepositoryPort distributorRepositoryPort,
+            IDeliveryRepositoryPort iDeliveryRepositoryPort, IUserRepositoryPort userRepositoryPort,
             PasswordEncoder passwordEncoder) {
         this.deliveryRepositoryPort = iDeliveryRepositoryPort;
         this.userRepositoryPort = userRepositoryPort;
         this.passwordEncoder = passwordEncoder;
+        this.distributorRepositoryPort = distributorRepositoryPort;
     }
 
     @Transactional
     @Override
     public RegisterDeliveryCommandResult registerDelivery(RegisterDeliveryCommand cmd) {
+
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userDistributorId());
+
+        if (optDistributor.isEmpty()) {
+            throw new DistributorNotFoundException();
+        }
+
         if (deliveryRepositoryPort.existsByDocumentNumber(cmd.documentNumber())) {
             throw new DeliveryAlreadyExistsException();
         }
@@ -58,12 +71,12 @@ public class DeliveryUseCaseImp implements DeliveryUseCase {
                 ? List.of()
                 : cmd.vehicles();
 
-        UserModel changeRolForUser = UserModel.createDraft(cmd.distributorId(), cmd.username(),
+        UserModel changeRolForUser = UserModel.createDraft(optDistributor.get().getId(), cmd.username(),
                 passwordEncoder.encode(cmd.password()), Set.of("DELIVERY"), cmd.email(), true);
 
         UserModel saved = userRepositoryPort.save(changeRolForUser);
 
-        DeliveryModel newDelivery = DeliveryModel.createDraft(cmd.distributorId(), saved.getId(), cmd.name(),
+        DeliveryModel newDelivery = DeliveryModel.createDraft(optDistributor.get().getId(), saved.getId(), cmd.name(),
                 cmd.email(), cmd.documentTypeEnum(),
                 cmd.documentNumber(), cmd.phoneNumber(), cmd.licenseNumber(), cmd.licenseTypeEnum(), vehicles);
 
@@ -77,7 +90,13 @@ public class DeliveryUseCaseImp implements DeliveryUseCase {
     public ListAllDeliveryCommandResult listAllDeliveries(ListAllDeliveryCommand cmd) {
         ValidateQueryParams.validate(cmd.params());
 
-        PagedResult<DeliveryModel> deliveries = deliveryRepositoryPort.findAllPaged(cmd.distributorId(),
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userDistributorId());
+
+        if (optDistributor.isEmpty()) {
+            throw new DistributorNotFoundException();
+        }
+
+        PagedResult<DeliveryModel> deliveries = deliveryRepositoryPort.findAllPaged(optDistributor.get().getId(),
                 cmd.params().name(),
                 cmd.params().page(), cmd.params().size(), cmd.params().sortBy(), cmd.params().direction().name());
 
@@ -86,8 +105,14 @@ public class DeliveryUseCaseImp implements DeliveryUseCase {
 
     @Override
     public GetDeliveryByIdCommandResult getDeliveryById(GetDeliveryByIdCommand cmd) {
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userDistributorId());
+
+        if (optDistributor.isEmpty()) {
+            throw new DistributorNotFoundException();
+        }
+
         Optional<DeliveryModel> optDelivery = deliveryRepositoryPort.findByIdAndDistributorId(cmd.deliveryId(),
-                cmd.distributorId());
+                optDistributor.get().getId());
 
         if (optDelivery.isEmpty()) {
             throw new DeliveryNotFoundException();
@@ -98,8 +123,15 @@ public class DeliveryUseCaseImp implements DeliveryUseCase {
 
     @Override
     public UpdateDeliveryCommandResult updateDelivery(UpdateDeliveryCommand cmd) {
+
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userDistributorId());
+
+        if (optDistributor.isEmpty()) {
+            throw new DistributorNotFoundException();
+        }
+
         Optional<DeliveryModel> optDelivery = deliveryRepositoryPort.findByIdAndDistributorId(cmd.deliveryId(),
-                cmd.distributorId());
+                optDistributor.get().getId());
 
         if (optDelivery.isEmpty()) {
             throw new DeliveryNotFoundException();

@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.tecno_comfenalco.pa.application.distributor.exceptions.DistributorNotFoundException;
+import com.tecno_comfenalco.pa.application.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.application.product.command.actions.DisabledProductCommand;
 import com.tecno_comfenalco.pa.application.product.command.actions.EditProductCommand;
 import com.tecno_comfenalco.pa.application.product.command.actions.GetProductByIdCommand;
@@ -19,6 +21,7 @@ import com.tecno_comfenalco.pa.application.product.exceptions.ProductExistsExcep
 import com.tecno_comfenalco.pa.application.product.exceptions.ProductNotFoundException;
 import com.tecno_comfenalco.pa.application.product.ports.IProductRepositoryPort;
 import com.tecno_comfenalco.pa.application.product.usecases.ProductUseCase;
+import com.tecno_comfenalco.pa.domain.distributor.model.DistributorModel;
 import com.tecno_comfenalco.pa.domain.product.model.ProductModel;
 import com.tecno_comfenalco.pa.shared.utils.helper.ValidateQueryParams;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
@@ -26,20 +29,32 @@ import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 @Service
 public class ProductUseCaseImp implements ProductUseCase {
 
+    private final IDistributorRepositoryPort distributorRepositoryPort;
     private final IProductRepositoryPort iProductRepositoryPort;
 
-    public ProductUseCaseImp(IProductRepositoryPort iProductRepositoryPort) {
+    public ProductUseCaseImp(IProductRepositoryPort iProductRepositoryPort,
+            IDistributorRepositoryPort distributorRepositoryPort) {
         this.iProductRepositoryPort = iProductRepositoryPort;
+        this.distributorRepositoryPort = distributorRepositoryPort;
     }
 
     @Override
     public RegisterProductCommandResult registerProduct(RegisterProductCommand cmd) {
-        boolean existsProduct = iProductRepositoryPort.existsByDistributorIdAndSku(cmd.distributorId(), cmd.sku());
+
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userDistributorId());
+
+        if (optDistributor.isEmpty()) {
+            throw new DistributorNotFoundException();
+        }
+
+        boolean existsProduct = iProductRepositoryPort.existsByDistributorIdAndSku(optDistributor.get().getId(),
+                cmd.sku());
 
         if (existsProduct) {
             throw new ProductExistsException();
         }
-        ProductModel productModel = ProductModel.createDraft(cmd.distributorId(), cmd.sku(), cmd.name(), cmd.unit(),
+        ProductModel productModel = ProductModel.createDraft(optDistributor.get().getId(), cmd.sku(), cmd.name(),
+                cmd.unit(),
                 cmd.price());
 
         ProductModel result = iProductRepositoryPort.save(productModel);
@@ -50,7 +65,13 @@ public class ProductUseCaseImp implements ProductUseCase {
     @Override
     public EditProductCommandResult editProduct(EditProductCommand cmd) {
 
-        Optional<ProductModel> optProduct = iProductRepositoryPort.findByProductId(cmd.distributorId(),
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userDistributorId());
+
+        if (optDistributor.isEmpty()) {
+            throw new DistributorNotFoundException();
+        }
+
+        Optional<ProductModel> optProduct = iProductRepositoryPort.findByProductId(optDistributor.get().getId(),
                 cmd.productId());
 
         if (optProduct.isEmpty()) {
@@ -68,14 +89,21 @@ public class ProductUseCaseImp implements ProductUseCase {
 
     @Override
     public DisabledProductCommandResult disabledProduct(DisabledProductCommand cmd) {
+
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userDistributorId());
+
+        if (optDistributor.isEmpty()) {
+            throw new DistributorNotFoundException();
+        }
+
         boolean existsProduct = iProductRepositoryPort.existsByProductIdAndDistributorId(cmd.productId(),
-                cmd.distributorId());
+                optDistributor.get().getId());
 
         if (!existsProduct) {
             throw new ProductNotFoundException();
         }
 
-        iProductRepositoryPort.deleteProductByIdAndDistributorId(cmd.productId(), cmd.distributorId());
+        iProductRepositoryPort.deleteProductByIdAndDistributorId(cmd.productId(), optDistributor.get().getId());
 
         return new DisabledProductCommandResult("Product delete succesfull!");
     }
@@ -85,7 +113,13 @@ public class ProductUseCaseImp implements ProductUseCase {
         // validar los query params
         ValidateQueryParams.validate(cmd.params());
 
-        PagedResult<ProductModel> products = iProductRepositoryPort.findAllPaged(cmd.distributorId(),
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userDistributorId());
+
+        if (optDistributor.isEmpty()) {
+            throw new DistributorNotFoundException();
+        }
+
+        PagedResult<ProductModel> products = iProductRepositoryPort.findAllPaged(optDistributor.get().getId(),
                 cmd.params().name(),
                 cmd.params().page(),
                 cmd.params().size(),
@@ -97,7 +131,14 @@ public class ProductUseCaseImp implements ProductUseCase {
 
     @Override
     public GetProductByIdCommandResult getProductById(GetProductByIdCommand cmd) {
-        Optional<ProductModel> product = iProductRepositoryPort.findByProductId(cmd.distributorId(), cmd.productId());
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userDistributorId());
+
+        if (optDistributor.isEmpty()) {
+            throw new DistributorNotFoundException();
+        }
+
+        Optional<ProductModel> product = iProductRepositoryPort.findByProductId(optDistributor.get().getId(),
+                cmd.productId());
 
         if (product.isEmpty()) {
             throw new ProductNotFoundException();

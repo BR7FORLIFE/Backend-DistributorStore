@@ -42,14 +42,21 @@ public class StoreRepositoryAdapter implements IStoreRepositoryPort {
     }
 
     @Override
-    public PagedResult<StoreModel> findAllpaged(Integer page, Integer size, String sortBy, String direction) {
+    public PagedResult<StoreModel> findAllpaged(String name, Integer page, Integer size, String sortBy,
+            String direction) {
         Sort.Direction sortDirection = direction.equalsIgnoreCase("asc")
                 ? Sort.Direction.ASC
                 : Sort.Direction.DESC;
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
 
-        Page<StoreDocument> result = storeRepository.findAll(pageable);
+        Page<StoreDocument> result;
+
+        if (name != null && !name.isBlank()) {
+            result = storeRepository.findByNameContainingIgnoreCase(name, pageable);
+        } else {
+            result = storeRepository.findAll(pageable);
+        }
 
         List<StoreModel> models = result.getContent()
                 .stream()
@@ -64,6 +71,17 @@ public class StoreRepositoryAdapter implements IStoreRepositoryPort {
 
     @Override
     public Optional<StoreModel> findById(UUID id) {
-        return Optional.empty();
+        return storeRepository.findById(id)
+                .map(StoreMapper::toDomain);
+    }
+
+    @Override
+    public boolean existsStoreById(UUID id) {
+        return storeRepository.existsById(id);
+    }
+
+    @Override
+    public void deleteStoreById(UUID id) {
+        storeRepository.deleteById(id);
     }
 }

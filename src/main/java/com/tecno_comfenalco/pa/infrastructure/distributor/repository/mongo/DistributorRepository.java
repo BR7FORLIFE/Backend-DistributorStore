@@ -19,4 +19,6 @@ public interface DistributorRepository extends MongoRepository<DistributorDocume
     Optional<DistributorDocument> findByNit(String Nit);
 
     Page<DistributorDocument> findByNameContainingIgnoreCase(String name, Pageable pageable);
+
+    Optional<DistributorDocument> findByUserId(UUID UserId);
 }

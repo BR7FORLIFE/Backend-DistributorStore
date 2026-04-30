@@ -25,7 +25,7 @@ public class CookiesService {
     }
 
     public void sendCookie(HttpServletResponse response, LoginRequestDto request) {
-        long defaultExpiration = 3600000L; 
+        long defaultExpiration = 3600000L;
         long configuredExpiration = expirationMs != null ? expirationMs : defaultExpiration;
         long expirationTime = request.rememberMe() ? 7L * 24 * 60 * 60 * 1000 : configuredExpiration;
 
