@@ -3,7 +3,7 @@ spring:
     name: Proyecto de Aula
   profiles:
     active:
-      - mongo
+      - ${PROFILES}
   
   devtools: 
     restart:
