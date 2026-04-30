@@ -36,7 +36,6 @@ import com.tecno_comfenalco.pa.application.product.dto.response.RegisterProductR
 import com.tecno_comfenalco.pa.application.product.usecases.ProductUseCase;
 import com.tecno_comfenalco.pa.infrastructure.security.CustomUserDetails;
 import com.tecno_comfenalco.pa.shared.utils.http.DirectionEnum;
-import com.tecno_comfenalco.pa.shared.utils.http.PaginationMeta;
 import com.tecno_comfenalco.pa.shared.utils.http.RequestParams;
 
 import jakarta.validation.Valid;
