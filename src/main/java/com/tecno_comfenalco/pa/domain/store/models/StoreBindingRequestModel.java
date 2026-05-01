@@ -13,24 +13,45 @@ public class StoreBindingRequestModel {
     private String nit;
     private String tempName;
     private BindingStatusEnum bindingStatus;
+    private boolean isConsumed;
     private String activationCode;
     private Instant createAt;
+    private Instant consumedAt;
 
     public static StoreBindingRequestModel createDraft(UUID presalesId, UUID distributorId, String nit,
-            String tempName, BindingStatusEnum bindingStatus, String activationCode, Instant createAt) {
-        return new StoreBindingRequestModel(UUID.randomUUID(), presalesId, distributorId, nit, tempName,
+            String tempName, String activationCode) {
+        return new StoreBindingRequestModel(
+                UUID.randomUUID(),
+                presalesId,
+                distributorId,
+                nit,
+                tempName,
                 BindingStatusEnum.PENDING,
-                activationCode, Instant.now());
+                false,
+                activationCode,
+                Instant.now(),
+                null);
     }
 
     public static StoreBindingRequestModel createNew(UUID id, UUID presalesId, UUID distributorId, String nit,
-            String tempName, BindingStatusEnum bindingStatus, String activationCode, Instant createAt) {
-        return new StoreBindingRequestModel(id, presalesId, distributorId, nit, tempName, bindingStatus, activationCode,
-                createAt);
+            String tempName, BindingStatusEnum bindingStatus, boolean isConsumed, String activationCode,
+            Instant createAt, Instant consumedAt) {
+        return new StoreBindingRequestModel(
+                id,
+                presalesId,
+                distributorId,
+                nit,
+                tempName,
+                bindingStatus,
+                isConsumed,
+                activationCode,
+                createAt,
+                consumedAt);
     }
 
     public StoreBindingRequestModel(UUID id, UUID presalesId, UUID distributorId, String nit, String tempName,
-            BindingStatusEnum bindingStatus, String activationCode, Instant createAt) {
+            BindingStatusEnum bindingStatus, boolean isConsumed, String activationCode, Instant createAt,
+            Instant consumedAt) {
         this.id = id;
         this.presalesId = presalesId;
         this.distributorId = distributorId;
@@ -39,6 +60,8 @@ public class StoreBindingRequestModel {
         this.bindingStatus = bindingStatus;
         this.activationCode = activationCode;
         this.createAt = createAt;
+        this.isConsumed = isConsumed;
+        this.consumedAt = consumedAt;
     }
 
     public UUID getId() {
@@ -71,6 +94,14 @@ public class StoreBindingRequestModel {
 
     public Instant getCreateAt() {
         return createAt;
+    }
+
+    public Instant getConsumedAt() {
+        return consumedAt;
+    }
+
+    public boolean isConsumed() {
+        return isConsumed;
     }
 
 }

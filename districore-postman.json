@@ -25,7 +25,9 @@
 									"    }",
 									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -39,7 +41,54 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password\",\n  \"rememberMe\": false\n}"
+							"raw": "{\n  \"username\": \"jose\",\n  \"password\": \"12345\",\n  \"rememberMe\": false\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Autentica al usuario admin y guarda el token JWT automáticamente"
+					},
+					"response": []
+				},
+				{
+					"name": "Login as User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.token) {",
+									"        pm.collectionVariables.set('adminToken', jsonData.token);",
+									"        console.log('✅ Admin token guardado:', jsonData.token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"pepito\",\n  \"password\": \"pepito123\",\n  \"rememberMe\": false\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/auth/login",
@@ -86,7 +135,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"distributor\",\n  \"password\": \"password\",\n  \"rememberMe\": false\n}"
+							"raw": "{\n  \"username\": \"maria\",\n  \"password\": \"12345\",\n  \"rememberMe\": false\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/auth/login",
@@ -169,7 +218,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"jose\",\n    \"password\": \"12345\",\n    \"email\": \"jaksjkaskas@gmail.com\"\n}",
+							"raw": "{\n    \"username\": \"maria\",\n    \"password\": \"12345\",\n    \"email\": \"maria@gmail.com\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -234,7 +283,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"NIT\": 900123456,\n  \"name\": \"Distribuidora Central\",\n  \"phoneNumber\": 3001234567,\n  \"email\": \"contacto@distcentral.com\",\n  \"direction\": {\n    \"street\": \"Calle 50\",\n    \"number\": \"23-45\",\n    \"neighborhood\": \"Centro\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  },\n  \"userId\": \"e6034e76-a30e-4aba-91f2-2a03d050dc19\"\n}"
+							"raw": "{\n  \"NIT\": 900123456,\n  \"name\": \"Distribuidora Central\",\n  \"phoneNumber\": 3001234567,\n  \"email\": \"contacto@distcentral.com\",\n  \"direction\": {\n    \"street\": \"Calle 50\",\n    \"number\": \"23-45\",\n    \"neighborhood\": \"Centro\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  },\n  \"userId\": \"1ca1071a-a7dc-4329-ba3b-6619e24e69cd\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/distributor",
@@ -342,6 +391,52 @@
 								"distributor",
 								"nit",
 								"{{NIT}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List All bindings (DISTRIBUTOR ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/distributor/bindings-request",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"distributor",
+								"bindings-request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Receive Binding Status (DISTRIBUTOR ROLE))",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"APPROVED\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/distributor/{{bindingId}}/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"distributor",
+								"{{bindingId}}",
+								"status"
 							]
 						}
 					},
@@ -492,14 +587,40 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/presales/{{distributorId}}/info",
+							"raw": "{{baseUrl}}/presales/info",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"presales",
-								"{{distributorId}}",
 								"info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Send-Binding (PRESALES ROLE)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"nit\": \"800234567\",\n   \"tempName\": \"tienda de la esquina\" \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/presales/send-binding",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"presales",
+								"send-binding"
 							]
 						}
 					},
@@ -650,7 +771,7 @@
 			"name": "05 - Stores (ADMIN/DISTRIBUTOR Role)",
 			"item": [
 				{
-					"name": "Create Store (Self-Registration)",
+					"name": "Create Store (ADMIN ROLE)",
 					"event": [
 						{
 							"listen": "test",
@@ -669,7 +790,9 @@
 									"    }",
 									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -683,126 +806,18 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"NIT\": 800234567,\n  \"name\": \"Tienda La Esquina\",\n  \"phoneNumber\": \"+57 305 111 2222\",\n  \"email\": \"contacto@laesquina.com\",\n  \"direction\": {\n    \"street\": \"Calle 80\",\n    \"number\": \"45-67\",\n    \"neighborhood\": \"El Prado\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  },\n  \"password\": \"MiPassword123!\"\n}"
+							"raw": "{\n  \"userId\": \"a7fcb689-4bd4-4129-972b-5de75fdfddf6\",\n  \"name\": \"Tienda La Esquina\",\n  \"nit\": 800234567,\n  \"phoneNumber\": 3051112222,\n  \"email\": \"contacto@laesquina.com\",\n  \"direction\": {\n    \"street\": \"Calle 80\",\n    \"number\": \"45-67\",\n    \"neighborhood\": \"El Prado\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  }\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/stores/register",
+							"raw": "{{baseUrl}}/store",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"stores",
-								"register"
+								"store"
 							]
 						},
 						"description": "Auto-registro de tienda por el dueño (PÚBLICO - no requiere autenticación). Estado: SELF_REGISTERED. Si el NIT ya existe, se indicará usar el endpoint de Claim Store."
-					},
-					"response": []
-				},
-				{
-					"name": "Register Store by Distributor",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"if (pm.response.code === 200 || pm.response.code === 201) {",
-									"    var jsonData = pm.response.json();",
-									"    if (jsonData.store && jsonData.store.id) {",
-									"        pm.collectionVariables.set('storeId', jsonData.store.id);",
-									"        console.log('✅ Store ID guardado:', jsonData.store.id);",
-									"        console.log('📝 Estado de la tienda: PENDING_CLAIM');",
-									"        console.log('💡 El dueño puede reclamar esta tienda usando el endpoint \"Claim Store\"');",
-									"    }",
-									"    if (jsonData.relationship && jsonData.relationship.internalClientCode) {",
-									"        console.log('🔑 Internal Client Code:', jsonData.relationship.internalClientCode);",
-									"    }",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{distributorToken}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"NIT\": 800567890,\n  \"name\": \"Supermercado El Ahorro\",\n  \"phoneNumber\": \"+57 315 222 3333\",\n  \"email\": \"contacto@elahorro.com\",\n  \"direction\": {\n    \"street\": \"Carrera 45\",\n    \"number\": \"78-90\",\n    \"neighborhood\": \"Norte\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  },\n  \"internalClientCode\": \"CLI-2024-001\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/stores/distributor/{{distributorId}}/register",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"stores",
-								"distributor",
-								"{{distributorId}}",
-								"register"
-							]
-						},
-						"description": "Registro de tienda por un distribuidor para uno de sus clientes. Requiere rol ADMIN o DISTRIBUTOR. Estado: PENDING_CLAIM. Incluye internalClientCode para integración ERP."
-					},
-					"response": []
-				},
-				{
-					"name": "Claim Store",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"if (pm.response.code === 200 || pm.response.code === 201) {",
-									"    var jsonData = pm.response.json();",
-									"    console.log('✅ Tienda reclamada exitosamente!');",
-									"    if (jsonData.storeId) {",
-									"        pm.collectionVariables.set('storeId', jsonData.storeId);",
-									"        console.log('🏪 Store ID:', jsonData.storeId);",
-									"    }",
-									"    if (jsonData.username && jsonData.userId) {",
-									"        console.log('👤 User ID:', jsonData.userId);",
-									"        console.log('📝 Username:', jsonData.username);",
-									"        console.log('💡 Ahora puedes iniciar sesión con estas credenciales');",
-									"    }",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"NIT\": 800567890,\n  \"email\": \"contacto@elahorro.com\",\n  \"password\": \"MiPassword123!\"\n}"
-						},
-						"url": {
-							"raw": "{{baseUrl}}/stores/claim",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"stores",
-								"claim"
-							]
-						},
-						"description": "Reclama una tienda registrada por un distribuidor (PÚBLICO - no requiere autenticación). Valida NIT + email, crea usuario automáticamente. Estado cambia a: CLAIMED."
 					},
 					"response": []
 				},
@@ -852,7 +867,7 @@
 					"response": []
 				},
 				{
-					"name": "List All Stores",
+					"name": "List All Stores (ADMIN ROLE)",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -862,12 +877,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/stores",
+							"raw": "{{baseUrl}}/store",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"stores"
+								"store"
 							]
 						},
 						"description": "Lista todas las tiendas"
@@ -875,7 +890,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Store by ID",
+					"name": "Get Store by ID (ADMIN ROLE)",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -885,12 +900,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/stores/{{storeId}}",
+							"raw": "{{baseUrl}}/store/{{storeId}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"stores",
+								"store",
 								"{{storeId}}"
 							]
 						},
@@ -899,9 +914,9 @@
 					"response": []
 				},
 				{
-					"name": "Update Store",
+					"name": "Update Store (ADMIN ROLE)",
 					"request": {
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -914,15 +929,15 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Tienda La Esquina Actualizada\",\n  \"phoneNumber\": \"+57 305 999 9999\",\n  \"email\": \"nuevo@laesquina.com\",\n  \"direction\": {\n    \"street\": \"Calle 81\",\n    \"number\": \"46-68\",\n    \"neighborhood\": \"El Prado\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  }\n}"
+							"raw": "{\n  \"name\": \"Tienda La Esquina Actualizada\",\n  \"phoneNumber\": 3059999999,\n  \"direction\": {\n    \"street\": \"Calle 81\",\n    \"number\": \"46-68\",\n    \"neighborhood\": \"El Prado\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  }\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/stores/{{storeId}}",
+							"raw": "{{baseUrl}}/store/{{storeId}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"stores",
+								"store",
 								"{{storeId}}"
 							]
 						},
@@ -931,7 +946,7 @@
 					"response": []
 				},
 				{
-					"name": "Disable Store",
+					"name": "Disable Store (ADMIN ROLE)",
 					"request": {
 						"method": "DELETE",
 						"header": [
@@ -951,6 +966,29 @@
 							]
 						},
 						"description": "Desactiva una tienda (soft delete)"
+					},
+					"response": []
+				},
+				{
+					"name": "Accept Binding (STORE ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/store?token",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": null
+								}
+							]
+						}
 					},
 					"response": []
 				}
@@ -994,7 +1032,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"sku\": \"POLO-001\",\n  \"name\": \"Camiseta\",\n  \"price\": 25.50,\n  \"unit\": \"LITER\"\n}"
+							"raw": "{\n    \"sku\": \"LAC-008\",\n    \"name\": \"Leche Entera Larga Vida\",\n    \"price\": 1.50,\n    \"unit\": \"LITER\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/products",

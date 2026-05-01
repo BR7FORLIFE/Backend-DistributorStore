@@ -8,6 +8,8 @@ import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 
 public interface IDistributorRepositoryPort {
 
+    boolean existsDistributorById(UUID distributorId);
+
     boolean existsDistributorByNit(String nit);
 
     boolean existsDistributorByEmail(String email);

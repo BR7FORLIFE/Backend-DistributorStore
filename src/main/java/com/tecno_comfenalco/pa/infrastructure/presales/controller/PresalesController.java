@@ -23,6 +23,7 @@ import com.tecno_comfenalco.pa.application.presales.command.response.EditPresale
 import com.tecno_comfenalco.pa.application.presales.command.response.GetPresalesByIdCommandResult;
 import com.tecno_comfenalco.pa.application.presales.command.response.GetPresalesInfoCommandResult;
 import com.tecno_comfenalco.pa.application.presales.command.response.ListPresalesCommandResult;
+import com.tecno_comfenalco.pa.application.presales.command.response.PresalesBindingResponseDto;
 import com.tecno_comfenalco.pa.application.presales.command.response.RegisterPresalesCommandResult;
 import com.tecno_comfenalco.pa.application.presales.dto.request.EditPresalesRequestDto;
 import com.tecno_comfenalco.pa.application.presales.dto.request.RegisterPresalesRequestDto;
@@ -132,15 +133,16 @@ public class PresalesController {
 
         @PreAuthorize("hasRole('PRESALES')")
         @PostMapping("/send-binding")
-        public ResponseEntity<SendBindingStoreResponseDto> sendBindingStoreRequest(Authentication authentication,
+        public ResponseEntity<PresalesBindingResponseDto> sendBindingStoreRequest(Authentication authentication,
                         @RequestBody @Valid SendBindingStoreRequestDto dto) {
                 CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
 
-                SendBindingCommand cmd = new SendBindingCommand(details.getUserId(), dto.nit(), dto.tempName());
+                SendBindingCommand cmd = new SendBindingCommand(details.getUserId(), details.getDistributorId(),
+                                dto.nit(), dto.tempName());
 
                 SendBindingCommandResult result = storeBindingUseCase.sendBindingStoreRequest(cmd);
 
-                return ResponseEntity.ok().body(new SendBindingStoreResponseDto(result.bindingId(),
-                                result.distributorId(), result.status(), result.createAt()));
+                return ResponseEntity.ok().body(new PresalesBindingResponseDto(result.bindingId(),
+                                result.distributorId(), result.status(), result.createAt(), result.message()));
         }
 }

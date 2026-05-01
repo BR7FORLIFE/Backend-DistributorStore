@@ -92,4 +92,9 @@ public class DistributorRepositoryAdapter implements IDistributorRepositoryPort 
         return distributorRepository.findByUserId(userId)
                 .map(DistributorMapper::toDomain);
     }
+
+    @Override
+    public boolean existsDistributorById(UUID distributorId) {
+        return distributorRepository.existsById(distributorId);
+    }
 }

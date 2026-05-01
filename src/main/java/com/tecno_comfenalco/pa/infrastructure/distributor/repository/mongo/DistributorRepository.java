@@ -14,6 +14,8 @@ public interface DistributorRepository extends MongoRepository<DistributorDocume
 
     boolean existsByNit(String Nit);
 
+    boolean existsById(UUID Id);
+
     Optional<DistributorDocument> findById(UUID Id);
 
     Optional<DistributorDocument> findByNit(String Nit);

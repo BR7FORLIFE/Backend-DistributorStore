@@ -24,6 +24,8 @@ public class StoreBindingRequestDocument {
     private String nit;
     private String tempName;
     private BindingStatusEnum bindingStatus;
+    private boolean isConsumed;
     private String activationCode;
     private Instant createAt;
+    private Instant consumedAt;
 }
