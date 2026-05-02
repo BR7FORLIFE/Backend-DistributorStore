@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.application.distributor.ports;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,4 +25,7 @@ public interface IDistributorRepositoryPort {
     Optional<DistributorModel> findById(UUID id);
 
     Optional<DistributorModel> findByNIT(String NIT);
+
+    PagedResult<DistributorModel> findByIdIn(Collection<UUID> ids, String name, Integer page, Integer size,
+            String sortBy, String direction);
 }

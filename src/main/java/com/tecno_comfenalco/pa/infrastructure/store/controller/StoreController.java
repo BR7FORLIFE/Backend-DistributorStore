@@ -36,6 +36,10 @@ import com.tecno_comfenalco.pa.application.store.dto.response.UpdateStoreRespons
 import com.tecno_comfenalco.pa.application.store.dto.storeBinding.response.ReceiveAceptationByStoreResponseDto;
 import com.tecno_comfenalco.pa.application.store.usecases.StoreBindingUseCase;
 import com.tecno_comfenalco.pa.application.store.usecases.StoreUseCase;
+import com.tecno_comfenalco.pa.application.storeAssignment.command.actions.GetAllAsignmentDistributorsCommand;
+import com.tecno_comfenalco.pa.application.storeAssignment.command.response.GetAllAsignmentDistributorsCommandResult;
+import com.tecno_comfenalco.pa.application.storeAssignment.dto.response.GetAllDistributorsAssignmentResponseDto;
+import com.tecno_comfenalco.pa.application.storeAssignment.usecases.StoreAssignmentUseCase;
 import com.tecno_comfenalco.pa.infrastructure.security.CustomUserDetails;
 import com.tecno_comfenalco.pa.shared.utils.http.DirectionEnum;
 import com.tecno_comfenalco.pa.shared.utils.http.RequestParams;
@@ -47,10 +51,15 @@ public class StoreController {
 
     private final StoreBindingUseCase storeBindingUseCase;
     private final StoreUseCase storeUseCase;
+    private final StoreAssignmentUseCase storeAssignmentUseCase;
 
-    public StoreController(StoreUseCase storeUseCase, StoreBindingUseCase storeBindingUseCase) {
+    public StoreController(
+            StoreUseCase storeUseCase,
+            StoreBindingUseCase storeBindingUseCase,
+            StoreAssignmentUseCase storeAssignmentUseCase) {
         this.storeUseCase = storeUseCase;
         this.storeBindingUseCase = storeBindingUseCase;
+        this.storeAssignmentUseCase = storeAssignmentUseCase;
     }
 
     @PostMapping
@@ -120,5 +129,24 @@ public class StoreController {
                 result.isConsumed(),
                 result.consumedAt(),
                 result.message()));
+    }
+
+    @PreAuthorize("hasRole('STORE')")
+    @GetMapping("/get-distributors")
+    public ResponseEntity<GetAllDistributorsAssignmentResponseDto> getMyDistributors(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size,
+            @RequestParam(required = false, defaultValue = "name") String sortBy,
+            @RequestParam(required = false, defaultValue = "DESC") DirectionEnum direction,
+            Authentication authentication) {
+        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+        RequestParams params = new RequestParams(name, page, size, sortBy, direction);
+
+        GetAllAsignmentDistributorsCommand cmd = new GetAllAsignmentDistributorsCommand(details.getUserId(), params);
+        GetAllAsignmentDistributorsCommandResult result = storeAssignmentUseCase.getAllDistributorByStore(cmd);
+
+        return ResponseEntity.ok().body(
+                new GetAllDistributorsAssignmentResponseDto(result.distributors(), result.meta(), result.message()));
     }
 }

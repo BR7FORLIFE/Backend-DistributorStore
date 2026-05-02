@@ -16,6 +16,7 @@ import com.tecno_comfenalco.pa.domain.store.models.StoreBindingRequestModel;
 import com.tecno_comfenalco.pa.infrastructure.store.entity.StoreBindingRequestDocument;
 import com.tecno_comfenalco.pa.infrastructure.store.mapper.StoreBindingMapper;
 import com.tecno_comfenalco.pa.infrastructure.store.repository.mongo.StoreBindingRepository;
+import com.tecno_comfenalco.pa.shared.enums.BindingStatusEnum;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 import com.tecno_comfenalco.pa.shared.utils.http.PaginationMeta;
 
@@ -82,5 +83,14 @@ public class StoreBindingRepositoryAdapter implements IStoreBindingRepositoryPor
     public Optional<StoreBindingRequestModel> findByNitAndToken(String nit, String token) {
         return storeBindingRepository.findByNitAndActivationCode(nit, token)
                 .map(StoreBindingMapper::toDomain);
+    }
+
+    @Override
+    public List<StoreBindingRequestModel> findByNitAndBindingStatusAndIsConsumedTrue(String nit,
+            BindingStatusEnum statusEnum) {
+        return storeBindingRepository.findByNitAndBindingStatusAndIsConsumedTrue(nit, statusEnum)
+                .stream()
+                .map(StoreBindingMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }

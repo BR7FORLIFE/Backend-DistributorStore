@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.infrastructure.store.repository.mongo;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.tecno_comfenalco.pa.infrastructure.store.entity.StoreBindingRequestDocument;
+import com.tecno_comfenalco.pa.shared.enums.BindingStatusEnum;
 
 public interface StoreBindingRepository extends MongoRepository<StoreBindingRequestDocument, UUID> {
     boolean existsByNitAndDistributorId(String nit, UUID DistributorId);
@@ -21,4 +23,7 @@ public interface StoreBindingRepository extends MongoRepository<StoreBindingRequ
     Optional<StoreBindingRequestDocument> findById(UUID Id);
 
     Optional<StoreBindingRequestDocument> findByNitAndActivationCode(String Nit, String ActivationCode);
+
+    List<StoreBindingRequestDocument> findByNitAndBindingStatusAndIsConsumedTrue(String nit,
+            BindingStatusEnum bindingStatus);
 }

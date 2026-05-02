@@ -23,11 +23,13 @@ import com.tecno_comfenalco.pa.application.store.exceptions.StoreNotFoundExcepti
 import com.tecno_comfenalco.pa.application.store.ports.IStoreBindingRepositoryPort;
 import com.tecno_comfenalco.pa.application.store.ports.IStoreRepositoryPort;
 import com.tecno_comfenalco.pa.application.store.usecases.StoreBindingUseCase;
+import com.tecno_comfenalco.pa.application.storeAssignment.ports.IStoreAssignmentRepositoryPort;
 import com.tecno_comfenalco.pa.config.GenerateCodeService;
 import com.tecno_comfenalco.pa.domain.presales.model.PresalesModel;
 import com.tecno_comfenalco.pa.domain.store.models.StoreBindingRequestModel;
 import com.tecno_comfenalco.pa.domain.store.models.StoreModel;
 import com.tecno_comfenalco.pa.domain.store.services.ValidationBindingRequest;
+import com.tecno_comfenalco.pa.domain.storeAssignment.models.StoreAssignmentModel;
 import com.tecno_comfenalco.pa.shared.enums.BindingStatusEnum;
 import com.tecno_comfenalco.pa.shared.utils.helper.ValidateQueryParams;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
@@ -38,6 +40,7 @@ public class StoreBindingUseCaseImp implements StoreBindingUseCase {
     private final IDistributorRepositoryPort distributorRepositoryPort;
     private final IStoreRepositoryPort storeRepositoryPort;
     private final IStoreBindingRepositoryPort iStoreBindingRepositoryPort;
+    private final IStoreAssignmentRepositoryPort storeAssignmentRepositoryPort;
     private final IPresalesRepositoryPort presalesRepositoryPort;
     private final GenerateCodeService generateCodeService; // generador aleatorio con entropia
 
@@ -45,12 +48,14 @@ public class StoreBindingUseCaseImp implements StoreBindingUseCase {
             IStoreBindingRepositoryPort iStoreBindingRepositoryPort,
             IPresalesRepositoryPort presalesRepositoryPort,
             IDistributorRepositoryPort distributorRepositoryPort,
-            GenerateCodeService generateCodeService) {
+            GenerateCodeService generateCodeService,
+            IStoreAssignmentRepositoryPort repositoryPort) {
         this.iStoreBindingRepositoryPort = iStoreBindingRepositoryPort;
         this.presalesRepositoryPort = presalesRepositoryPort;
         this.storeRepositoryPort = storeRepositoryPort;
         this.distributorRepositoryPort = distributorRepositoryPort;
         this.generateCodeService = generateCodeService;
+        this.storeAssignmentRepositoryPort = repositoryPort;
     }
 
     @Override
@@ -151,6 +156,13 @@ public class StoreBindingUseCaseImp implements StoreBindingUseCase {
         iStoreBindingRepositoryPort.save(updateBinding);
 
         // creamos el storeAssignment
+        StoreAssignmentModel assignmentModel = StoreAssignmentModel.createDraft(
+                optBindingModel.get().getDistributorId(),
+                optStore.get().getId(),
+                null,
+                true);
+
+        storeAssignmentRepositoryPort.save(assignmentModel);
 
         return new ReceiveAceptationByStoreCommandResult(
                 updateBinding.getId(),

@@ -1,5 +1,7 @@
 package com.tecno_comfenalco.pa.infrastructure.distributor.repository.mongo;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,4 +25,13 @@ public interface DistributorRepository extends MongoRepository<DistributorDocume
     Page<DistributorDocument> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
     Optional<DistributorDocument> findByUserId(UUID UserId);
+
+    List<DistributorDocument> findByIdIn(Collection<UUID> ids);
+
+    Page<DistributorDocument> findByIdInAndNameContainingIgnoreCase(
+            Collection<UUID> ids,
+            String name,
+            Pageable pageable);
+
+    Page<DistributorDocument> findByIdIn(Collection<UUID> ids, Pageable pageable);
 }

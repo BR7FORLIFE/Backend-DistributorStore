@@ -1,5 +1,7 @@
 package com.tecno_comfenalco.pa.infrastructure.distributor.repository;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -47,6 +49,29 @@ public class DistributorRepositoryAdapter implements IDistributorRepositoryPort 
     }
 
     @Override
+    public Optional<DistributorModel> findById(UUID id) {
+        return distributorRepository.findById(id)
+                .map(DistributorMapper::toDomain);
+    }
+
+    @Override
+    public Optional<DistributorModel> findByNIT(String NIT) {
+        return distributorRepository.findByNit(NIT)
+                .map(DistributorMapper::toDomain);
+    }
+
+    @Override
+    public Optional<DistributorModel> findByUserId(UUID userId) {
+        return distributorRepository.findByUserId(userId)
+                .map(DistributorMapper::toDomain);
+    }
+
+    @Override
+    public boolean existsDistributorById(UUID distributorId) {
+        return distributorRepository.existsById(distributorId);
+    }
+
+    @Override
     public PagedResult<DistributorModel> findAllPaged(String name, Integer page, Integer size, String sortBy,
             String direction) {
         Sort.Direction sortDirection = direction.equalsIgnoreCase("asc")
@@ -76,25 +101,34 @@ public class DistributorRepositoryAdapter implements IDistributorRepositoryPort 
     }
 
     @Override
-    public Optional<DistributorModel> findById(UUID id) {
-        return distributorRepository.findById(id)
-                .map(DistributorMapper::toDomain);
-    }
+    public PagedResult<DistributorModel> findByIdIn(Collection<UUID> ids, String name, Integer page, Integer size,
+            String sortBy, String direction) {
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc")
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
 
-    @Override
-    public Optional<DistributorModel> findByNIT(String NIT) {
-        return distributorRepository.findByNit(NIT)
-                .map(DistributorMapper::toDomain);
-    }
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
 
-    @Override
-    public Optional<DistributorModel> findByUserId(UUID userId) {
-        return distributorRepository.findByUserId(userId)
-                .map(DistributorMapper::toDomain);
-    }
+        Page<DistributorDocument> result;
 
-    @Override
-    public boolean existsDistributorById(UUID distributorId) {
-        return distributorRepository.existsById(distributorId);
+        if (name != null && !name.isBlank()) {
+            result = distributorRepository.findByIdInAndNameContainingIgnoreCase(ids, name, pageable);
+        } else {
+            result = distributorRepository.findByIdIn(ids, pageable);
+        }
+
+        List<DistributorModel> models = result.getContent()
+                .stream()
+                .map(DistributorMapper::toDomain)
+                .collect(Collectors.toList());
+
+        PaginationMeta meta = new PaginationMeta(
+                result.getNumber(),
+                result.getSize(),
+                result.getTotalElements(),
+                result.getTotalPages(),
+                result.hasNext());
+
+        return new PagedResult<DistributorModel>(models, meta);
     }
 }
