@@ -24,6 +24,8 @@ import com.tecno_comfenalco.pa.application.store.command.response.GetStoreByIdCo
 import com.tecno_comfenalco.pa.application.store.command.response.ListAllStoresCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.RegisterStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.UpdateStoreCommandResult;
+import com.tecno_comfenalco.pa.application.store.command.storeBinding.actions.ReceiveAceptationByStoreCommand;
+import com.tecno_comfenalco.pa.application.store.command.storeBinding.response.ReceiveAceptationByStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.dto.request.RegisterStoreRequestDto;
 import com.tecno_comfenalco.pa.application.store.dto.request.UpdateStoreRequestDto;
 import com.tecno_comfenalco.pa.application.store.dto.response.DisabledStoreByIdResponseDto;
@@ -31,7 +33,10 @@ import com.tecno_comfenalco.pa.application.store.dto.response.GetStoreyByIdRespo
 import com.tecno_comfenalco.pa.application.store.dto.response.ListAllStoresResponseDto;
 import com.tecno_comfenalco.pa.application.store.dto.response.RegisterStoreResponseDto;
 import com.tecno_comfenalco.pa.application.store.dto.response.UpdateStoreResponseDto;
+import com.tecno_comfenalco.pa.application.store.dto.storeBinding.response.ReceiveAceptationByStoreResponseDto;
+import com.tecno_comfenalco.pa.application.store.usecases.StoreBindingUseCase;
 import com.tecno_comfenalco.pa.application.store.usecases.StoreUseCase;
+import com.tecno_comfenalco.pa.infrastructure.security.CustomUserDetails;
 import com.tecno_comfenalco.pa.shared.utils.http.DirectionEnum;
 import com.tecno_comfenalco.pa.shared.utils.http.RequestParams;
 
@@ -40,10 +45,12 @@ import com.tecno_comfenalco.pa.shared.utils.http.RequestParams;
 @RequestMapping("/store")
 public class StoreController {
 
+    private final StoreBindingUseCase storeBindingUseCase;
     private final StoreUseCase storeUseCase;
 
-    public StoreController(StoreUseCase storeUseCase) {
+    public StoreController(StoreUseCase storeUseCase, StoreBindingUseCase storeBindingUseCase) {
         this.storeUseCase = storeUseCase;
+        this.storeBindingUseCase = storeBindingUseCase;
     }
 
     @PostMapping
@@ -97,9 +104,21 @@ public class StoreController {
 
     @PreAuthorize("hasRole('STORE')")
     @GetMapping("/verify-binding")
-    public ResponseEntity<?> acceptBindingByDistributor(
+    public ResponseEntity<ReceiveAceptationByStoreResponseDto> acceptBindingByDistributor(
             @RequestParam(required = true) String token,
             Authentication authentication) {
-        return null;
+        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+
+        ReceiveAceptationByStoreCommand cmd = new ReceiveAceptationByStoreCommand(details.getUserId(), token);
+        ReceiveAceptationByStoreCommandResult result = storeBindingUseCase.receiveAceptationByStore(cmd);
+
+        return ResponseEntity.ok().body(new ReceiveAceptationByStoreResponseDto(
+                result.bindingId(),
+                result.distributorId(),
+                result.nit(),
+                result.status(),
+                result.isConsumed(),
+                result.consumedAt(),
+                result.message()));
     }
 }

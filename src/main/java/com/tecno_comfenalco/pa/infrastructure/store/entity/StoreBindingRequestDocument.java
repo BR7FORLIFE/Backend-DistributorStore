@@ -12,7 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Document(collection = "stores-binding")
+@Document(collection = "binding-request")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

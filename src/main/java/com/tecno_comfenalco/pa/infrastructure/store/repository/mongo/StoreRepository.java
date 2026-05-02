@@ -20,4 +20,6 @@ public interface StoreRepository extends MongoRepository<StoreDocument, UUID> {
     Optional<StoreDocument> findById(UUID Id);
 
     void deleteById(UUID Id);
+
+    Optional<StoreDocument> findByUserId(UUID UserId);
 }

@@ -18,5 +18,7 @@ public interface IStoreRepositoryPort {
 
     Optional<StoreModel> findById(UUID id);
 
+    Optional<StoreModel> findByUserId(UUID userId);
+
     void deleteStoreById(UUID id);
 }

@@ -13,16 +13,17 @@ public enum BindingStatusEnum {
         public BindingStatusEnum rejected() {
             return REJECTED;
         }
+    },
 
+    APPROVED {
         @Override
         public BindingStatusEnum active() {
             return ACTIVE;
         }
-    },
+    }, // la distribuidora acepto el acuerdo y a la espera que la tienda acepte
 
     ACTIVE, // la tienda acepto el acuerdo
-    REJECTED, // la tienda rechazo el acuerdo o la distribuidora
-    APPROVED; // la distribuidora acepto el acuerdo y a la espera que la tienda acepte
+    REJECTED; // la tienda rechazo el acuerdo o la distribuidora
 
     public BindingStatusEnum approve() {
         throw invalid("approve");

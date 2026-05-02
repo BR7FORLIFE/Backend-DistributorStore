@@ -37,6 +37,7 @@ public class ValidationBindingRequest {
             case ACTIVE:
                 currentBinding.getBindingStatus().active();
                 updateBinding = createNewBinding(currentBinding, statusToTransitioned, code, true);
+                break;
 
             case PENDING:
                 throw new InvalidTransitionStateBindingException(statusToTransitioned, "pending");

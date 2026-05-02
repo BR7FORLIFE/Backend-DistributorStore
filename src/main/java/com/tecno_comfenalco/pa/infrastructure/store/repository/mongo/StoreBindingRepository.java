@@ -19,4 +19,6 @@ public interface StoreBindingRepository extends MongoRepository<StoreBindingRequ
             Pageable pageable);
 
     Optional<StoreBindingRequestDocument> findById(UUID Id);
+
+    Optional<StoreBindingRequestDocument> findByNitAndActivationCode(String Nit, String ActivationCode);
 }

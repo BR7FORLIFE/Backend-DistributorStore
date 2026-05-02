@@ -84,4 +84,10 @@ public class StoreRepositoryAdapter implements IStoreRepositoryPort {
     public void deleteStoreById(UUID id) {
         storeRepository.deleteById(id);
     }
+
+    @Override
+    public Optional<StoreModel> findByUserId(UUID userId) {
+        return storeRepository.findByUserId(userId)
+                .map(StoreMapper::toDomain);
+    }
 }

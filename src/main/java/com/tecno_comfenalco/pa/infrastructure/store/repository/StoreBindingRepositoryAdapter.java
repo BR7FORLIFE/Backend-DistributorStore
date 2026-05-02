@@ -77,4 +77,10 @@ public class StoreBindingRepositoryAdapter implements IStoreBindingRepositoryPor
         return storeBindingRepository.findById(bindingId)
                 .map(StoreBindingMapper::toDomain);
     }
+
+    @Override
+    public Optional<StoreBindingRequestModel> findByNitAndToken(String nit, String token) {
+        return storeBindingRepository.findByNitAndActivationCode(nit, token)
+                .map(StoreBindingMapper::toDomain);
+    }
 }

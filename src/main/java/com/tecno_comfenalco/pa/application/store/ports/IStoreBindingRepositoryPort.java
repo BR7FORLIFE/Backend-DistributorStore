@@ -15,4 +15,6 @@ public interface IStoreBindingRepositoryPort {
             String sortBy, String direction);
 
     Optional<StoreBindingRequestModel> findById(UUID bindingId);
+
+    Optional<StoreBindingRequestModel> findByNitAndToken(String nit, String token);
 }

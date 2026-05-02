@@ -11,9 +11,11 @@ import com.tecno_comfenalco.pa.application.presales.exceptions.PresalesNotFoundE
 import com.tecno_comfenalco.pa.application.presales.ports.IPresalesRepositoryPort;
 import com.tecno_comfenalco.pa.application.store.command.storeBinding.actions.ChangeStatusBindingCommand;
 import com.tecno_comfenalco.pa.application.store.command.storeBinding.actions.ListAllBindingCommand;
+import com.tecno_comfenalco.pa.application.store.command.storeBinding.actions.ReceiveAceptationByStoreCommand;
 import com.tecno_comfenalco.pa.application.store.command.storeBinding.actions.SendBindingCommand;
 import com.tecno_comfenalco.pa.application.store.command.storeBinding.response.ChangeStatusBindingCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.storeBinding.response.ListAllBindingCommandResult;
+import com.tecno_comfenalco.pa.application.store.command.storeBinding.response.ReceiveAceptationByStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.storeBinding.response.SendBindingCommandResult;
 import com.tecno_comfenalco.pa.application.store.exceptions.StoreBindingAlreadyExistsException;
 import com.tecno_comfenalco.pa.application.store.exceptions.StoreBindingNotFoundException;
@@ -24,7 +26,9 @@ import com.tecno_comfenalco.pa.application.store.usecases.StoreBindingUseCase;
 import com.tecno_comfenalco.pa.config.GenerateCodeService;
 import com.tecno_comfenalco.pa.domain.presales.model.PresalesModel;
 import com.tecno_comfenalco.pa.domain.store.models.StoreBindingRequestModel;
+import com.tecno_comfenalco.pa.domain.store.models.StoreModel;
 import com.tecno_comfenalco.pa.domain.store.services.ValidationBindingRequest;
+import com.tecno_comfenalco.pa.shared.enums.BindingStatusEnum;
 import com.tecno_comfenalco.pa.shared.utils.helper.ValidateQueryParams;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 
@@ -108,10 +112,10 @@ public class StoreBindingUseCaseImp implements StoreBindingUseCase {
             throw new StoreBindingNotFoundException();
         }
 
-        String code = generateCodeService.randomBase64(256);
+        String code = generateCodeService.sha256(generateCodeService.randomBase64(256));
 
         StoreBindingRequestModel newBinding = ValidationBindingRequest.validateTransitionState(optBinding.get(),
-                cmd.bindingStatus(), code,true);
+                cmd.bindingStatus(), code, true);
 
         StoreBindingRequestModel updateBinding = iStoreBindingRepositoryPort.save(newBinding);
 
@@ -120,5 +124,41 @@ public class StoreBindingUseCaseImp implements StoreBindingUseCase {
     }
 
     // flujo de aceptacion del request binding por parte de la tienda
+    @Override
+    public ReceiveAceptationByStoreCommandResult receiveAceptationByStore(ReceiveAceptationByStoreCommand cmd) {
+        Optional<StoreModel> optStore = storeRepositoryPort.findByUserId(cmd.userStoreId());
 
+        if (optStore.isEmpty()) {
+            throw new StoreNotFoundException();
+        }
+
+        // verifcamos que el token coincida con el nit de la tienda
+        Optional<StoreBindingRequestModel> optBindingModel = iStoreBindingRepositoryPort.findByNitAndToken(
+                optStore.get().getNit(),
+                cmd.token());
+
+        if (optBindingModel.isEmpty()) {
+            throw new StoreBindingNotFoundException();
+        }
+
+        // cambiamos el estado a active y consumimos el token
+        StoreBindingRequestModel updateBinding = ValidationBindingRequest.validateTransitionState(
+                optBindingModel.get(),
+                BindingStatusEnum.ACTIVE,
+                cmd.token(),
+                false);
+
+        iStoreBindingRepositoryPort.save(updateBinding);
+
+        // creamos el storeAssignment
+
+        return new ReceiveAceptationByStoreCommandResult(
+                updateBinding.getId(),
+                updateBinding.getDistributorId(),
+                updateBinding.getNit(),
+                updateBinding.getBindingStatus(),
+                updateBinding.isConsumed(),
+                updateBinding.getConsumedAt(),
+                "Binding accepted succesfull!, status ACTIVE");
+    }
 }

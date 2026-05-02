@@ -37,4 +37,17 @@ public class GenerateCodeService {
          */
         return Base64.getUrlEncoder().withoutPadding().encodeToString(b);
     }
+
+    public boolean slowEquals(String originalHash, String hashToCompare) {
+        if (originalHash == null || hashToCompare == null) {
+            return false;
+        }
+
+        // obtenemos los bytes de cada cadena hash
+        byte[] a = originalHash.getBytes(StandardCharsets.UTF_8);
+        byte[] b = hashToCompare.getBytes(StandardCharsets.UTF_8);
+
+        // comparamos si son iguales
+        return MessageDigest.isEqual(a, b);
+    }
 }
