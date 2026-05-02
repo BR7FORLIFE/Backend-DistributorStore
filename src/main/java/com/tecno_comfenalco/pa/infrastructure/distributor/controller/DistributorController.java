@@ -142,6 +142,7 @@ public class DistributorController {
         ChangeStatusBindingCommandResult result = storeBindingUseCase.changeStatusBindingByDistributor(cmd);
 
         return ResponseEntity.ok()
-                .body(new ChangeStatusBindingStoreResponseDto(result.bindingId(), result.status(), result.message()));
+                .body(new ChangeStatusBindingStoreResponseDto(result.bindingId(), result.status(), result.code(),
+                        result.message()));
     }
 }

@@ -119,7 +119,7 @@ public class StoreBindingUseCaseImp implements StoreBindingUseCase {
 
         StoreBindingRequestModel updateBinding = iStoreBindingRepositoryPort.save(newBinding);
 
-        return new ChangeStatusBindingCommandResult(updateBinding.getId(), updateBinding.getBindingStatus(),
+        return new ChangeStatusBindingCommandResult(updateBinding.getId(), updateBinding.getBindingStatus(), code,
                 "binding update status succesfull! wait to STORE aceptation!");
     }
 

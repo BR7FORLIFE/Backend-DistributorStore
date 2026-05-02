@@ -5,8 +5,9 @@ import java.util.UUID;
 import com.tecno_comfenalco.pa.shared.enums.BindingStatusEnum;
 
 public record ChangeStatusBindingStoreResponseDto(
-        UUID bindingId,
-        BindingStatusEnum status,
-        String message) {
+                UUID bindingId,
+                BindingStatusEnum status,
+                String code,
+                String message) {
 
 }
