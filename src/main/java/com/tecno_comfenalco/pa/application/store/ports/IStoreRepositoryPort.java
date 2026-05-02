@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.application.store.ports;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,4 +22,7 @@ public interface IStoreRepositoryPort {
     Optional<StoreModel> findByUserId(UUID userId);
 
     void deleteStoreById(UUID id);
+
+    PagedResult<StoreModel> findByIdIn(Collection<UUID> ids, String name, Integer page, Integer size,
+            String sortBy, String direction);
 }

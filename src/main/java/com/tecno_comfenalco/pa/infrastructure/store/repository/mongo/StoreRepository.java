@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.infrastructure.store.repository.mongo;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,4 +23,11 @@ public interface StoreRepository extends MongoRepository<StoreDocument, UUID> {
     void deleteById(UUID Id);
 
     Optional<StoreDocument> findByUserId(UUID UserId);
+
+    Page<StoreDocument> findByIdInAndNameContainingIgnoreCase(
+            Collection<UUID> ids,
+            String name,
+            Pageable pageable);
+
+    Page<StoreDocument> findByIdIn(Collection<UUID> ids, Pageable pageable);
 }

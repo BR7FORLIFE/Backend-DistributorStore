@@ -8,28 +8,28 @@ import com.tecno_comfenalco.pa.application.presales.draft.PresalesDraft;
 
 public class StoreAssignmentModel {
     private UUID id;
-    private UUID distributorid;
+    private UUID distributorId;
     private UUID storeId;
     private List<PresalesDraft> presales;
     private Boolean isActive;
     private Instant createAt;
     private Instant updateAt;
 
-    public static StoreAssignmentModel createNew(UUID id, UUID distributorid, UUID storeId,
+    public static StoreAssignmentModel createNew(UUID id, UUID distributorId, UUID storeId,
             List<PresalesDraft> presales,
             Boolean isActive, Instant createAt, Instant updateAt) {
-        return new StoreAssignmentModel(id, distributorid, storeId, presales, isActive, createAt, updateAt);
+        return new StoreAssignmentModel(id, distributorId, storeId, presales, isActive, createAt, updateAt);
     }
 
     public static StoreAssignmentModel createDraft(
-            UUID distributorid,
+            UUID distributorId,
             UUID storeId,
             List<PresalesDraft> presales,
             Boolean isActive) {
 
         return new StoreAssignmentModel(
                 UUID.randomUUID(),
-                distributorid,
+                distributorId,
                 storeId,
                 presales,
                 isActive,
@@ -37,10 +37,10 @@ public class StoreAssignmentModel {
                 Instant.now());
     }
 
-    public StoreAssignmentModel(UUID id, UUID distributorid, UUID storeId, List<PresalesDraft> presales,
+    public StoreAssignmentModel(UUID id, UUID distributorId, UUID storeId, List<PresalesDraft> presales,
             Boolean isActive, Instant createAt, Instant updateAt) {
         this.id = id;
-        this.distributorid = distributorid;
+        this.distributorId = distributorId;
         this.storeId = storeId;
         this.presales = presales;
         this.isActive = isActive;
@@ -52,8 +52,8 @@ public class StoreAssignmentModel {
         return id;
     }
 
-    public UUID getDistributorid() {
-        return distributorid;
+    public UUID getDistributorId() {
+        return distributorId;
     }
 
     public UUID getStoreId() {

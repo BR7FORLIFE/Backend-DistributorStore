@@ -8,7 +8,7 @@ public class StoreAssignmentMapper {
     public static StoreAssignmentModel toDomain(StoreAssignmentDocument document) {
         StoreAssignmentModel model = new StoreAssignmentModel(
                 document.getId(),
-                document.getDistributorid(),
+                document.getDistributorId(),
                 document.getStoreId(),
                 document.getPresales(),
                 document.getIsActive(),
@@ -22,7 +22,7 @@ public class StoreAssignmentMapper {
         StoreAssignmentDocument document = new StoreAssignmentDocument();
 
         document.setId(model.getId());
-        document.setDistributorid(model.getDistributorid());
+        document.setDistributorId(model.getDistributorId());
         document.setStoreId(model.getStoreId());
         document.setPresales(model.getPresales());
         document.setIsActive(model.getIsActive());

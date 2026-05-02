@@ -8,12 +8,15 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.tecno_comfenalco.pa.application.distributor.exceptions.DistributorNotFoundException;
 import com.tecno_comfenalco.pa.application.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.application.store.exceptions.StoreNotFoundException;
 import com.tecno_comfenalco.pa.application.store.ports.IStoreBindingRepositoryPort;
 import com.tecno_comfenalco.pa.application.store.ports.IStoreRepositoryPort;
 import com.tecno_comfenalco.pa.application.storeAssignment.command.actions.GetAllAsignmentDistributorsCommand;
+import com.tecno_comfenalco.pa.application.storeAssignment.command.actions.GetAllAsignmentStoresCommand;
 import com.tecno_comfenalco.pa.application.storeAssignment.command.response.GetAllAsignmentDistributorsCommandResult;
+import com.tecno_comfenalco.pa.application.storeAssignment.command.response.GetAllAsignmentStoresCommandResult;
 import com.tecno_comfenalco.pa.application.storeAssignment.exceptions.NotDistributorsAssignmentException;
 import com.tecno_comfenalco.pa.application.storeAssignment.ports.IStoreAssignmentRepositoryPort;
 import com.tecno_comfenalco.pa.application.storeAssignment.usecases.StoreAssignmentUseCase;
@@ -56,7 +59,7 @@ public class StoreAssignmentUseCaseImp implements StoreAssignmentUseCase {
         // duplicados
         Set<UUID> distributorsId = allAsignments
                 .stream()
-                .map(StoreAssignmentModel::getDistributorid)
+                .map(StoreAssignmentModel::getDistributorId)
                 .collect(Collectors.toSet());
 
         // validamos que haya una coleccion de ids
@@ -74,5 +77,42 @@ public class StoreAssignmentUseCaseImp implements StoreAssignmentUseCase {
 
         return new GetAllAsignmentDistributorsCommandResult(distributorsAssignments.data(),
                 distributorsAssignments.meta(), "distributors assignments obtain succesfull!");
+    }
+
+    @Override
+    public GetAllAsignmentStoresCommandResult getAllStoresByDistributor(GetAllAsignmentStoresCommand cmd) {
+        // obtenemos la informacion de la distribuidora
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userDistributorId());
+
+        if (optDistributor.isEmpty()) {
+            throw new DistributorNotFoundException();
+        }
+
+        // obtenemos todos los assignments vinculados a la distribuidora
+        List<StoreAssignmentModel> allAsignments = storeAssignmentRepositoryPort
+                .findAllByDistributorId(optDistributor.get().getId());
+
+        // agrupamos en un Set todas las Id de las distribuidoras ademas de eliminar
+        // duplicados
+        Set<UUID> storesId = allAsignments
+                .stream()
+                .map(StoreAssignmentModel::getStoreId)
+                .collect(Collectors.toSet());
+
+        // validamos que haya una coleccion de ids
+        if (storesId == null || storesId.isEmpty()) {
+            throw new NotDistributorsAssignmentException();
+        }
+
+        PagedResult<StoreModel> storesAssignments = storeRepositoryPort.findByIdIn(
+                storesId,
+                cmd.params().name(),
+                cmd.params().page(),
+                cmd.params().size(),
+                cmd.params().sortBy(),
+                cmd.params().direction().name());
+
+        return new GetAllAsignmentStoresCommandResult(storesAssignments.data(),
+                storesAssignments.meta(), "distributors assignments obtain succesfull!");
     }
 }

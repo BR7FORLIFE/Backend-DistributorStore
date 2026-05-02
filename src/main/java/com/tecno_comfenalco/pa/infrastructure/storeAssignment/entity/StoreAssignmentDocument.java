@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class StoreAssignmentDocument {
     private UUID id;
-    private UUID distributorid;
+    private UUID distributorId;
     private UUID storeId;
     private List<PresalesDraft> presales;
     private Boolean isActive;

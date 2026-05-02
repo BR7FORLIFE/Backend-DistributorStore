@@ -9,4 +9,6 @@ public interface IStoreAssignmentRepositoryPort {
     StoreAssignmentModel save(StoreAssignmentModel model);
 
     List<StoreAssignmentModel> findAllByStoreId(UUID storeId);
+
+    List<StoreAssignmentModel> findAllByDistributorId(UUID distributorId);
 }

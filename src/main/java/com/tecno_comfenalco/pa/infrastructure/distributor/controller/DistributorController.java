@@ -38,6 +38,10 @@ import com.tecno_comfenalco.pa.application.store.dto.storeBinding.request.Change
 import com.tecno_comfenalco.pa.application.store.dto.storeBinding.response.ChangeStatusBindingStoreResponseDto;
 import com.tecno_comfenalco.pa.application.store.dto.storeBinding.response.ListAllBindingStoreResponseDto;
 import com.tecno_comfenalco.pa.application.store.usecases.StoreBindingUseCase;
+import com.tecno_comfenalco.pa.application.storeAssignment.command.actions.GetAllAsignmentStoresCommand;
+import com.tecno_comfenalco.pa.application.storeAssignment.command.response.GetAllAsignmentStoresCommandResult;
+import com.tecno_comfenalco.pa.application.storeAssignment.dto.response.GetAllStoresAssignmentResponseDto;
+import com.tecno_comfenalco.pa.application.storeAssignment.usecases.StoreAssignmentUseCase;
 import com.tecno_comfenalco.pa.infrastructure.security.CustomUserDetails;
 import com.tecno_comfenalco.pa.shared.utils.http.DirectionEnum;
 import com.tecno_comfenalco.pa.shared.utils.http.RequestParams;
@@ -51,10 +55,15 @@ public class DistributorController {
 
     private final StoreBindingUseCase storeBindingUseCase;
     private final DistributorUseCase distributorUseCase;
+    private final StoreAssignmentUseCase storeAssignmentUseCase;
 
-    public DistributorController(DistributorUseCase distributorUseCase, StoreBindingUseCase storeBindingUseCase) {
+    public DistributorController(
+            DistributorUseCase distributorUseCase,
+            StoreBindingUseCase storeBindingUseCase,
+            StoreAssignmentUseCase storeAssignmentUseCase) {
         this.distributorUseCase = distributorUseCase;
         this.storeBindingUseCase = storeBindingUseCase;
+        this.storeAssignmentUseCase = storeAssignmentUseCase;
     }
 
     @PostMapping
@@ -144,5 +153,24 @@ public class DistributorController {
         return ResponseEntity.ok()
                 .body(new ChangeStatusBindingStoreResponseDto(result.bindingId(), result.status(), result.code(),
                         result.message()));
+    }
+
+    @PreAuthorize("hasRole('DISTRIBUTOR')")
+    @GetMapping("/get-stores")
+    public ResponseEntity<GetAllStoresAssignmentResponseDto> getMyStores(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size,
+            @RequestParam(required = false, defaultValue = "name") String sortBy,
+            @RequestParam(required = false, defaultValue = "DESC") DirectionEnum direction,
+            Authentication authentication) {
+
+        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+        RequestParams params = new RequestParams(name, page, size, sortBy, direction);
+        GetAllAsignmentStoresCommand cmd = new GetAllAsignmentStoresCommand(details.getUserId(), params);
+        GetAllAsignmentStoresCommandResult result = storeAssignmentUseCase.getAllStoresByDistributor(cmd);
+
+        return ResponseEntity.ok()
+                .body(new GetAllStoresAssignmentResponseDto(result.distributors(), result.meta(), result.message()));
     }
 }

@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.infrastructure.store.repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -89,5 +90,38 @@ public class StoreRepositoryAdapter implements IStoreRepositoryPort {
     public Optional<StoreModel> findByUserId(UUID userId) {
         return storeRepository.findByUserId(userId)
                 .map(StoreMapper::toDomain);
+    }
+
+    @Override
+    public PagedResult<StoreModel> findByIdIn(Collection<UUID> ids, String name, Integer page, Integer size,
+            String sortBy, String direction) {
+
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc")
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+
+        Page<StoreDocument> result;
+
+        if (name != null && !name.isBlank()) {
+            result = storeRepository.findByIdInAndNameContainingIgnoreCase(ids, name, pageable);
+        } else {
+            result = storeRepository.findByIdIn(ids, pageable);
+        }
+
+        List<StoreModel> models = result.getContent()
+                .stream()
+                .map(StoreMapper::toDomain)
+                .collect(Collectors.toList());
+
+        PaginationMeta meta = new PaginationMeta(
+                result.getNumber(),
+                result.getSize(),
+                result.getTotalElements(),
+                result.getTotalPages(),
+                result.hasNext());
+
+        return new PagedResult<StoreModel>(models, meta);
     }
 }
