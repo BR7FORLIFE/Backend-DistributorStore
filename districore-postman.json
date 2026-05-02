@@ -441,6 +441,24 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get Stores (DISTRIBUTOR ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/distributor/get-stores",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"distributor",
+								"get-stores"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -975,18 +993,37 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/store?token",
+							"raw": "{{baseUrl}}/store/verify-binding?token=cdee5086d7ab5079db8c13d850329fc040bd603e22808572329dae7a7cbe6785",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"store"
+								"store",
+								"verify-binding"
 							],
 							"query": [
 								{
 									"key": "token",
-									"value": null
+									"value": "cdee5086d7ab5079db8c13d850329fc040bd603e22808572329dae7a7cbe6785"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Distributors (STORE ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/store/get-distributors",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"get-distributors"
 							]
 						}
 					},
