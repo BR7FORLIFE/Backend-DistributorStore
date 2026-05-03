@@ -83,6 +83,14 @@ public class CatalogUseCaseImp implements CatalogUseCase {
             throw new DistributorNotFoundException();
         }
 
+        boolean ownsCatalog = catalogRepositoryPort.existsByIdAndDistributorId(
+                cmd.catalogId(),
+                optDistributor.get().getId());
+
+        if (!ownsCatalog) {
+            throw new CatalogNotFoundException();
+        }
+
         // vericamos que exista el catalogo
         boolean existsCatalog = catalogRepositoryPort.existsCatalogById(cmd.catalogId());
 
@@ -117,6 +125,14 @@ public class CatalogUseCaseImp implements CatalogUseCase {
 
         if (optDistributor.isEmpty()) {
             throw new DistributorNotFoundException();
+        }
+
+        boolean ownsCatalog = catalogRepositoryPort.existsByIdAndDistributorId(
+                cmd.catalogId(),
+                optDistributor.get().getId());
+
+        if (!ownsCatalog) {
+            throw new CatalogNotFoundException();
         }
 
         // validamos que exista el catalogo

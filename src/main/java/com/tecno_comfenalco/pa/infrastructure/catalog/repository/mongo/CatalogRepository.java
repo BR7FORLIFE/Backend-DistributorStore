@@ -15,5 +15,7 @@ public interface CatalogRepository extends MongoRepository<CatalogDocument, UUID
 
     boolean existsByIdAndCategoriesIdAndCategoriesProductsId(UUID catalogId, UUID categoryId, UUID productId);
 
+    boolean existsByIdAndDistributorId(UUID Id, UUID DistributorId);
+
     boolean existsById(UUID Id);
 }

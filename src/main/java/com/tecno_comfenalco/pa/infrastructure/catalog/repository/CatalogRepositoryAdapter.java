@@ -57,6 +57,11 @@ public class CatalogRepositoryAdapter implements ICatalogRepositoryPort {
     }
 
     @Override
+    public boolean existsByIdAndDistributorId(UUID catalogId, UUID distributorId) {
+        return catalogRepository.existsByIdAndDistributorId(catalogId, distributorId);
+    }
+
+    @Override
     public void addCategoryToCatalog(UUID catalogId, CategoryModel categoryModel) {
         Query query = new Query(Criteria.where("_id").is(catalogId));
         CategoryEmbeddedEntity categoryEmbeddedEntity = CategoryEmbeddedMapper.toEntity(categoryModel);

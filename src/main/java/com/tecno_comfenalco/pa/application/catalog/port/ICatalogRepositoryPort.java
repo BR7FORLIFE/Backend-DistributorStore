@@ -15,6 +15,8 @@ public interface ICatalogRepositoryPort {
 
     boolean existsByIdAndCategoriesIdAndCategoriesProductsId(UUID catalogId, UUID categoryId, UUID productId);
 
+    boolean existsByIdAndDistributorId(UUID catalogId, UUID distributorId);
+
     CatalogModel save(CatalogModel catalogModel);
 
     void addCategoryToCatalog(UUID catalogId, CategoryModel categoryModel);
