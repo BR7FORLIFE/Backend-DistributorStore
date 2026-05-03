@@ -14,28 +14,41 @@ public class CatalogMapper {
             return null;
         }
 
-        List<CategoryModel> categoryModels = catalogDocument.getCategories()
-                .stream()
-                .map(CategoryEmbeddedMapper::toDomain)
-                .toList();
+        List<CategoryModel> categoryModels = (catalogDocument.getCategories() == null)
+                ? List.of()
+                : catalogDocument.getCategories()
+                        .stream()
+                        .map(CategoryEmbeddedMapper::toDomain)
+                        .toList();
 
-        CatalogModel catalogModel = CatalogModel.createNew(catalogDocument.getId(), catalogDocument.getDistributorId(),
-                catalogDocument.getCatalogCode(), catalogDocument.getName(), catalogDocument.getCreateAt(),
-                catalogDocument.getUpdateAt(), categoryModels);
-
-        return catalogModel;
+        return CatalogModel.createNew(
+                catalogDocument.getId(),
+                catalogDocument.getDistributorId(),
+                catalogDocument.getCatalogCode(),
+                catalogDocument.getName(),
+                catalogDocument.getCreateAt(),
+                catalogDocument.getUpdateAt(),
+                categoryModels);
     }
 
     public static CatalogDocument toEntity(CatalogModel catalogModel) {
-        List<CategoryEmbeddedEntity> categoryEmbeddedEntities = catalogModel.getCategories()
-                .stream()
-                .map(CategoryEmbeddedMapper::toEntity)
-                .toList();
+        if (catalogModel == null)
+            return null;
 
-        CatalogDocument catalogDocument = new CatalogDocument(catalogModel.getId(), catalogModel.getDistributorId(),
-                catalogModel.getCatalogCode(), catalogModel.getName(), catalogModel.getCreateAt(),
-                catalogModel.getUpdateAt(), categoryEmbeddedEntities);
+        List<CategoryEmbeddedEntity> categoryEmbeddedEntities = (catalogModel.getCategories() == null)
+                ? List.of()
+                : catalogModel.getCategories()
+                        .stream()
+                        .map(CategoryEmbeddedMapper::toEntity)
+                        .toList();
 
-        return catalogDocument;
+        return new CatalogDocument(
+                catalogModel.getId(),
+                catalogModel.getDistributorId(),
+                catalogModel.getCatalogCode(),
+                catalogModel.getName(),
+                catalogModel.getCreateAt(),
+                catalogModel.getUpdateAt(),
+                categoryEmbeddedEntities);
     }
 }

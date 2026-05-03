@@ -1,8 +1,8 @@
 package com.tecno_comfenalco.pa.application.catalog.dto.request;
 
-import java.util.List;
-import java.util.UUID;
+import jakarta.validation.constraints.NotBlank;
 
-public record AddCategoryToCatalogRequestDto(UUID catalogId, String name, List<UUID> products) {
+public record AddCategoryToCatalogRequestDto(
+                @NotBlank(message = "el nombre no puede ser nulo ni vacio!") String name) {
 
 }

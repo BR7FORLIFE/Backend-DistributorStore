@@ -18,6 +18,7 @@ public class CatalogModel {
     public CatalogModel(UUID id, UUID distributorId, String catalogCode, String name, Instant createAt,
             Instant updateAt, List<CategoryModel> categories) {
         this.id = id;
+        this.distributorId = distributorId;
         this.catalogCode = catalogCode;
         this.name = name;
         this.categories = categories;

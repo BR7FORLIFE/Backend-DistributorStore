@@ -9,23 +9,25 @@ import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 
 public interface IDistributorRepositoryPort {
 
-    boolean existsDistributorById(UUID distributorId);
+        boolean existsDistributorById(UUID distributorId);
 
-    boolean existsDistributorByNit(String nit);
+        boolean existsDistributorByNit(String nit);
 
-    boolean existsDistributorByEmail(String email);
+        boolean existsDistributorByEmail(String email);
 
-    DistributorModel save(DistributorModel distributorModel);
+        boolean existsDistributorByUserId(UUID userDistributorId);
 
-    PagedResult<DistributorModel> findAllPaged(String name, Integer page, Integer size, String sortBy,
-            String direction);
+        DistributorModel save(DistributorModel distributorModel);
 
-    Optional<DistributorModel> findByUserId(UUID userId);
+        PagedResult<DistributorModel> findAllPaged(String name, Integer page, Integer size, String sortBy,
+                        String direction);
 
-    Optional<DistributorModel> findById(UUID id);
+        Optional<DistributorModel> findByUserId(UUID userId);
 
-    Optional<DistributorModel> findByNIT(String NIT);
+        Optional<DistributorModel> findById(UUID id);
 
-    PagedResult<DistributorModel> findByIdIn(Collection<UUID> ids, String name, Integer page, Integer size,
-            String sortBy, String direction);
+        Optional<DistributorModel> findByNIT(String NIT);
+
+        PagedResult<DistributorModel> findByIdIn(Collection<UUID> ids, String name, Integer page, Integer size,
+                        String sortBy, String direction);
 }

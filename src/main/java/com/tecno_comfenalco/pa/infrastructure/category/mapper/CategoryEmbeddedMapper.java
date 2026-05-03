@@ -9,29 +9,29 @@ import com.tecno_comfenalco.pa.infrastructure.product.entity.ProductSummaryEmbed
 import com.tecno_comfenalco.pa.infrastructure.product.mapper.ProductSummaryMapper;
 
 public class CategoryEmbeddedMapper {
-    public static CategoryModel toDomain(CategoryEmbeddedEntity categoryEmbeddedEntity) {
-        if (categoryEmbeddedEntity == null) {
+    public static CategoryModel toDomain(CategoryEmbeddedEntity entity) {
+        if (entity == null)
             return null;
-        }
 
-        List<ProductSummaryModel> productSummaryEmbeddedEntities = categoryEmbeddedEntity.getProducts()
-                .stream()
-                .map(ProductSummaryMapper::toDomain)
-                .toList();
+        List<ProductSummaryModel> products = (entity.getProducts() == null)
+                ? List.of()
+                : entity.getProducts().stream()
+                        .map(ProductSummaryMapper::toDomain)
+                        .toList();
 
-        CategoryModel categoryModel = CategoryModel.createNew(categoryEmbeddedEntity.getId(),
-                categoryEmbeddedEntity.getName(), productSummaryEmbeddedEntities);
-        return categoryModel;
+        return CategoryModel.createNew(entity.getId(), entity.getName(), products);
     }
 
-    public static CategoryEmbeddedEntity toEntity(CategoryModel categoryModel) {
-        List<ProductSummaryEmbeddedEntity> productSummaryModels = categoryModel.getProducts().stream()
-                .map(ProductSummaryMapper::toEntity)
-                .toList();
+    public static CategoryEmbeddedEntity toEntity(CategoryModel model) {
+        if (model == null)
+            return null;
 
-        CategoryEmbeddedEntity categoryEmbeddedEntity = new CategoryEmbeddedEntity(categoryModel.getId(),
-                categoryModel.getName(), productSummaryModels);
+        List<ProductSummaryEmbeddedEntity> productEntities = (model.getProducts() == null)
+                ? List.of()
+                : model.getProducts().stream()
+                        .map(ProductSummaryMapper::toEntity)
+                        .toList();
 
-        return categoryEmbeddedEntity;
+        return new CategoryEmbeddedEntity(model.getId(), model.getName(), productEntities);
     }
 }

@@ -1,6 +1,5 @@
 package com.tecno_comfenalco.pa.infrastructure.catalog.repository;
 
-import com.tecno_comfenalco.pa.infrastructure.product.repository.mongo.ProductRepository;
 import java.util.UUID;
 
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -9,14 +8,19 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import com.mongodb.client.result.UpdateResult;
+import com.tecno_comfenalco.pa.application.catalog.exceptions.CategoryNotFoundException;
 import com.tecno_comfenalco.pa.application.catalog.port.ICatalogRepositoryPort;
 import com.tecno_comfenalco.pa.domain.catalog.models.CatalogModel;
 import com.tecno_comfenalco.pa.domain.category.models.CategoryModel;
+import com.tecno_comfenalco.pa.domain.product.model.ProductSummaryModel;
 import com.tecno_comfenalco.pa.infrastructure.catalog.entity.CatalogDocument;
 import com.tecno_comfenalco.pa.infrastructure.catalog.mapper.CatalogMapper;
 import com.tecno_comfenalco.pa.infrastructure.catalog.repository.mongo.CatalogRepository;
 import com.tecno_comfenalco.pa.infrastructure.category.entity.CategoryEmbeddedEntity;
 import com.tecno_comfenalco.pa.infrastructure.category.mapper.CategoryEmbeddedMapper;
+import com.tecno_comfenalco.pa.infrastructure.product.entity.ProductSummaryEmbeddedEntity;
+import com.tecno_comfenalco.pa.infrastructure.product.mapper.ProductSummaryMapper;
 
 @Repository
 public class CatalogRepositoryAdapter implements ICatalogRepositoryPort {
@@ -31,7 +35,7 @@ public class CatalogRepositoryAdapter implements ICatalogRepositoryPort {
 
     @Override
     public boolean existsByDistributorIdAndCode(UUID distributorId, String code) {
-        return catalogRepository.existsByIdAndCatalogCode(distributorId, code);
+        return catalogRepository.existsByDistributorIdAndCatalogCode(distributorId, code);
     }
 
     @Override
@@ -43,8 +47,13 @@ public class CatalogRepositoryAdapter implements ICatalogRepositoryPort {
     }
 
     @Override
-    public boolean existsCategoryNameInCatalog(UUID catalogId, String categoryName) {
-        return catalogRepository.existsCategoryNameInCatalog(catalogId, categoryName);
+    public boolean existsCategoryByDistributorIdAndName(UUID catalogId, String categoryName) {
+        return catalogRepository.existsByIdAndCategoriesName(catalogId, categoryName);
+    }
+
+    @Override
+    public boolean existsByIdAndCategoriesIdAndCategoriesProductsId(UUID catalogId, UUID categoryId, UUID productId) {
+        return catalogRepository.existsByIdAndCategoriesIdAndCategoriesProductsId(catalogId, categoryId, productId);
     }
 
     @Override
@@ -54,5 +63,30 @@ public class CatalogRepositoryAdapter implements ICatalogRepositoryPort {
 
         Update update = new Update().push("categories", categoryEmbeddedEntity);
         mongoTemplate.updateFirst(query, update, CatalogDocument.class);
+    }
+
+    @Override
+    public void addProductToCategory(UUID categoryId, ProductSummaryModel model) {
+        Query query = new Query(Criteria.where("categories._id").is(categoryId));
+
+        ProductSummaryEmbeddedEntity productEntity = ProductSummaryMapper.toEntity(model);
+
+        Update update = new Update().push("categories.$.products", productEntity);
+
+        UpdateResult result = mongoTemplate.updateFirst(query, update, CatalogDocument.class);
+
+        if (result.getMatchedCount() == 0) {
+            throw new CategoryNotFoundException();
+        }
+    }
+
+    @Override
+    public boolean existsCatalogById(UUID catalogId) {
+        return catalogRepository.existsById(catalogId);
+    }
+
+    @Override
+    public boolean existsCategoryByCatalogIdAndCategoryId(UUID catalogId, UUID categoryId) {
+        return catalogRepository.existsByIdAndCategoriesId(catalogId, categoryId);
     }
 }

@@ -4,6 +4,6 @@ import java.util.UUID;
 
 import jakarta.validation.constraints.NotNull;
 
-public record AddExistingProductToCategoryRequestDto(@NotNull(message = "catalog ID is required") UUID catalogId) {
+public record AddExistingProductToCategoryRequestDto(@NotNull(message = "catalog ID is required") UUID productId) {
 
 }

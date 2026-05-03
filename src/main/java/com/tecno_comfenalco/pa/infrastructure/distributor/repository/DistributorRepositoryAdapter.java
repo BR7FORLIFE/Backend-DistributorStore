@@ -131,4 +131,10 @@ public class DistributorRepositoryAdapter implements IDistributorRepositoryPort 
 
         return new PagedResult<DistributorModel>(models, meta);
     }
+
+    @Override
+    public boolean existsDistributorByUserId(UUID userDistributorId) {
+        
+        return false;
+    }
 }

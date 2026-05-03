@@ -1,5 +1,7 @@
 package com.tecno_comfenalco.pa.application.catalog.command.responses;
 
-public record AddCategoryToCatalogCommandResult(String message) {
+import java.util.UUID;
+
+public record AddCategoryToCatalogCommandResult(UUID catalogId, UUID categoryId, String message) {
 
 }
