@@ -6,15 +6,20 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.tecno_comfenalco.pa.application.auth.Exceptions.UserNotFoundException;
 import com.tecno_comfenalco.pa.application.catalog.command.actions.AddCategoryToCatalogCommand;
 import com.tecno_comfenalco.pa.application.catalog.command.actions.AddProductToCategoryCommand;
 import com.tecno_comfenalco.pa.application.catalog.command.actions.CreateCatalogCommand;
+import com.tecno_comfenalco.pa.application.catalog.command.actions.GetCatalogByIdCommand;
 import com.tecno_comfenalco.pa.application.catalog.command.actions.GetProductByCategoryCommand;
+import com.tecno_comfenalco.pa.application.catalog.command.actions.ListCatalogCommand;
 import com.tecno_comfenalco.pa.application.catalog.command.responses.AddCategoryToCatalogCommandResult;
 import com.tecno_comfenalco.pa.application.catalog.command.responses.AddProductToCategoryCommandResult;
 import com.tecno_comfenalco.pa.application.catalog.command.responses.CreateCatalogCommandResult;
+import com.tecno_comfenalco.pa.application.catalog.command.responses.GetCatalogByIdCommandResult;
 import com.tecno_comfenalco.pa.application.catalog.command.responses.GetCatalogForAuthenticatedUserCommandResult;
 import com.tecno_comfenalco.pa.application.catalog.command.responses.GetProductByCategoryCommandResult;
+import com.tecno_comfenalco.pa.application.catalog.command.responses.ListCatalogCommandResult;
 import com.tecno_comfenalco.pa.application.catalog.exceptions.CatalogExistsException;
 import com.tecno_comfenalco.pa.application.catalog.exceptions.CatalogNotFoundException;
 import com.tecno_comfenalco.pa.application.catalog.exceptions.CategoryExistsException;
@@ -24,13 +29,18 @@ import com.tecno_comfenalco.pa.application.catalog.port.ICatalogRepositoryPort;
 import com.tecno_comfenalco.pa.application.catalog.usecase.CatalogUseCase;
 import com.tecno_comfenalco.pa.application.distributor.exceptions.DistributorNotFoundException;
 import com.tecno_comfenalco.pa.application.distributor.ports.IDistributorRepositoryPort;
+import com.tecno_comfenalco.pa.application.presales.exceptions.PresalesNotFoundException;
+import com.tecno_comfenalco.pa.application.presales.ports.IPresalesRepositoryPort;
 import com.tecno_comfenalco.pa.application.product.exceptions.ProductNotFoundException;
 import com.tecno_comfenalco.pa.application.product.ports.IProductRepositoryPort;
 import com.tecno_comfenalco.pa.domain.catalog.models.CatalogModel;
 import com.tecno_comfenalco.pa.domain.category.models.CategoryModel;
 import com.tecno_comfenalco.pa.domain.distributor.model.DistributorModel;
+import com.tecno_comfenalco.pa.domain.presales.model.PresalesModel;
 import com.tecno_comfenalco.pa.domain.product.model.ProductModel;
 import com.tecno_comfenalco.pa.domain.product.model.ProductSummaryModel;
+import com.tecno_comfenalco.pa.shared.utils.helper.ValidateQueryParams;
+import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 
 @Service
 public class CatalogUseCaseImp implements CatalogUseCase {
@@ -38,13 +48,16 @@ public class CatalogUseCaseImp implements CatalogUseCase {
     private final ICatalogRepositoryPort catalogRepositoryPort;
     private final IDistributorRepositoryPort distributorRepositoryPort;
     private final IProductRepositoryPort productRepositoryPort;
+    private final IPresalesRepositoryPort presalesRepositoryPort;
 
     public CatalogUseCaseImp(ICatalogRepositoryPort iCatalogRepositoryPort,
             IDistributorRepositoryPort distributorRepositoryPort,
-            IProductRepositoryPort productRepositoryPort) {
+            IProductRepositoryPort productRepositoryPort,
+            IPresalesRepositoryPort presalesRepositoryPort) {
         this.catalogRepositoryPort = iCatalogRepositoryPort;
         this.distributorRepositoryPort = distributorRepositoryPort;
         this.productRepositoryPort = productRepositoryPort;
+        this.presalesRepositoryPort = presalesRepositoryPort;
     }
 
     @Override
@@ -183,13 +196,106 @@ public class CatalogUseCaseImp implements CatalogUseCase {
     }
 
     @Override
-    public GetCatalogForAuthenticatedUserCommandResult getCatalogForAuthenticatedUser() {
-        throw new UnsupportedOperationException("Unimplemented method 'getCatalogForAuthenticatedUser'");
-    }
-
-    @Override
     public GetProductByCategoryCommandResult getProductsByCategory(GetProductByCategoryCommand cmd) {
         throw new UnsupportedOperationException("Unimplemented method 'getProductsByCategory'");
     }
 
+    @Override
+    public ListCatalogCommandResult listCatalog(ListCatalogCommand cmd) {
+
+        switch (cmd.role()) {
+            case "ROLE_DISTRIBUTOR":
+                ValidateQueryParams.validate(cmd.params());
+
+                Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userId());
+
+                if (optDistributor.isEmpty()) {
+                    throw new DistributorNotFoundException();
+                }
+
+                PagedResult<CatalogModel> catalogs = catalogRepositoryPort.findAllPaged(
+                        optDistributor.get().getId(),
+                        cmd.params().name(),
+                        cmd.params().page(),
+                        cmd.params().size(),
+                        cmd.params().sortBy(),
+                        cmd.params().direction().name());
+
+                return new ListCatalogCommandResult(
+                        catalogs.data(),
+                        catalogs.meta(),
+                        "catalogs obtain succesfull!");
+
+            case "ROLE_PRESALES":
+                ValidateQueryParams.validate(cmd.params());
+
+                Optional<PresalesModel> optPresales = presalesRepositoryPort
+                        .findPresalesByUserIdAndDistributorId(cmd.userId(), cmd.distributorId());
+
+                if (optPresales.isEmpty()) {
+                    throw new PresalesNotFoundException();
+                }
+
+                PagedResult<CatalogModel> catalogsP = catalogRepositoryPort.findAllPaged(
+                        optPresales.get().getDistributorId(),
+                        cmd.params().name(),
+                        cmd.params().page(),
+                        cmd.params().size(),
+                        cmd.params().sortBy(),
+                        cmd.params().direction().name());
+
+                return new ListCatalogCommandResult(
+                        catalogsP.data(),
+                        catalogsP.meta(),
+                        "catalogs obtain succesfull!");
+
+            default:
+                throw new UserNotFoundException();
+        }
+    }
+
+    @Override
+    public GetCatalogByIdCommandResult getCatalogById(GetCatalogByIdCommand cmd) {
+
+        switch (cmd.role()) {
+            case "ROLE_DISTRIBUTOR":
+                Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userId());
+
+                if (optDistributor.isEmpty()) {
+                    throw new DistributorNotFoundException();
+                }
+
+                Optional<CatalogModel> optCatalog = catalogRepositoryPort.findByCatalogIdAndDistributorId(
+                        cmd.catalogId(),
+                        optDistributor.get().getId());
+
+                if (optCatalog.isEmpty()) {
+                    throw new CatalogNotFoundException();
+                }
+
+                return new GetCatalogByIdCommandResult(optCatalog.get(), "Catalog obtain succesfull!");
+
+            case "ROLE_PRESALES":
+                Optional<PresalesModel> optPresales = presalesRepositoryPort.findPresalesByUserIdAndDistributorId(
+                        cmd.userId(),
+                        cmd.distributorId());
+
+                if (optPresales.isEmpty()) {
+                    throw new PresalesNotFoundException();
+                }
+
+                Optional<CatalogModel> optCatalogP = catalogRepositoryPort.findByCatalogIdAndDistributorId(
+                        cmd.catalogId(),
+                        optPresales.get().getDistributorId());
+
+                if (optCatalogP.isEmpty()) {
+                    throw new CatalogNotFoundException();
+                }
+
+                return new GetCatalogByIdCommandResult(optCatalogP.get(), "Catalog obtain succesfull!");
+
+            default:
+                throw new UserNotFoundException();
+        }
+    }
 }

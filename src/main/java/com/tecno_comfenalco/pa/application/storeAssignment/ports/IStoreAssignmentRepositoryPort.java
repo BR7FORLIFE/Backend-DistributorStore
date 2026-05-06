@@ -11,4 +11,6 @@ public interface IStoreAssignmentRepositoryPort {
     List<StoreAssignmentModel> findAllByStoreId(UUID storeId);
 
     List<StoreAssignmentModel> findAllByDistributorId(UUID distributorId);
+
+    boolean existsByStoreIdAndDistributorId(UUID storeId, UUID distributorId);
 }

@@ -3,6 +3,7 @@ package com.tecno_comfenalco.pa.application.product.orchestator;
 import java.time.Instant;
 import java.util.Optional;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import com.tecno_comfenalco.pa.application.distributor.exceptions.DistributorNotFoundException;
@@ -17,6 +18,8 @@ import com.tecno_comfenalco.pa.application.product.command.response.EditProductC
 import com.tecno_comfenalco.pa.application.product.command.response.GetProductByIdCommandResult;
 import com.tecno_comfenalco.pa.application.product.command.response.ListProductCommandResult;
 import com.tecno_comfenalco.pa.application.product.command.response.RegisterProductCommandResult;
+import com.tecno_comfenalco.pa.application.product.events.ProductDeletedEvent;
+import com.tecno_comfenalco.pa.application.product.events.ProductUpdatedEvent;
 import com.tecno_comfenalco.pa.application.product.exceptions.ProductExistsException;
 import com.tecno_comfenalco.pa.application.product.exceptions.ProductNotFoundException;
 import com.tecno_comfenalco.pa.application.product.ports.IProductRepositoryPort;
@@ -31,11 +34,14 @@ public class ProductUseCaseImp implements ProductUseCase {
 
     private final IDistributorRepositoryPort distributorRepositoryPort;
     private final IProductRepositoryPort iProductRepositoryPort;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public ProductUseCaseImp(IProductRepositoryPort iProductRepositoryPort,
-            IDistributorRepositoryPort distributorRepositoryPort) {
+            IDistributorRepositoryPort distributorRepositoryPort,
+            ApplicationEventPublisher applicationEventPublisher) {
         this.iProductRepositoryPort = iProductRepositoryPort;
         this.distributorRepositoryPort = distributorRepositoryPort;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -62,6 +68,8 @@ public class ProductUseCaseImp implements ProductUseCase {
         return new RegisterProductCommandResult(result.getId(), result.getSku(), "Product created succesfull!");
     }
 
+    // aca lanzaremos un eventPublisher para poder capturar el evento y poder
+    // actualizar los catalogos enlazados
     @Override
     public EditProductCommandResult editProduct(EditProductCommand cmd) {
 
@@ -82,11 +90,23 @@ public class ProductUseCaseImp implements ProductUseCase {
                 optProduct.get().getDistributorId(), cmd.sku(), cmd.name(),
                 cmd.unit(), cmd.price(), optProduct.get().getCreateAt(), Instant.now());
 
-        iProductRepositoryPort.save(updateProduct);
+        ProductModel result = iProductRepositoryPort.save(updateProduct);
+
+        // lanzamos el evento para que el consumer lo capture y pueda hacer los
+        // respectivos cambios en los catalogos
+        applicationEventPublisher.publishEvent(new ProductUpdatedEvent(
+                result.getId(),
+                result.getDistributorId(),
+                result.getSku(),
+                result.getName(),
+                result.getUnit(),
+                result.getPrice()));
 
         return new EditProductCommandResult(cmd.productId(), "Product update succesfull!");
     }
 
+    // aca lanzaremos un eventPublisher para poder capturar el evento y poder
+    // actualizar los catalogos enlazados
     @Override
     public DisabledProductCommandResult disabledProduct(DisabledProductCommand cmd) {
 
@@ -104,6 +124,8 @@ public class ProductUseCaseImp implements ProductUseCase {
         }
 
         iProductRepositoryPort.deleteProductByIdAndDistributorId(cmd.productId(), optDistributor.get().getId());
+
+        applicationEventPublisher.publishEvent(new ProductDeletedEvent(cmd.productId(), optDistributor.get().getId()));
 
         return new DisabledProductCommandResult("Product delete succesfull!");
     }

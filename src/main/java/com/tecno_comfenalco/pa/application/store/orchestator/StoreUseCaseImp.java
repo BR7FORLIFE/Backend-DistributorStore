@@ -9,19 +9,28 @@ import org.springframework.stereotype.Service;
 
 import com.tecno_comfenalco.pa.application.auth.Exceptions.UserNotFoundException;
 import com.tecno_comfenalco.pa.application.auth.ports.IUserRepositoryPort;
+import com.tecno_comfenalco.pa.application.catalog.exceptions.CatalogNotFoundException;
+import com.tecno_comfenalco.pa.application.catalog.port.ICatalogRepositoryPort;
+import com.tecno_comfenalco.pa.application.store.command.actions.GetMyCatalogCommand;
 import com.tecno_comfenalco.pa.application.store.command.actions.ListAllStoresCommand;
 import com.tecno_comfenalco.pa.application.store.command.actions.RegisterStoreCommand;
 import com.tecno_comfenalco.pa.application.store.command.actions.UpdateStoreCommand;
 import com.tecno_comfenalco.pa.application.store.command.response.DisabledStoreCommandResult;
+import com.tecno_comfenalco.pa.application.store.command.response.GetMyCatalogCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.GetStoreByIdCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.ListAllStoresCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.RegisterStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.UpdateStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.exceptions.StoreAlreadyExistsException;
+import com.tecno_comfenalco.pa.application.store.exceptions.StoreBindingNotFoundException;
 import com.tecno_comfenalco.pa.application.store.exceptions.StoreNotFoundException;
+import com.tecno_comfenalco.pa.application.store.ports.IStoreBindingRepositoryPort;
 import com.tecno_comfenalco.pa.application.store.ports.IStoreRepositoryPort;
 import com.tecno_comfenalco.pa.application.store.usecases.StoreUseCase;
+import com.tecno_comfenalco.pa.application.storeAssignment.exceptions.NoStoreAssigmentNotFoundException;
+import com.tecno_comfenalco.pa.application.storeAssignment.ports.IStoreAssignmentRepositoryPort;
 import com.tecno_comfenalco.pa.domain.auth.models.UserModel;
+import com.tecno_comfenalco.pa.domain.catalog.models.CatalogModel;
 import com.tecno_comfenalco.pa.domain.store.models.StoreModel;
 import com.tecno_comfenalco.pa.shared.utils.helper.ValidateQueryParams;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
@@ -31,10 +40,17 @@ public class StoreUseCaseImp implements StoreUseCase {
 
     private final IStoreRepositoryPort storeRepositoryPort;
     private final IUserRepositoryPort userRepositoryPort;
+    private final IStoreAssignmentRepositoryPort storeAssignmentRepositoryPort;
+    private final ICatalogRepositoryPort catalogRepositoryPort;
 
-    public StoreUseCaseImp(IStoreRepositoryPort storeRepositoryPort, IUserRepositoryPort userRepositoryPort) {
+    public StoreUseCaseImp(IStoreRepositoryPort storeRepositoryPort,
+            IUserRepositoryPort userRepositoryPort,
+            IStoreAssignmentRepositoryPort storeAssignmentRepositoryPort,
+            ICatalogRepositoryPort catalogRepositoryPort) {
         this.storeRepositoryPort = storeRepositoryPort;
         this.userRepositoryPort = userRepositoryPort;
+        this.storeAssignmentRepositoryPort = storeAssignmentRepositoryPort;
+        this.catalogRepositoryPort = catalogRepositoryPort;
     }
 
     @Override
@@ -137,5 +153,31 @@ public class StoreUseCaseImp implements StoreUseCase {
         userRepositoryPort.save(updateUser); // guardamos el usuario actualizaco con rol USER
 
         return new DisabledStoreCommandResult(updateRolByStore.get().getId(), "store disabled succesfull!");
+    }
+
+    @Override
+    public GetMyCatalogCommandResult getMyCatalog(GetMyCatalogCommand cmd) {
+        Optional<StoreModel> optStore = storeRepositoryPort.findByUserId(cmd.userStoreId());
+
+        if (optStore.isEmpty()) {
+            throw new StoreNotFoundException();
+        }
+
+        boolean existsAssigment = storeAssignmentRepositoryPort
+                .existsByStoreIdAndDistributorId(optStore.get().getId(), cmd.distributorId());
+
+        if (!existsAssigment) {
+            throw new NoStoreAssigmentNotFoundException();
+        }
+
+        Optional<CatalogModel> optCatalog = catalogRepositoryPort.findByCatalogIdAndDistributorId(
+                cmd.catalogId(),
+                cmd.distributorId());
+
+        if (optCatalog.isEmpty()) {
+            throw new CatalogNotFoundException();
+        }
+
+        return new GetMyCatalogCommandResult(optCatalog.get(), "catalog obtain succesfull!");
     }
 }

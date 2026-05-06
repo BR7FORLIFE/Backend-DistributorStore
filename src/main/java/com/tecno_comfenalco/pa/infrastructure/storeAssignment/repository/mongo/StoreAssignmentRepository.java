@@ -11,4 +11,6 @@ public interface StoreAssignmentRepository extends MongoRepository<StoreAssignme
     List<StoreAssignmentDocument> findAllByStoreId(UUID StoreId);
 
     List<StoreAssignmentDocument> findAllByDistributorId(UUID DistributorId);
+
+    boolean existsByStoreIdAndDistributorId(UUID StoreId, UUID DistributorId);
 }

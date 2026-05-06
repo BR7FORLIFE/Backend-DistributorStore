@@ -854,7 +854,9 @@
 									"    }",
 									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -868,7 +870,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"store_800567890\",\n  \"password\": \"MiPassword123!\",\n  \"rememberMe\": false\n}"
+							"raw": "{\n  \"username\": \"pablo\",\n  \"password\": \"12345\",\n  \"rememberMe\": false\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/auth/login",
@@ -1024,6 +1026,26 @@
 							"path": [
 								"store",
 								"get-distributors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get my catalog (STORE ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/store/{{distributorId}}/catalog/{{catalogId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"{{distributorId}}",
+								"catalog",
+								"{{catalogId}}"
 							]
 						}
 					},
@@ -1193,7 +1215,7 @@
 			"name": "07 - Catalogs (DISTRIBUTOR/PRESALES Role)",
 			"item": [
 				{
-					"name": "Get My Catalog",
+					"name": "Get My Catalog (DISTRIBUTOR - PRESALES ROLE)",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1216,7 +1238,7 @@
 					"response": []
 				},
 				{
-					"name": "Add Category to Catalog",
+					"name": "Add Category to Catalog (DISTRIBUTOR ROLE)",
 					"event": [
 						{
 							"listen": "test",
@@ -1250,15 +1272,16 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"catalogId\": \"13ab7060-ae2c-4060-935c-428aedb04ddd\",\n  \"name\": \"bebidas\",\n  \"products\": []\n}"
+							"raw": "{\n  \"name\": \"bebidas\"\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/catalogs/categories",
+							"raw": "{{baseUrl}}/catalogs/{{catalogId}}/categories",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"catalogs",
+								"{{catalogId}}",
 								"categories"
 							]
 						},
@@ -1267,7 +1290,7 @@
 					"response": []
 				},
 				{
-					"name": "Add Product to Category",
+					"name": "Add Product to Category (DISTRIBUTOR ROLE)",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -1285,12 +1308,13 @@
 							"raw": "{\n  \"productId\": \"{{productId}}\"\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/catalogs/categories/{{categoryId}}/products",
+							"raw": "{{baseUrl}}/catalogs/{{catalogId}}/categories/{{categoryId}}/products",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"catalogs",
+								"{{catalogId}}",
 								"categories",
 								"{{categoryId}}",
 								"products"
@@ -1326,7 +1350,7 @@
 					"response": []
 				},
 				{
-					"name": "Create catalog",
+					"name": "Create catalog (DISTRIBUTOR ROLE)",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1346,6 +1370,24 @@
 							],
 							"path": [
 								"catalogs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get catalog by Id (DISTRIBUTOR - PRESALES - STORES ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/catalogs/{{catalogId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"catalogs",
+								"{{catalogId}}"
 							]
 						}
 					},

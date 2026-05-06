@@ -44,4 +44,9 @@ public class StoreAssignmentRepositoryAdapter implements IStoreAssignmentReposit
                 .map(StoreAssignmentMapper::toDomain)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public boolean existsByStoreIdAndDistributorId(UUID storeId, UUID distributorId) {
+        return storeAssignmentRepository.existsByStoreIdAndDistributorId(storeId, distributorId);
+    }
 }

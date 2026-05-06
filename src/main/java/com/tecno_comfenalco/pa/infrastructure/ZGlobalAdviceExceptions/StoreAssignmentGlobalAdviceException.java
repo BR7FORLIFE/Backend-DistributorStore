@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.tecno_comfenalco.pa.application.storeAssignment.exceptions.NoStoreAssigmentNotFoundException;
 import com.tecno_comfenalco.pa.application.storeAssignment.exceptions.NoStoresAssignmentException;
 import com.tecno_comfenalco.pa.application.storeAssignment.exceptions.NotDistributorsAssignmentException;
 import com.tecno_comfenalco.pa.shared.utils.helper.ApiError;
@@ -25,6 +26,13 @@ public class StoreAssignmentGlobalAdviceException {
     @ExceptionHandler(NoStoresAssignmentException.class)
     public ResponseEntity<ApiError> handleNotStoresAssignments(
             NoStoresAssignmentException ex,
+            HttpServletRequest request) {
+        return StaticError.buildError(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(NoStoreAssigmentNotFoundException.class)
+    public ResponseEntity<ApiError> handleStoreAssignmentNotFound(
+            NoStoreAssigmentNotFoundException ex,
             HttpServletRequest request) {
         return StaticError.buildError(HttpStatus.NOT_FOUND, ex.getMessage(), request);
     }

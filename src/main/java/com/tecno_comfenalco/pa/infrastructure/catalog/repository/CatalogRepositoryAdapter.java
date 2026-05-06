@@ -1,7 +1,14 @@
 package com.tecno_comfenalco.pa.infrastructure.catalog.repository;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -21,6 +28,8 @@ import com.tecno_comfenalco.pa.infrastructure.category.entity.CategoryEmbeddedEn
 import com.tecno_comfenalco.pa.infrastructure.category.mapper.CategoryEmbeddedMapper;
 import com.tecno_comfenalco.pa.infrastructure.product.entity.ProductSummaryEmbeddedEntity;
 import com.tecno_comfenalco.pa.infrastructure.product.mapper.ProductSummaryMapper;
+import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
+import com.tecno_comfenalco.pa.shared.utils.http.PaginationMeta;
 
 @Repository
 public class CatalogRepositoryAdapter implements ICatalogRepositoryPort {
@@ -93,5 +102,40 @@ public class CatalogRepositoryAdapter implements ICatalogRepositoryPort {
     @Override
     public boolean existsCategoryByCatalogIdAndCategoryId(UUID catalogId, UUID categoryId) {
         return catalogRepository.existsByIdAndCategoriesId(catalogId, categoryId);
+    }
+
+    @Override
+    public PagedResult<CatalogModel> findAllPaged(UUID distributorId, String name, Integer page, Integer size,
+            String sortBy, String direction) {
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("asc")
+                ? Sort.Direction.ASC
+                : Sort.Direction.DESC;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+
+        Page<CatalogDocument> result;
+
+        if (name != null && !name.isBlank()) {
+            result = catalogRepository.findByDistributorIdAndNameContainingIgnoreCase(distributorId, name, pageable);
+
+        } else {
+            result = catalogRepository.findByDistributorId(distributorId, pageable);
+        }
+
+        List<CatalogModel> models = result.getContent()
+                .stream()
+                .map(CatalogMapper::toDomain)
+                .collect(Collectors.toList());
+
+        PaginationMeta meta = new PaginationMeta(result.getNumber(), result.getSize(), result.getTotalElements(),
+                result.getTotalPages(), result.hasNext());
+
+        return new PagedResult<CatalogModel>(models, meta);
+    }
+
+    @Override
+    public Optional<CatalogModel> findByCatalogIdAndDistributorId(UUID catalogId, UUID distributorId) {
+        return catalogRepository.findByIdAndDistributorId(catalogId, distributorId)
+                .map(CatalogMapper::toDomain);
     }
 }

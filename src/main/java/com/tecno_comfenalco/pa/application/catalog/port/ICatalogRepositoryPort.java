@@ -1,10 +1,12 @@
 package com.tecno_comfenalco.pa.application.catalog.port;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import com.tecno_comfenalco.pa.domain.catalog.models.CatalogModel;
 import com.tecno_comfenalco.pa.domain.category.models.CategoryModel;
 import com.tecno_comfenalco.pa.domain.product.model.ProductSummaryModel;
+import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 
 public interface ICatalogRepositoryPort {
     boolean existsByDistributorIdAndCode(UUID distributorId, String code);
@@ -24,4 +26,9 @@ public interface ICatalogRepositoryPort {
     void addProductToCategory(UUID categoryId, ProductSummaryModel model);
 
     boolean existsCatalogById(UUID catalogId);
+
+    PagedResult<CatalogModel> findAllPaged(UUID distributorId, String name, Integer page, Integer size, String sortBy,
+            String direction);
+
+    Optional<CatalogModel> findByCatalogIdAndDistributorId(UUID catalogId, UUID distributorId);
 }
