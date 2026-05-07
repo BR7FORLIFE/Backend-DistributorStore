@@ -24,7 +24,7 @@ public class StoreDocument {
     private UUID userId;
     private String name;
     private String nit;
-    private Long phoneNumber;
+    private String phoneNumber;
     private String email;
     private DirectionDto direction;
     private Instant createAt;

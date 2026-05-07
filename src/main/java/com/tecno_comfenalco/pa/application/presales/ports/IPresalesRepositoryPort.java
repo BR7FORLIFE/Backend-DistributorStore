@@ -10,7 +10,7 @@ public interface IPresalesRepositoryPort {
 
     Optional<PresalesModel> findPresalesByUserIdAndDistributorId(UUID userId, UUID distributorId);
 
-    boolean existsPresalesbyDocumentNumber(Long documentNumber);
+    boolean existsPresalesbyDocumentNumber(String documentNumber);
 
     Optional<PresalesModel> findPresalesById(UUID distributorId, UUID presalesId);
 

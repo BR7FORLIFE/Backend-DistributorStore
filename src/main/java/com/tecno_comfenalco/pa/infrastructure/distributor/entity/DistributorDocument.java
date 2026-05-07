@@ -26,7 +26,7 @@ public class DistributorDocument {
     private UUID userId;
     private String nit;
     private String name;
-    private Long phoneNumber;
+    private String phoneNumber;
     private String email;
     private Instant createAt;
     private Instant updateAt;

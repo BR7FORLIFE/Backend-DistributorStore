@@ -29,7 +29,7 @@ public class PresalesRepositoryAdapter implements IPresalesRepositoryPort {
     }
 
     @Override
-    public boolean existsPresalesbyDocumentNumber(Long documentNumber) {
+    public boolean existsPresalesbyDocumentNumber(String documentNumber) {
         return presalesRepository.existsByPhoneNumber(documentNumber);
     }
 

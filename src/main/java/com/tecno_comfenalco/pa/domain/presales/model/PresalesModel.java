@@ -10,34 +10,34 @@ public class PresalesModel {
     private UUID distributorId;
     private UUID userId;
     private String name;
-    private Long phoneNumber;
+    private String phoneNumber;
     private String email;
     private Instant createAt;
     private Instant updateAt;
     private DocumentTypeEnum documentTypeEnum;
-    private Long documentNumber;
+    private String documentNumber;
 
-    public static PresalesModel createNew(UUID id, UUID distributorId, UUID userId, String name, Long phoneNumber,
+    public static PresalesModel createNew(UUID id, UUID distributorId, UUID userId, String name, String phoneNumber,
             String email,
             Instant createAt, Instant updateAt,
-            DocumentTypeEnum documentTypeEnum, Long documentNumber) {
+            DocumentTypeEnum documentTypeEnum, String documentNumber) {
         return new PresalesModel(id, distributorId, userId, name, phoneNumber, email, createAt, updateAt,
                 documentTypeEnum,
                 documentNumber);
     }
 
-    public static PresalesModel createDraft(UUID distributorId, UUID userId, String name, Long phoneNumber,
+    public static PresalesModel createDraft(UUID distributorId, UUID userId, String name, String phoneNumber,
             String email,
-            DocumentTypeEnum documentTypeEnum, Long documentNumber) {
+            DocumentTypeEnum documentTypeEnum, String documentNumber) {
         return new PresalesModel(UUID.randomUUID(), distributorId, userId, name, phoneNumber, email, Instant.now(),
                 Instant.now(), documentTypeEnum,
                 documentNumber);
     }
 
-    public PresalesModel(UUID id, UUID distributorId, UUID userId, String name, Long phoneNumber, String email,
+    public PresalesModel(UUID id, UUID distributorId, UUID userId, String name, String phoneNumber, String email,
             Instant createAt,
             Instant updateAt,
-            DocumentTypeEnum documentTypeEnum, Long documentNumber) {
+            DocumentTypeEnum documentTypeEnum, String documentNumber) {
         this.id = id;
         this.distributorId = distributorId;
         this.userId = userId;
@@ -66,7 +66,7 @@ public class PresalesModel {
         return name;
     }
 
-    public Long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
@@ -78,7 +78,7 @@ public class PresalesModel {
         return documentTypeEnum;
     }
 
-    public Long getDocumentNumber() {
+    public String getDocumentNumber() {
         return documentNumber;
     }
 

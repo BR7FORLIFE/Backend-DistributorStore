@@ -7,7 +7,7 @@ import com.tecno_comfenalco.pa.shared.dto.DirectionDto;
 public record UpdateStoreCommand(
         UUID storeId,
         String name,
-        Long phoneNumber,
+        String phoneNumber,
         DirectionDto direction) {
 
 }

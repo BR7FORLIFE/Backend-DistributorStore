@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.tecno_comfenalco.pa.infrastructure.presales.entity.PresalesDocument;
 
 public interface PresalesRepository extends MongoRepository<PresalesDocument, UUID> {
-    boolean existsByPhoneNumber(Long PhoneNumber);
+    boolean existsByPhoneNumber(String PhoneNumber);
 
     Optional<PresalesDocument> findByIdAndDistributorId(UUID Id, UUID DistributorId);
 

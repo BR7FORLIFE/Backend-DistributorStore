@@ -24,10 +24,10 @@ public class PresalesDocument {
     private UUID distributorId;
     private UUID userId;
     private String name;
-    private Long phoneNumber;
+    private String phoneNumber;
     private String email;
     private Instant createAt;
     private Instant updateAt;
     private DocumentTypeEnum documentTypeEnum;
-    private Long documentNumber;
+    private String documentNumber;
 }

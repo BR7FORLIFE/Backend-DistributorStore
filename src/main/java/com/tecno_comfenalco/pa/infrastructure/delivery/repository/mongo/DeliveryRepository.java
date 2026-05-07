@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.tecno_comfenalco.pa.infrastructure.delivery.entity.DeliveryDocument;
 
 public interface DeliveryRepository extends MongoRepository<DeliveryDocument, UUID> {
-    boolean existsByDocumentNumber(Long DocumentNumber);
+    boolean existsByDocumentNumber(String DocumentNumber);
 
     Page<DeliveryDocument> findByDistributorId(UUID DistributorId, Pageable pageable);
 

@@ -4,6 +4,6 @@ import java.util.UUID;
 
 import com.tecno_comfenalco.pa.shared.dto.DirectionDto;
 
-public record EditDistributorCommand(UUID distributorId, String name, Long phoneNumber, DirectionDto direction) {
+public record EditDistributorCommand(UUID distributorId, String name, String phoneNumber, DirectionDto direction) {
 
 }

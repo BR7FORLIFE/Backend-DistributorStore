@@ -283,7 +283,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"NIT\": 900123456,\n  \"name\": \"Distribuidora Central\",\n  \"phoneNumber\": 3001234567,\n  \"email\": \"contacto@distcentral.com\",\n  \"direction\": {\n    \"street\": \"Calle 50\",\n    \"number\": \"23-45\",\n    \"neighborhood\": \"Centro\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  },\n  \"userId\": \"1ca1071a-a7dc-4329-ba3b-6619e24e69cd\"\n}"
+							"raw": "{\n  \"NIT\": \"900123456\",\n  \"name\": \"Distribuidora Central\",\n  \"phoneNumber\": \"3001234567\",\n  \"email\": \"contacto@distcentral.com\",\n  \"direction\": {\n    \"street\": \"Calle 50\",\n    \"number\": \"23-45\",\n    \"neighborhood\": \"Centro\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  },\n  \"userId\": \"1ca1071a-a7dc-4329-ba3b-6619e24e69cd\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/distributor",
@@ -361,7 +361,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Distribuidora Central Actualizada\",\n  \"phoneNumber\": 3001239999,\n  \"direction\": {\n    \"street\": \"Calle 51\",\n    \"number\": \"24-46\",\n    \"neighborhood\": \"Centro\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  }\n}"
+							"raw": "{\n  \"name\": \"Distribuidora Central Actualizada\",\n  \"phoneNumber\": \"3001239999\",\n  \"direction\": {\n    \"street\": \"Calle 51\",\n    \"number\": \"24-46\",\n    \"neighborhood\": \"Centro\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  }\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/distributor/{{distributorId}}",
@@ -505,7 +505,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"pepito\",\n  \"password\": \"pepito123\",\n  \"name\": \"Juan Pérez\",\n  \"email\": \"juan.perez@distcentral.com\",\n  \"phoneNumber\": 3109876543,\n  \"documentType\": \"CC\",\n  \"documentNumber\": 1234567890\n}"
+							"raw": "{\n  \"username\": \"pepito\",\n  \"password\": \"pepito123\",\n  \"name\": \"Juan Pérez\",\n  \"email\": \"juan.perez@distcentral.com\",\n  \"phoneNumber\": \"3109876543\",\n  \"documentType\": \"CC\",\n  \"documentNumber\": \"1234567890\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/presales",
@@ -583,7 +583,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Juan Pérez Actualizado\",\n  \"phoneNumber\": 3109999999\n}"
+							"raw": "{\n  \"name\": \"Juan Pérez Actualizado\",\n  \"phoneNumber\": \"3109999999\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/presales/{{presalesId}}",
@@ -689,7 +689,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"camilo\",\n  \"password\": \"12345\",\n  \"email\": \"camilo@gmail.com\",\n  \"name\": \"Carlos Rodríguez\",\n  \"documentType\": \"CC\",\n  \"documentNumber\": 9876543210,\n  \"phoneNumber\": 3204567890,\n  \"licenseNumber\": 464512345678,\n  \"licenseType\": \"B1\",\n  \"vehicles\": null\n}"
+							"raw": "{\n  \"username\": \"camilo\",\n  \"password\": \"12345\",\n  \"email\": \"camilo@gmail.com\",\n  \"name\": \"Carlos Rodríguez\",\n  \"documentType\": \"CC\",\n  \"documentNumber\": \"9876543210\",\n  \"phoneNumber\": \"3204567890\",\n  \"licenseNumber\": \"464512345678\",\n  \"licenseType\": \"B1\",\n  \"vehicles\": null\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/deliveries",
@@ -767,7 +767,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Carlos Rodríguez Actualizado\",\n  \"phoneNumber\": 3209999999,\n  \"licenseNumber\": 999999994,\n  \"licenseType\": \"C1\",\n  \"vehicles\": null\n}"
+							"raw": "{\n  \"name\": \"Carlos Rodríguez Actualizado\",\n  \"phoneNumber\": \"3209999999\",\n  \"licenseNumber\": \"999999994\",\n  \"licenseType\": \"C1\",\n  \"vehicles\": null\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/deliveries/{{deliveryId}}",
@@ -824,7 +824,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"userId\": \"a7fcb689-4bd4-4129-972b-5de75fdfddf6\",\n  \"name\": \"Tienda La Esquina\",\n  \"nit\": 800234567,\n  \"phoneNumber\": 3051112222,\n  \"email\": \"contacto@laesquina.com\",\n  \"direction\": {\n    \"street\": \"Calle 80\",\n    \"number\": \"45-67\",\n    \"neighborhood\": \"El Prado\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  }\n}"
+							"raw": "{\n  \"userId\": \"a7fcb689-4bd4-4129-972b-5de75fdfddf6\",\n  \"name\": \"Tienda La Esquina\",\n  \"nit\": \"800234567\",\n  \"phoneNumber\": \"3051112222\",\n  \"email\": \"contacto@laesquina.com\",\n  \"direction\": {\n    \"street\": \"Calle 80\",\n    \"number\": \"45-67\",\n    \"neighborhood\": \"El Prado\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  }\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/store",
@@ -949,7 +949,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"Tienda La Esquina Actualizada\",\n  \"phoneNumber\": 3059999999,\n  \"direction\": {\n    \"street\": \"Calle 81\",\n    \"number\": \"46-68\",\n    \"neighborhood\": \"El Prado\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  }\n}"
+							"raw": "{\n  \"name\": \"Tienda La Esquina Actualizada\",\n  \"phoneNumber\": \"3059999999\",\n  \"direction\": {\n    \"street\": \"Calle 81\",\n    \"number\": \"46-68\",\n    \"neighborhood\": \"El Prado\",\n    \"city\": \"Barranquilla\",\n    \"department\": \"Atlántico\"\n  }\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/store/{{storeId}}",

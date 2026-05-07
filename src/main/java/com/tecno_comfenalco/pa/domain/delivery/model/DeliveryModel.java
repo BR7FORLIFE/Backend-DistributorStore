@@ -15,9 +15,9 @@ public class DeliveryModel {
     private String name;
     private String email;
     private DocumentTypeEnum documentType;
-    private Long documentNumber;
-    private Long phoneNumber;
-    private Long licenseNumber;
+    private String documentNumber;
+    private String phoneNumber;
+    private String licenseNumber;
     private LicenseTypeEnum licenseType;
     private List<VehicleSummaryModel> vehicles;
     private Instant createAt;
@@ -25,7 +25,7 @@ public class DeliveryModel {
 
     public static DeliveryModel createDraft(UUID distributorId, UUID userId, String name, String email,
             DocumentTypeEnum documentTypeEnum,
-            Long documentNumber, Long phoneNumber, Long licenseNumber, LicenseTypeEnum licenseTypeEnum,
+            String documentNumber, String phoneNumber, String licenseNumber, LicenseTypeEnum licenseTypeEnum,
             List<VehicleSummaryModel> vehicles) {
         return new DeliveryModel(UUID.randomUUID(), distributorId, userId, name, email, documentTypeEnum,
                 documentNumber,
@@ -35,7 +35,7 @@ public class DeliveryModel {
 
     public static DeliveryModel createNew(UUID id, UUID distributorId, UUID userId, String name, String email,
             DocumentTypeEnum documentTypeEnum,
-            Long documentNumber, Long phoneNumber, Long licenseNumber, LicenseTypeEnum licenseTypeEnum,
+            String documentNumber, String phoneNumber, String licenseNumber, LicenseTypeEnum licenseTypeEnum,
             List<VehicleSummaryModel> vehicles, Instant createAt, Instant updateAt) {
         return new DeliveryModel(id, distributorId, userId, name, email, documentTypeEnum, documentNumber, phoneNumber,
                 licenseNumber,
@@ -44,8 +44,8 @@ public class DeliveryModel {
 
     public DeliveryModel(UUID id, UUID distributorId, UUID userId, String name, String email,
             DocumentTypeEnum documentType,
-            Long documentNumber,
-            Long phoneNumber, Long licenseNumber, LicenseTypeEnum licenseType, List<VehicleSummaryModel> vehicles,
+            String documentNumber,
+            String phoneNumber, String licenseNumber, LicenseTypeEnum licenseType, List<VehicleSummaryModel> vehicles,
             Instant createAt, Instant updateAt) {
         this.id = id;
         this.distributorId = distributorId;
@@ -86,15 +86,15 @@ public class DeliveryModel {
         return documentType;
     }
 
-    public Long getDocumentNumber() {
+    public String getDocumentNumber() {
         return documentNumber;
     }
 
-    public Long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public Long getLicenseNumber() {
+    public String getLicenseNumber() {
         return licenseNumber;
     }
 

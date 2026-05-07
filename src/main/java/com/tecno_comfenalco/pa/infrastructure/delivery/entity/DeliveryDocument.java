@@ -29,9 +29,9 @@ public class DeliveryDocument {
     private String name;
     private String email;
     private DocumentTypeEnum documentType;
-    private Long documentNumber;
-    private Long phoneNumber;
-    private Long licenseNumber;
+    private String documentNumber;
+    private String phoneNumber;
+    private String licenseNumber;
     private LicenseTypeEnum licenseType;
     private List<VehicleSummaryDocument> vehicles;
     private Instant createAt;

@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import com.tecno_comfenalco.pa.shared.dto.DirectionDto;
 
-public record RegisterStoreCommand(UUID userId, String name, String nit, Long phoneNumber, String email,
+public record RegisterStoreCommand(UUID userId, String name, String nit, String phoneNumber, String email,
         DirectionDto direction) {
 
 }

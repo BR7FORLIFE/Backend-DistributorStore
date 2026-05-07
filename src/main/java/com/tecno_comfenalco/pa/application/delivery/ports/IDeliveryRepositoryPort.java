@@ -7,7 +7,7 @@ import com.tecno_comfenalco.pa.domain.delivery.model.DeliveryModel;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 
 public interface IDeliveryRepositoryPort {
-    boolean existsByDocumentNumber(Long documentNumber);
+    boolean existsByDocumentNumber(String documentNumber);
 
     DeliveryModel save(DeliveryModel deliveryModel);
 

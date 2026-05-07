@@ -29,7 +29,7 @@ public class DeliveryRepositoryAdapter implements IDeliveryRepositoryPort {
     }
 
     @Override
-    public boolean existsByDocumentNumber(Long documentNumber) {
+    public boolean existsByDocumentNumber(String documentNumber) {
         return deliveryRepository.existsByDocumentNumber(documentNumber);
     }
 

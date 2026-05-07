@@ -12,28 +12,28 @@ public class DistributorModel {
     private UUID userId;
     private String nit;
     private String name;
-    private Long phoneNumber;
+    private String phoneNumber;
     private String email;
     private Instant createAt;
     private Instant updateAt;
     private DirectionDto directionDto;
     private List<VehicleModel> vehicles;
 
-    public static DistributorModel createDraft(UUID userId, String nit, String name, Long phoneNumber, String email,
+    public static DistributorModel createDraft(UUID userId, String nit, String name, String phoneNumber, String email,
             DirectionDto directionDto, List<VehicleModel> vehicles) {
         return new DistributorModel(UUID.randomUUID(), userId, nit, name, phoneNumber, email, Instant.now(),
                 Instant.now(),
                 directionDto, vehicles);
     }
 
-    public static DistributorModel createNew(UUID id, UUID userId, String nit, String name, Long phoneNumber,
+    public static DistributorModel createNew(UUID id, UUID userId, String nit, String name, String phoneNumber,
             String email, Instant createAt, Instant updateAt,
             DirectionDto directionDto, List<VehicleModel> vehicles) {
         return new DistributorModel(id, userId, nit, name, phoneNumber, email, createAt, updateAt, directionDto,
                 vehicles);
     }
 
-    public DistributorModel(UUID id, UUID userId, String nit, String name, Long phoneNumber, String email,
+    public DistributorModel(UUID id, UUID userId, String nit, String name, String phoneNumber, String email,
             Instant createAt, Instant updateAt, DirectionDto directionDto, List<VehicleModel> vehicles) {
         this.id = id;
         this.userId = userId;
@@ -61,7 +61,7 @@ public class DistributorModel {
         return name;
     }
 
-    public Long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 

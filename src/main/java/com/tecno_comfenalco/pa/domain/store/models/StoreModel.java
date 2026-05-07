@@ -10,24 +10,24 @@ public class StoreModel {
     private UUID userId;
     private String name;
     private String nit;
-    private Long phoneNumber;
+    private String phoneNumber;
     private String email;
     private DirectionDto direction;
     private Instant createAt;
     private Instant updateAt;
 
-    public static StoreModel createNew(UUID id, UUID userId, String name, String nit, Long phoneNumber, String email,
+    public static StoreModel createNew(UUID id, UUID userId, String name, String nit, String phoneNumber, String email,
             DirectionDto directionDto, Instant createAt, Instant updateAt) {
         return new StoreModel(id, userId, name, nit, phoneNumber, email, directionDto, createAt, updateAt);
     }
 
-    public static StoreModel createDraft(UUID userId, String name, String nit, Long phoneNumber, String email,
+    public static StoreModel createDraft(UUID userId, String name, String nit, String phoneNumber, String email,
             DirectionDto directionDto, Instant createAt, Instant updateAt) {
         return new StoreModel(UUID.randomUUID(), userId, name, nit, phoneNumber, email, directionDto, createAt,
                 updateAt);
     }
 
-    public StoreModel(UUID id, UUID userId, String name, String nit, Long phoneNumber, String email,
+    public StoreModel(UUID id, UUID userId, String name, String nit, String phoneNumber, String email,
             DirectionDto directionDto, Instant createAt, Instant updateAt) {
         this.id = id;
         this.userId = userId;
@@ -56,7 +56,7 @@ public class StoreModel {
         return nit;
     }
 
-    public Long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
