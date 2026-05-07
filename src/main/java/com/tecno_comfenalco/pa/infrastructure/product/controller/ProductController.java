@@ -55,9 +55,9 @@ public class ProductController {
     public ResponseEntity<RegisterProductResponseDto> registerProduct(
             @RequestBody @Valid RegisterProductRequestDto dtoProduct, Authentication authentication) {
         CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
-        UUID distributorId = details.getUserId();
+        UUID userDistributorId = details.getUserId();
 
-        RegisterProductCommand cmd = new RegisterProductCommand(distributorId, dtoProduct.sku(), dtoProduct.name(),
+        RegisterProductCommand cmd = new RegisterProductCommand(userDistributorId, dtoProduct.sku(), dtoProduct.name(),
                 dtoProduct.price(), dtoProduct.unit());
 
         RegisterProductCommandResult result = productUseCase.registerProduct(cmd);
@@ -70,9 +70,9 @@ public class ProductController {
     public ResponseEntity<EditProductResponseDto> editProduct(@PathVariable UUID id,
             @RequestBody @Valid EditProductRequestDto dtoProduct, Authentication authentication) {
         CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
-        UUID distributorId = details.getUserId();
+        UUID userDistributorId = details.getUserId();
 
-        EditProductCommand cmd = new EditProductCommand(id, distributorId, dtoProduct.sku(),
+        EditProductCommand cmd = new EditProductCommand(id, userDistributorId, dtoProduct.sku(),
                 dtoProduct.name(), dtoProduct.unit(), dtoProduct.price());
 
         EditProductCommandResult result = productUseCase.editProduct(cmd);
@@ -85,9 +85,9 @@ public class ProductController {
     public ResponseEntity<DisableProductResponseDto> disabledProduct(@PathVariable UUID id,
             Authentication authentication) {
         CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
-        UUID distributorId = details.getUserId();
+        UUID userDistributorId = details.getUserId();
 
-        DisabledProductCommand cmd = new DisabledProductCommand(distributorId, id);
+        DisabledProductCommand cmd = new DisabledProductCommand(userDistributorId, id);
         DisabledProductCommandResult result = productUseCase.disabledProduct(cmd);
 
         return ResponseEntity.ok().body(new DisableProductResponseDto(result.message()));
@@ -102,11 +102,11 @@ public class ProductController {
             @RequestParam(required = false, defaultValue = "DESC") DirectionEnum direction,
             Authentication authentication) {
         CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
-        UUID distributorId = details.getUserId();
+        UUID userDistributorId = details.getUserId();
 
         RequestParams params = new RequestParams(name, page, size, sortBy, direction);
 
-        ListProductCommand cmd = new ListProductCommand(distributorId, params);
+        ListProductCommand cmd = new ListProductCommand(userDistributorId, params);
 
         ListProductCommandResult result = productUseCase.listAll(cmd);
 
@@ -117,9 +117,9 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<GetProductByIdResponseDto> showProduct(@PathVariable UUID id, Authentication authentication) {
         CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
-        UUID distributorId = details.getUserId();
+        UUID userDistributorId = details.getUserId();
 
-        GetProductByIdCommand cmd = new GetProductByIdCommand(distributorId, id);
+        GetProductByIdCommand cmd = new GetProductByIdCommand(userDistributorId, id);
         GetProductByIdCommandResult result = productUseCase.getProductById(cmd);
 
         return ResponseEntity.ok().body(new GetProductByIdResponseDto(result.product(), result.message()));
