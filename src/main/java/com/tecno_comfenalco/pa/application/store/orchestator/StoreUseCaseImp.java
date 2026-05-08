@@ -11,11 +11,13 @@ import com.tecno_comfenalco.pa.application.auth.Exceptions.UserNotFoundException
 import com.tecno_comfenalco.pa.application.auth.ports.IUserRepositoryPort;
 import com.tecno_comfenalco.pa.application.catalog.exceptions.CatalogNotFoundException;
 import com.tecno_comfenalco.pa.application.catalog.port.ICatalogRepositoryPort;
+import com.tecno_comfenalco.pa.application.store.command.actions.GetAllCatalogByDistributorCommand;
 import com.tecno_comfenalco.pa.application.store.command.actions.GetMyCatalogCommand;
 import com.tecno_comfenalco.pa.application.store.command.actions.ListAllStoresCommand;
 import com.tecno_comfenalco.pa.application.store.command.actions.RegisterStoreCommand;
 import com.tecno_comfenalco.pa.application.store.command.actions.UpdateStoreCommand;
 import com.tecno_comfenalco.pa.application.store.command.response.DisabledStoreCommandResult;
+import com.tecno_comfenalco.pa.application.store.command.response.GetAllCatalogByDistributorCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.GetMyCatalogCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.GetStoreByIdCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.ListAllStoresCommandResult;
@@ -31,6 +33,7 @@ import com.tecno_comfenalco.pa.application.storeAssignment.exceptions.NoStoreAss
 import com.tecno_comfenalco.pa.application.storeAssignment.ports.IStoreAssignmentRepositoryPort;
 import com.tecno_comfenalco.pa.domain.auth.models.UserModel;
 import com.tecno_comfenalco.pa.domain.catalog.models.CatalogModel;
+import com.tecno_comfenalco.pa.domain.distributor.model.DistributorModel;
 import com.tecno_comfenalco.pa.domain.store.models.StoreModel;
 import com.tecno_comfenalco.pa.shared.utils.helper.ValidateQueryParams;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
@@ -179,5 +182,35 @@ public class StoreUseCaseImp implements StoreUseCase {
         }
 
         return new GetMyCatalogCommandResult(optCatalog.get(), "catalog obtain succesfull!");
+    }
+
+    @Override
+    public GetAllCatalogByDistributorCommandResult getAllCatalogByDistributor(GetAllCatalogByDistributorCommand cmd) {
+        ValidateQueryParams.validate(cmd.params());
+
+        Optional<StoreModel> optStore = storeRepositoryPort.findByUserId(cmd.userStoreId());
+
+        if (optStore.isEmpty()) {
+            throw new StoreNotFoundException();
+        }
+
+        boolean existsAssignment = storeAssignmentRepositoryPort.existsByStoreIdAndDistributorId(
+                optStore.get().getId(),
+                cmd.distributorId());
+
+        if (!existsAssignment) {
+            throw new NoStoreAssigmentNotFoundException();
+        }
+
+        PagedResult<CatalogModel> catalogs = catalogRepositoryPort.findAllPaged(
+                cmd.distributorId(),
+                cmd.params().name(),
+                cmd.params().page(),
+                cmd.params().size(),
+                cmd.params().sortBy(),
+                cmd.params().direction().name());
+
+        return new GetAllCatalogByDistributorCommandResult(catalogs.data(), catalogs.meta(),
+                "catalogs obtain succesfull!");
     }
 }

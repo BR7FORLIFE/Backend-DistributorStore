@@ -1032,7 +1032,7 @@
 					"response": []
 				},
 				{
-					"name": "Get my catalog (STORE ROLE)",
+					"name": "Get my catalog By Distributor Id (STORE ROLE)",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -1046,6 +1046,25 @@
 								"{{distributorId}}",
 								"catalog",
 								"{{catalogId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Catalogs By Distributor Id (STORE ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/store/{{distributorId}}/catalog",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"{{distributorId}}",
+								"catalog"
 							]
 						}
 					},

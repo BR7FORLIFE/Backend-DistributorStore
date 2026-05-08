@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tecno_comfenalco.pa.application.store.command.actions.GetAllCatalogByDistributorCommand;
 import com.tecno_comfenalco.pa.application.store.command.actions.GetMyCatalogCommand;
 import com.tecno_comfenalco.pa.application.store.command.actions.ListAllStoresCommand;
 import com.tecno_comfenalco.pa.application.store.command.actions.RegisterStoreCommand;
 import com.tecno_comfenalco.pa.application.store.command.actions.UpdateStoreCommand;
 import com.tecno_comfenalco.pa.application.store.command.response.DisabledStoreCommandResult;
+import com.tecno_comfenalco.pa.application.store.command.response.GetAllCatalogByDistributorCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.GetMyCatalogCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.GetStoreByIdCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.ListAllStoresCommandResult;
@@ -31,6 +33,7 @@ import com.tecno_comfenalco.pa.application.store.command.storeBinding.response.R
 import com.tecno_comfenalco.pa.application.store.dto.request.RegisterStoreRequestDto;
 import com.tecno_comfenalco.pa.application.store.dto.request.UpdateStoreRequestDto;
 import com.tecno_comfenalco.pa.application.store.dto.response.DisabledStoreByIdResponseDto;
+import com.tecno_comfenalco.pa.application.store.dto.response.GetAllCatalogByDistributorResponseDto;
 import com.tecno_comfenalco.pa.application.store.dto.response.GetMyCatalogResponseDto;
 import com.tecno_comfenalco.pa.application.store.dto.response.GetStoreyByIdResponseDto;
 import com.tecno_comfenalco.pa.application.store.dto.response.ListAllStoresResponseDto;
@@ -165,5 +168,30 @@ public class StoreController {
         GetMyCatalogCommandResult result = storeUseCase.getMyCatalog(cmd);
 
         return ResponseEntity.ok().body(new GetMyCatalogResponseDto(result.catalog(), result.message()));
+    }
+
+    @PreAuthorize("hasRole('STORE')")
+    @GetMapping("/{distributorId}/catalog")
+    public ResponseEntity<GetAllCatalogByDistributorResponseDto> getMyCatalogById(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size,
+            @RequestParam(required = false, defaultValue = "name") String sortBy,
+            @RequestParam(required = false, defaultValue = "DESC") DirectionEnum direction,
+            @PathVariable UUID distributorId,
+            Authentication authentication) {
+        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+
+        RequestParams params = new RequestParams(name, page, size, sortBy, direction);
+
+        GetAllCatalogByDistributorCommand cmd = new GetAllCatalogByDistributorCommand(distributorId,
+                details.getUserId(), params);
+
+        GetAllCatalogByDistributorCommandResult result = storeUseCase.getAllCatalogByDistributor(cmd);
+
+        return ResponseEntity.ok().body(new GetAllCatalogByDistributorResponseDto(
+                result.catalogs(),
+                result.meta(),
+                result.message()));
     }
 }
