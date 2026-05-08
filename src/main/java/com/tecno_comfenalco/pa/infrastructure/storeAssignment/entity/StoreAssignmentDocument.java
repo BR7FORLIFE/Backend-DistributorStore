@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.tecno_comfenalco.pa.application.presales.draft.PresalesDraft;
 
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class StoreAssignmentDocument {
+    @Id
     private UUID id;
     private UUID distributorId;
     private UUID storeId;

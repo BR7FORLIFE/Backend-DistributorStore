@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class InventoryDocument {
+    @Id
     private UUID id;
     private UUID distributorId;
     private UUID productId;

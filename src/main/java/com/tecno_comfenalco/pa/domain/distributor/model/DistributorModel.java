@@ -43,6 +43,8 @@ public class DistributorModel {
         this.email = email;
         this.directionDto = directionDto;
         this.vehicles = vehicles;
+        this.createAt = createAt;
+        this.updateAt = updateAt;
     }
 
     public UUID getId() {

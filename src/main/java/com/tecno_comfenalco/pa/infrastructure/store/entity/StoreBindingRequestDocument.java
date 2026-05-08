@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.tecno_comfenalco.pa.shared.enums.BindingStatusEnum;
 
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class StoreBindingRequestDocument {
+    @Id
     private UUID id;
     private UUID presalesId;
     private UUID distributorId;
