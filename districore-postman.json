@@ -1762,6 +1762,117 @@
 			]
 		},
 		{
+			"name": "11 - AssestsResources (DISTRIBUTOR ROLE)",
+			"item": [
+				{
+					"name": "Submit Asset",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productId\": \"f7195fda-8e2d-4678-8d0a-d78e548f3632\",\n  \"cloudinaryPublicId\": \"7f3b9a21-1b5e-4d9e-8f2a-3c1b0a9f8e7d\",\n  \"url\": \"https://res.cloudinary.com/tu-usuario/image/upload/v12345678/productos/perfume-invictus.jpg\",\n  \"name\": \"Perfume Invictus Platinum 100ml\",\n  \"isMain\": true,\n  \"format\": \"jpg\",\n  \"width\": 1200.0,\n  \"height\": 800.0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/assets",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Asset By Id",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"url\": \"https://res.cloudinary.com/tu-usuario/image/upload/v98765432/productos/perfume-invictus-platinum-v2.jpg\",\n  \"name\": \"Perfume Invictus Platinum - Vista Lateral Actualizada\",\n  \"isMain\": false,\n  \"format\": \"webp\",\n  \"width\": 1080.0,\n  \"height\": 1080.0\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/assets/{{assetId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"assets",
+								"{{assetId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Asset By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/assets/{{assetId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"assets",
+								"{{assetId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Assets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/assets",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"assets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete asset By Id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/assets/{{assetId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"assets",
+								"{{assetId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "seeder",
 			"request": {
 				"method": "POST",
