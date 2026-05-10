@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import com.tecno_comfenalco.pa.application.delivery.command.actions.RegisterDeli
 import com.tecno_comfenalco.pa.application.delivery.command.actions.UpdateDeliveryCommand;
 import com.tecno_comfenalco.pa.application.delivery.command.response.GetDeliveryByIdCommandResult;
 import com.tecno_comfenalco.pa.application.delivery.command.response.ListAllDeliveryCommandResult;
+import com.tecno_comfenalco.pa.application.delivery.command.response.MeDeliveryCommandResult;
 import com.tecno_comfenalco.pa.application.delivery.command.response.RegisterDeliveryCommandResult;
 import com.tecno_comfenalco.pa.application.delivery.command.response.UpdateDeliveryCommandResult;
 import com.tecno_comfenalco.pa.application.delivery.exceptions.DeliveryAlreadyExistsException;
@@ -147,5 +149,18 @@ public class DeliveryUseCaseImp implements DeliveryUseCase {
         DeliveryModel result = deliveryRepositoryPort.save(updateDelivery);
 
         return new UpdateDeliveryCommandResult(result.getId(), "delivery update succesfull!");
+    }
+
+    @Override
+    public MeDeliveryCommandResult me(UUID userDeliveryId, UUID distributorId) {
+        Optional<DeliveryModel> optDelivery = deliveryRepositoryPort.findByUserIdAndDistributorId(
+                userDeliveryId,
+                distributorId);
+
+        if (optDelivery.isEmpty()) {
+            throw new DeliveryNotFoundException();
+        }
+
+        return new MeDeliveryCommandResult(optDelivery.get(), "delivery obtain succesfull!");
     }
 }

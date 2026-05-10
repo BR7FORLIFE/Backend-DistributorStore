@@ -21,6 +21,7 @@ import com.tecno_comfenalco.pa.application.store.command.response.GetAllCatalogB
 import com.tecno_comfenalco.pa.application.store.command.response.GetMyCatalogCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.GetStoreByIdCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.ListAllStoresCommandResult;
+import com.tecno_comfenalco.pa.application.store.command.response.MeStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.RegisterStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.UpdateStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.exceptions.StoreAlreadyExistsException;
@@ -212,5 +213,16 @@ public class StoreUseCaseImp implements StoreUseCase {
 
         return new GetAllCatalogByDistributorCommandResult(catalogs.data(), catalogs.meta(),
                 "catalogs obtain succesfull!");
+    }
+
+    @Override
+    public MeStoreCommandResult me(UUID userStoreId) {
+        Optional<StoreModel> optStore = storeRepositoryPort.findByUserId(userStoreId);
+
+        if (optStore.isEmpty()) {
+            throw new StoreNotFoundException();
+        }
+
+        return new MeStoreCommandResult(optStore.get(), "store obtain succesfull!");
     }
 }

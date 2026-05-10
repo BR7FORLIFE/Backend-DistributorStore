@@ -12,6 +12,7 @@ import com.tecno_comfenalco.pa.application.store.command.response.GetAllCatalogB
 import com.tecno_comfenalco.pa.application.store.command.response.GetMyCatalogCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.GetStoreByIdCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.ListAllStoresCommandResult;
+import com.tecno_comfenalco.pa.application.store.command.response.MeStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.RegisterStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.UpdateStoreCommandResult;
 
@@ -29,4 +30,6 @@ public interface StoreUseCase {
     GetMyCatalogCommandResult getMyCatalog(GetMyCatalogCommand cmd);
 
     GetAllCatalogByDistributorCommandResult getAllCatalogByDistributor(GetAllCatalogByDistributorCommand cmd);
+
+    MeStoreCommandResult me(UUID userStoreId);
 }

@@ -75,4 +75,10 @@ public class DeliveryRepositoryAdapter implements IDeliveryRepositoryPort {
         return deliveryRepository.findByIdAndDistributorId(id, distributorId)
                 .map(DeliveryMapper::toDomain);
     }
+
+    @Override
+    public Optional<DeliveryModel> findByUserIdAndDistributorId(UUID id, UUID distributorId) {
+        return deliveryRepository.findByUserIdAndDistributorId(id, distributorId)
+                .map(DeliveryMapper::toDomain);
+    }
 }

@@ -15,4 +15,6 @@ public interface IDeliveryRepositoryPort {
             String direction);
 
     Optional<DeliveryModel> findByIdAndDistributorId(UUID id, UUID distributorId);
+
+    Optional<DeliveryModel> findByUserIdAndDistributorId(UUID id, UUID distributorId);
 }

@@ -21,12 +21,14 @@ import com.tecno_comfenalco.pa.application.delivery.command.actions.RegisterDeli
 import com.tecno_comfenalco.pa.application.delivery.command.actions.UpdateDeliveryCommand;
 import com.tecno_comfenalco.pa.application.delivery.command.response.GetDeliveryByIdCommandResult;
 import com.tecno_comfenalco.pa.application.delivery.command.response.ListAllDeliveryCommandResult;
+import com.tecno_comfenalco.pa.application.delivery.command.response.MeDeliveryCommandResult;
 import com.tecno_comfenalco.pa.application.delivery.command.response.RegisterDeliveryCommandResult;
 import com.tecno_comfenalco.pa.application.delivery.command.response.UpdateDeliveryCommandResult;
 import com.tecno_comfenalco.pa.application.delivery.dto.request.RegisterDeliveryRequestDto;
 import com.tecno_comfenalco.pa.application.delivery.dto.request.UpdateDeliveryRequestDto;
 import com.tecno_comfenalco.pa.application.delivery.dto.response.GetDeliveryByIdResponseDto;
 import com.tecno_comfenalco.pa.application.delivery.dto.response.ListAllDeliveryResponseDto;
+import com.tecno_comfenalco.pa.application.delivery.dto.response.MeDeliveryResponseDto;
 import com.tecno_comfenalco.pa.application.delivery.dto.response.RegisterDeliveryResponseDto;
 import com.tecno_comfenalco.pa.application.delivery.dto.response.UpdateDeliveryResponseDto;
 import com.tecno_comfenalco.pa.application.delivery.usecases.DeliveryUseCase;
@@ -108,5 +110,15 @@ public class DeliveryController {
 
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body(new UpdateDeliveryResponseDto(result.deliveryId(), result.message()));
+        }
+
+        @PreAuthorize("hasRole('DELIVERY')")
+        @GetMapping("/me")
+        public ResponseEntity<MeDeliveryResponseDto> me(
+                        Authentication authentication) {
+                CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+                MeDeliveryCommandResult result = deliveryUseCase.me(details.getUserId(), details.getDistributorId());
+
+                return ResponseEntity.ok().body(new MeDeliveryResponseDto(result.delivery(), result.message()));
         }
 }

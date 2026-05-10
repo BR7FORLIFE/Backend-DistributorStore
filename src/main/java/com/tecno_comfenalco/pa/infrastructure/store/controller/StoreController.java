@@ -26,6 +26,7 @@ import com.tecno_comfenalco.pa.application.store.command.response.GetAllCatalogB
 import com.tecno_comfenalco.pa.application.store.command.response.GetMyCatalogCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.GetStoreByIdCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.ListAllStoresCommandResult;
+import com.tecno_comfenalco.pa.application.store.command.response.MeStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.RegisterStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.UpdateStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.storeBinding.actions.ReceiveAceptationByStoreCommand;
@@ -37,6 +38,7 @@ import com.tecno_comfenalco.pa.application.store.dto.response.GetAllCatalogByDis
 import com.tecno_comfenalco.pa.application.store.dto.response.GetMyCatalogResponseDto;
 import com.tecno_comfenalco.pa.application.store.dto.response.GetStoreyByIdResponseDto;
 import com.tecno_comfenalco.pa.application.store.dto.response.ListAllStoresResponseDto;
+import com.tecno_comfenalco.pa.application.store.dto.response.MeStoreResponseDto;
 import com.tecno_comfenalco.pa.application.store.dto.response.RegisterStoreResponseDto;
 import com.tecno_comfenalco.pa.application.store.dto.response.UpdateStoreResponseDto;
 import com.tecno_comfenalco.pa.application.store.dto.storeBinding.response.ReceiveAceptationByStoreResponseDto;
@@ -193,5 +195,16 @@ public class StoreController {
                 result.catalogs(),
                 result.meta(),
                 result.message()));
+    }
+
+    @PreAuthorize("hasRole('STORE')")
+    @GetMapping("/me")
+    public ResponseEntity<MeStoreResponseDto> me(
+        Authentication authentication
+    ){  
+        CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+        MeStoreCommandResult result = storeUseCase.me(details.getUserId());
+
+        return ResponseEntity.ok().body(new MeStoreResponseDto(result.store(), result.message()));
     }
 }
