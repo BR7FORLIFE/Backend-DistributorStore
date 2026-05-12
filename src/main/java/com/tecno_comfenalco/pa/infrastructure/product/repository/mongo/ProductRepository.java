@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.infrastructure.product.repository.mongo;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,4 +23,6 @@ public interface ProductRepository extends MongoRepository<ProductDocument, UUID
             Pageable pageable);
 
     Optional<ProductDocument> findByDistributorIdAndId(UUID distributorId, UUID id);
+
+    List<ProductDocument> findByDistributorIdAndIdIn(UUID DistributorId, List<UUID> ids);
 }

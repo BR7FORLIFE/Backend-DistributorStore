@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tecno_comfenalco.pa.application.auth.Exceptions.UserNotFoundException;
+import com.tecno_comfenalco.pa.application.orders.command.actions.GetAllOrderCommand;
+import com.tecno_comfenalco.pa.application.orders.command.actions.GetOrderByIdCommand;
+import com.tecno_comfenalco.pa.application.orders.command.response.GetAllOrderCommandResult;
+import com.tecno_comfenalco.pa.application.orders.command.response.GetOrderByIdCommandResult;
+import com.tecno_comfenalco.pa.application.orders.dto.response.GetAllOrderResponseDto;
+import com.tecno_comfenalco.pa.application.orders.dto.response.GetOrderByIdResponseDto;
+import com.tecno_comfenalco.pa.application.orders.usecases.OrderUsecase;
 import com.tecno_comfenalco.pa.application.presales.command.actions.EditPresalesCommand;
 import com.tecno_comfenalco.pa.application.presales.command.actions.GetPresalesInfoCommand;
 import com.tecno_comfenalco.pa.application.presales.command.actions.ListPresalesCommand;
@@ -36,7 +45,6 @@ import com.tecno_comfenalco.pa.application.presales.usecases.PresalesUseCase;
 import com.tecno_comfenalco.pa.application.store.command.storeBinding.actions.SendBindingCommand;
 import com.tecno_comfenalco.pa.application.store.command.storeBinding.response.SendBindingCommandResult;
 import com.tecno_comfenalco.pa.application.store.dto.storeBinding.request.SendBindingStoreRequestDto;
-import com.tecno_comfenalco.pa.application.store.dto.storeBinding.response.SendBindingStoreResponseDto;
 import com.tecno_comfenalco.pa.application.store.usecases.StoreBindingUseCase;
 import com.tecno_comfenalco.pa.infrastructure.security.CustomUserDetails;
 import com.tecno_comfenalco.pa.shared.utils.http.DirectionEnum;
@@ -51,10 +59,15 @@ public class PresalesController {
 
         private final PresalesUseCase presalesUseCase;
         private final StoreBindingUseCase storeBindingUseCase;
+        private final OrderUsecase orderUsecase;
 
-        public PresalesController(PresalesUseCase presalesUseCase, StoreBindingUseCase storeBindingUseCase) {
+        public PresalesController(
+                        PresalesUseCase presalesUseCase,
+                        StoreBindingUseCase storeBindingUseCase,
+                        OrderUsecase orderUsecase) {
                 this.presalesUseCase = presalesUseCase;
                 this.storeBindingUseCase = storeBindingUseCase;
+                this.orderUsecase = orderUsecase;
         }
 
         @PostMapping
@@ -144,5 +157,58 @@ public class PresalesController {
 
                 return ResponseEntity.ok().body(new PresalesBindingResponseDto(result.bindingId(),
                                 result.distributorId(), result.status(), result.createAt(), result.message()));
+        }
+
+        @PreAuthorize("hasRole('PRESALES')")
+        @GetMapping("/get-order/{orderId}")
+        public ResponseEntity<GetOrderByIdResponseDto> getOrderById(
+                        @PathVariable UUID orderId,
+                        Authentication authentication) {
+                CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+
+                String role = details.getAuthorities()
+                                .stream()
+                                .map(GrantedAuthority::getAuthority)
+                                .findFirst()
+                                .orElseThrow(() -> new UserNotFoundException());
+
+                GetOrderByIdCommand cmd = new GetOrderByIdCommand(orderId, details.getUserId(),
+                                details.getDistributorId(), role);
+
+                GetOrderByIdCommandResult result = orderUsecase.getOrderById(cmd);
+
+                return ResponseEntity.ok().body(new GetOrderByIdResponseDto(result.order(), result.message()));
+        }
+
+        @PreAuthorize("hasRole('PRESALES')")
+        @GetMapping("/get-order")
+        public ResponseEntity<GetAllOrderResponseDto> getAllOrders(
+                        @RequestParam(required = false, defaultValue = "0") Integer page,
+                        @RequestParam(required = false, defaultValue = "10") Integer size,
+                        @RequestParam(required = false, defaultValue = "name") String sortBy,
+                        @RequestParam(required = false, defaultValue = "DESC") DirectionEnum direction,
+                        Authentication authentication) {
+                CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+
+                String role = details.getAuthorities()
+                                .stream()
+                                .map(GrantedAuthority::getAuthority)
+                                .findFirst()
+                                .orElseThrow(() -> new UserNotFoundException());
+
+                RequestParams params = new RequestParams(null, page, size, sortBy, direction);
+
+                GetAllOrderCommand cmd = new GetAllOrderCommand(
+                                details.getUserId(),
+                                details.getDistributorId(),
+                                role,
+                                params);
+
+                GetAllOrderCommandResult result = orderUsecase.getAllOrders(cmd);
+
+                return ResponseEntity.ok().body(new GetAllOrderResponseDto(
+                                result.orders(),
+                                result.meta(),
+                                result.message()));
         }
 }

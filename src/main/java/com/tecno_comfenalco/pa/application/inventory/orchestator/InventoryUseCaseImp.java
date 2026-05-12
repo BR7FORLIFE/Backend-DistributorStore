@@ -16,6 +16,7 @@ import com.tecno_comfenalco.pa.application.inventory.command.response.DeleteInve
 import com.tecno_comfenalco.pa.application.inventory.command.response.GetAllInventoryCommandResult;
 import com.tecno_comfenalco.pa.application.inventory.command.response.GetInventoryByIdCommandResult;
 import com.tecno_comfenalco.pa.application.inventory.command.response.UpdateInventoryCommandResult;
+import com.tecno_comfenalco.pa.application.inventory.exceptions.BadInventoryStockException;
 import com.tecno_comfenalco.pa.application.inventory.exceptions.InventoryNotFoundException;
 import com.tecno_comfenalco.pa.application.inventory.ports.IInventoryRepositoryPort;
 import com.tecno_comfenalco.pa.application.inventory.usecase.InventoryUseCase;
@@ -71,6 +72,10 @@ public class InventoryUseCaseImp implements InventoryUseCase {
 
         if (optWareHouse.isEmpty()) {
             throw new WareHouseNotFoundException();
+        }
+
+        if (cmd.quantity() < 0) {
+            throw new BadInventoryStockException();
         }
 
         InventoryModel newInventory = InventoryModel.createDraft(

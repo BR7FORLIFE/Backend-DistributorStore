@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.tecno_comfenalco.pa.application.product.exceptions.ProductExistsException;
+import com.tecno_comfenalco.pa.application.product.exceptions.ProductNotExistsByIdsException;
 import com.tecno_comfenalco.pa.application.product.exceptions.ProductNotFoundException;
 import com.tecno_comfenalco.pa.shared.utils.helper.ApiError;
 import com.tecno_comfenalco.pa.shared.utils.helper.StaticError;
@@ -27,5 +28,12 @@ public class ProductGlobalAdviceException {
             ProductNotFoundException ex,
             HttpServletRequest request) {
         return StaticError.buildError(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(ProductNotExistsByIdsException.class)
+    public ResponseEntity<ApiError> handleNotExistsProductsByIds(
+            ProductNotExistsByIdsException ex,
+            HttpServletRequest request) {
+        return StaticError.buildError(HttpStatus.CONFLICT, ex.getMessage(), request);
     }
 }

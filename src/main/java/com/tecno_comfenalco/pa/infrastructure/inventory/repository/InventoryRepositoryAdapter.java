@@ -70,4 +70,12 @@ public class InventoryRepositoryAdapter implements IInventoryRepositoryPort {
     public void deleteByIdAndDistributorId(UUID inventoryId, UUID distributorId) {
         inventoryRepository.deleteByIdAndDistributorId(inventoryId, distributorId);
     }
+
+    @Override
+    public List<InventoryModel> findByDistributorIdAndProductIdIn(UUID distributorId, List<UUID> productsIds) {
+        return inventoryRepository.findByDistributorIdAndProductIdIn(distributorId, productsIds)
+                .stream()
+                .map(InventoryMapper::toDomain)
+                .toList();
+    }
 }

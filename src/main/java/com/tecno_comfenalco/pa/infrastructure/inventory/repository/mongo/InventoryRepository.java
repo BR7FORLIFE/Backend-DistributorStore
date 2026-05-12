@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.infrastructure.inventory.repository.mongo;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,4 +16,6 @@ public interface InventoryRepository extends MongoRepository<InventoryDocument, 
     Page<InventoryDocument> findByDistributorId(UUID distributorId, Pageable pageable);
 
     void deleteByIdAndDistributorId(UUID Id, UUID DistributorId);
+
+    List<InventoryDocument> findByDistributorIdAndProductIdIn(UUID DistributorId, List<UUID> productsIds);
 }

@@ -1,5 +1,6 @@
 package com.tecno_comfenalco.pa.application.inventory.ports;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,4 +16,6 @@ public interface IInventoryRepositoryPort {
             String direction);
 
     void deleteByIdAndDistributorId(UUID inventoryId, UUID distributorId);
+
+    List<InventoryModel> findByDistributorIdAndProductIdIn(UUID distributorId, List<UUID> productsIds);
 }

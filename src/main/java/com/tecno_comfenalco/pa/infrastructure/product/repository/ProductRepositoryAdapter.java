@@ -96,4 +96,12 @@ public class ProductRepositoryAdapter implements IProductRepositoryPort {
                 .map(ProductSummaryMapper::toSummary)
                 .toList();
     }
+
+    @Override
+    public List<ProductModel> findByDistributorIdAndIdIn(UUID distributorId, List<UUID> productsIds) {
+        return productRepository.findByDistributorIdAndIdIn(distributorId, productsIds)
+                .stream()
+                .map(ProductMapper::toDomain)
+                .toList();
+    }
 }

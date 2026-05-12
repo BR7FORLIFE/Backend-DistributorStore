@@ -23,4 +23,6 @@ public interface IProductRepositoryPort {
     Optional<ProductModel> findByProductId(UUID distributorId, UUID productId);
 
     List<ProductSummaryModel> findAllByIds(List<UUID> ids);
+
+    List<ProductModel> findByDistributorIdAndIdIn(UUID distributorId, List<UUID> productsIds);
 }
