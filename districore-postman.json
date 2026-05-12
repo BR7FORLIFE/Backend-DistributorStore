@@ -459,6 +459,43 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get Order By Id (DISTRIBUTOR ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/distributor/get-order/{{orderId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"distributor",
+								"get-order",
+								"{{orderId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Orders (DISTRIBUTOR ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/distributor/get-order",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"distributor",
+								"get-order"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -643,6 +680,43 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get Order By Id (PRESALES ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/presales/get-order/{{orderId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"presales",
+								"get-order",
+								"{{orderId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Orders (PRESALES ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/presales/get-order",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"presales",
+								"get-order"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -780,6 +854,24 @@
 							]
 						},
 						"description": "Actualiza la información de un entregador"
+					},
+					"response": []
+				},
+				{
+					"name": "Me (Delivery ROLE))",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/deliveries/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"deliveries",
+								"me"
+							]
+						}
 					},
 					"response": []
 				}
@@ -1065,6 +1157,63 @@
 								"store",
 								"{{distributorId}}",
 								"catalog"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Me (STORE ROLE))",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/store/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order By Id (STORE ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/store/{{distributorId}}/order/{{orderId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"{{distributorId}}",
+								"order",
+								"{{orderId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Orders (STORE ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/store/{{distributorId}}/order",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"{{distributorId}}",
+								"order"
 							]
 						}
 					},
@@ -1432,7 +1581,9 @@
 									"    }",
 									"}"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
 							}
 						}
 					],
@@ -1450,66 +1601,23 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"store_id\": 1,\n  \"distributor_id\": 1,\n  \"presales_id\": null,\n  \"productEntities\": [\n    {\n      \"id\": \"{{productId}}\",\n      \"quantity\": 10\n    }\n  ]\n}"
+							"raw": "{\n    \"distributorId\": \"e62cb997-da9e-4daa-a6d4-f5ebc56a564b\",\n    \"storeId\": \"a5db4b31-5946-4b36-89f0-c673a8a922ad\",\n    \"products\": [\n        {\n            \"productId\": \"f7195fda-8e2d-4678-8d0a-d78e548f3632\",\n            \"quantity\": 1\n        },\n        {\n            \"productId\": \"ef8d2f5b-d500-48b8-882d-7b2f7c696586\",\n            \"quantity\": 1\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/orders/",
+							"raw": "{{baseUrl}}/order",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"orders",
-								""
+								"order"
 							]
 						},
 						"description": "Crea un nuevo pedido. Requiere rol STORE o PRESALES. IMPORTANTE: distributor_id es OBLIGATORIO, presales_id es OPCIONAL (null si la tienda pide directamente sin preventista). Actualiza store_id, distributor_id y presales_id con valores reales"
-					},
-					"response": []
-				},
-				{
-					"name": "List All Orders",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{presalesToken}}"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/orders",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"orders"
-							]
-						},
-						"description": "Lista todos los pedidos del usuario autenticado"
-					},
-					"response": []
-				},
-				{
-					"name": "Get Order by ID",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{presalesToken}}"
-							}
-						],
-						"url": {
-							"raw": "{{baseUrl}}/orders/{{orderId}}",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"orders",
-								"{{orderId}}"
-							]
-						},
-						"description": "Obtiene la información de un pedido específico"
 					},
 					"response": []
 				},
@@ -1534,6 +1642,33 @@
 							]
 						},
 						"description": "Cancela un pedido existente"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Status Order (DISTRIBUTOR ROLE)",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderId\": \"{{orderId}}\",\n    \"orderStatus\": \"ACCEPT\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/order/change-status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								"change-status"
+							]
+						}
 					},
 					"response": []
 				}
@@ -1660,7 +1795,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"productId\": \"f36dd917-7ec1-4b91-bbad-db79a398125a\",\n    \"warehouseId\": \"a105699c-be4d-4d34-816e-f20e12ddb553\",\n    \"quantity\": 10\n}",
+							"raw": "{\n    \"productId\": \"f7195fda-8e2d-4678-8d0a-d78e548f3632\",\n    \"warehouseId\": \"a105699c-be4d-4d34-816e-f20e12ddb553\",\n    \"quantity\": 10\n}",
 							"options": {
 								"raw": {
 									"language": "json"

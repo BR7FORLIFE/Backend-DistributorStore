@@ -2,6 +2,7 @@ package com.tecno_comfenalco.pa.domain.orders.services;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -9,10 +10,14 @@ import java.util.stream.Collectors;
 
 import com.tecno_comfenalco.pa.application.inventory.exceptions.BadInventoryStockException;
 import com.tecno_comfenalco.pa.application.orders.draft.OrderProductDraft;
+import com.tecno_comfenalco.pa.application.orders.exceptions.InvalidOrderRequestTransitionException;
+import com.tecno_comfenalco.pa.application.orders.exceptions.UnprocessableOrderSatusException;
 import com.tecno_comfenalco.pa.application.product.exceptions.ProductNotExistsByIdsException;
 import com.tecno_comfenalco.pa.application.product.exceptions.records.MissingProductInfo;
+import com.tecno_comfenalco.pa.domain.orders.model.OrderModel;
 import com.tecno_comfenalco.pa.domain.orders.model.OrderProductModel;
 import com.tecno_comfenalco.pa.domain.product.model.ProductModel;
+import com.tecno_comfenalco.pa.shared.enums.orders.RequestStatusOrderEnum;
 
 public class OrderService {
 
@@ -65,4 +70,53 @@ public class OrderService {
                 .setScale(4, RoundingMode.HALF_UP)
                 .doubleValue();
     }
+
+    public static OrderModel transitionedStateRequestEnum(OrderModel oldModel, RequestStatusOrderEnum orderStatus) {
+        OrderModel order = null;
+
+        switch (orderStatus) {
+            case ACCEPT:
+                oldModel.getStatusOrder().accept();
+                order = createOrder(oldModel, orderStatus);
+                break;
+
+            case PENDING:
+                throw new InvalidOrderRequestTransitionException(orderStatus);
+
+            case PROBLEM:
+                oldModel.getStatusOrder().problem();
+                order = createOrder(oldModel, orderStatus);
+                break;
+
+            case REJECTED:
+                oldModel.getStatusOrder().rejected();
+                order = createOrder(oldModel, orderStatus);
+                break;
+
+            default:
+                throw new UnprocessableOrderSatusException();
+        }
+
+        return order;
+    }
+
+    private static OrderModel createOrder(OrderModel oldModel, RequestStatusOrderEnum orderStatus) {
+        return OrderModel.createNew(
+                oldModel.getId(),
+                oldModel.getNumberOrder(),
+                oldModel.getDistributorId(),
+                oldModel.getStoreId(),
+                oldModel.getPresalesId(),
+                oldModel.getOrderProducts(),
+                oldModel.getPaidForm(),
+                oldModel.getDeliveryStatus(),
+                orderStatus,
+                oldModel.getDiscount(),
+                oldModel.getTotalGeneralIva(),
+                oldModel.getTotal(),
+                oldModel.getCreateAt(),
+                oldModel.getExpiration(),
+                Instant.now());
+    }
+
 }

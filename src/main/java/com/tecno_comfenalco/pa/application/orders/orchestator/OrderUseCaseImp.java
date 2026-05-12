@@ -16,14 +16,17 @@ import com.tecno_comfenalco.pa.application.distributor.exceptions.DistributorNot
 import com.tecno_comfenalco.pa.application.distributor.ports.IDistributorRepositoryPort;
 import com.tecno_comfenalco.pa.application.inventory.exceptions.InventoryNotFoundException;
 import com.tecno_comfenalco.pa.application.inventory.ports.IInventoryRepositoryPort;
+import com.tecno_comfenalco.pa.application.orders.command.actions.ChangeStatusOrderCommand;
 import com.tecno_comfenalco.pa.application.orders.command.actions.CreateOrderCommand;
 import com.tecno_comfenalco.pa.application.orders.command.actions.GetAllOrderCommand;
 import com.tecno_comfenalco.pa.application.orders.command.actions.GetOrderByIdCommand;
+import com.tecno_comfenalco.pa.application.orders.command.response.ChangeStatusOrderCommandResult;
 import com.tecno_comfenalco.pa.application.orders.command.response.CreateOrderCommandResult;
 import com.tecno_comfenalco.pa.application.orders.command.response.GetAllOrderCommandResult;
 import com.tecno_comfenalco.pa.application.orders.command.response.GetOrderByIdCommandResult;
 import com.tecno_comfenalco.pa.application.orders.draft.OrderProductDraft;
 import com.tecno_comfenalco.pa.application.orders.events.InventoryDiffEvent;
+import com.tecno_comfenalco.pa.application.orders.exceptions.OrderExpirationException;
 import com.tecno_comfenalco.pa.application.orders.exceptions.OrderNotFoundException;
 import com.tecno_comfenalco.pa.application.orders.exceptions.UnprocessableOrderException;
 import com.tecno_comfenalco.pa.application.orders.ports.IOrderRepositoryPort;
@@ -392,5 +395,36 @@ public class OrderUseCaseImp implements OrderUsecase {
                 }
 
                 return new GetAllOrderCommandResult(orders.data(), orders.meta(), "orders obtain succesfull!");
+        }
+
+        @Override
+        public ChangeStatusOrderCommandResult changeStatusOrder(ChangeStatusOrderCommand cmd) {
+                Optional<DistributorModel> optDistributor = distributorRepositoryPort
+                                .findByUserId(cmd.userDistributorId());
+
+                if (optDistributor.isEmpty()) {
+                        throw new DistributorNotFoundException();
+                }
+
+                Optional<OrderModel> optOrder = orderRepositoryPort.findByIdAndDistributorId(
+                                cmd.orderId(),
+                                optDistributor.get().getId());
+
+                if (optOrder.isEmpty()) {
+                        throw new OrderNotFoundException();
+                }
+
+                if (optOrder.get().getExpiration().isBefore(Instant.now())) {
+                        throw new OrderExpirationException();
+                }
+
+                OrderModel updateStatusOrder = OrderService.transitionedStateRequestEnum(
+                                optOrder.get(),
+                                cmd.orderStatus());
+
+                OrderModel saved = orderRepositoryPort.save(updateStatusOrder);
+
+                return new ChangeStatusOrderCommandResult(saved.getId(), saved.getDistributorId(),
+                                "change status realized succesfull!");
         }
 }
