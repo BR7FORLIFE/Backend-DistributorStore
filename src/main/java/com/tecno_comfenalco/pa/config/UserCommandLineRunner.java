@@ -31,8 +31,8 @@ public class UserCommandLineRunner implements CommandLineRunner {
 
                 UserModel user = UserModel.createDraft(
                                 null,
-                                "jose",
-                                passwordEncoder.encode("12345"),
+                                "admin",
+                                passwordEncoder.encode("12345678"),
                                 Set.of("ADMIN"),
                                 "prueba@gmail.com",
                                 true);
