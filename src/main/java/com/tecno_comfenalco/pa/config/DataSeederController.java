@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-//@Profile("!mongo-prod")
+@Profile("!mongo-prod")
 @PreAuthorize("hasRole('ADMIN')")
 @RestController
 @RequestMapping("/seeder")
