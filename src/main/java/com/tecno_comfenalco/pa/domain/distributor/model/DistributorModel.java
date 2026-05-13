@@ -1,10 +1,8 @@
 package com.tecno_comfenalco.pa.domain.distributor.model;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
-import com.tecno_comfenalco.pa.domain.vehicle.model.VehicleModel;
 import com.tecno_comfenalco.pa.shared.dto.DirectionDto;
 
 public class DistributorModel {
@@ -17,24 +15,21 @@ public class DistributorModel {
     private Instant createAt;
     private Instant updateAt;
     private DirectionDto directionDto;
-    private List<VehicleModel> vehicles;
 
     public static DistributorModel createDraft(UUID userId, String nit, String name, String phoneNumber, String email,
-            DirectionDto directionDto, List<VehicleModel> vehicles) {
+            DirectionDto directionDto) {
         return new DistributorModel(UUID.randomUUID(), userId, nit, name, phoneNumber, email, Instant.now(),
-                Instant.now(),
-                directionDto, vehicles);
+                Instant.now(), directionDto);
     }
 
     public static DistributorModel createNew(UUID id, UUID userId, String nit, String name, String phoneNumber,
             String email, Instant createAt, Instant updateAt,
-            DirectionDto directionDto, List<VehicleModel> vehicles) {
-        return new DistributorModel(id, userId, nit, name, phoneNumber, email, createAt, updateAt, directionDto,
-                vehicles);
+            DirectionDto directionDto) {
+        return new DistributorModel(id, userId, nit, name, phoneNumber, email, createAt, updateAt, directionDto);
     }
 
     public DistributorModel(UUID id, UUID userId, String nit, String name, String phoneNumber, String email,
-            Instant createAt, Instant updateAt, DirectionDto directionDto, List<VehicleModel> vehicles) {
+            Instant createAt, Instant updateAt, DirectionDto directionDto) {
         this.id = id;
         this.userId = userId;
         this.nit = nit;
@@ -42,7 +37,6 @@ public class DistributorModel {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.directionDto = directionDto;
-        this.vehicles = vehicles;
         this.createAt = createAt;
         this.updateAt = updateAt;
     }
@@ -73,10 +67,6 @@ public class DistributorModel {
 
     public DirectionDto getDirectionDto() {
         return directionDto;
-    }
-
-    public List<VehicleModel> getVehicles() {
-        return vehicles;
     }
 
     public Instant getCreateAt() {

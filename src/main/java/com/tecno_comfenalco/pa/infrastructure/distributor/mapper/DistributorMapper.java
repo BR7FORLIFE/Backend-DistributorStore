@@ -9,9 +9,7 @@ public class DistributorMapper {
         DistributorModel distributorModel = DistributorModel.createNew(distributorDocument.getId(),
                 distributorDocument.getUserId(), distributorDocument.getNit(), distributorDocument.getName(),
                 distributorDocument.getPhoneNumber(), distributorDocument.getEmail(), distributorDocument.getCreateAt(),
-                distributorDocument.getUpdateAt(), distributorDocument.getDirectionDto(), null); // necesito el mapper
-                                                                                                 // de vehicle para la
-                                                                                                 // lista
+                distributorDocument.getUpdateAt(), distributorDocument.getDirectionDto());
 
         return distributorModel;
     }
@@ -27,8 +25,7 @@ public class DistributorMapper {
         distributorDocument.setCreateAt(distributorDocument.getCreateAt());
         distributorDocument.setUpdateAt(distributorModel.getUpdateAt());
         distributorDocument.setDirectionDto(distributorModel.getDirectionDto());
-        distributorDocument.setVehicleDocuments(null); // usar el mapper para la lista de vehiculos
-
+    
         return distributorDocument;
     }
 }

@@ -62,8 +62,7 @@ public class DistributorUseCaseImp implements DistributorUseCase {
         }
 
         DistributorModel newDistributorModel = DistributorModel.createDraft(optUser.get().getId(), cmd.nit(),
-                cmd.name(),
-                cmd.phoneNumber(), cmd.email(), cmd.directionDto(), List.of());
+                cmd.name(), cmd.phoneNumber(), cmd.email(), cmd.directionDto());
 
         DistributorModel result = distributorRepositoryPort.save(newDistributorModel);
 
@@ -125,8 +124,7 @@ public class DistributorUseCaseImp implements DistributorUseCase {
         DistributorModel updateDistributor = DistributorModel.createNew(cmd.distributorId(),
                 optDistributorModel.get().getUserId(), optDistributorModel.get().getNit(), cmd.name(),
                 cmd.phoneNumber(), optDistributorModel.get().getEmail(), optDistributorModel.get().getCreateAt(),
-                Instant.now(), cmd.direction(),
-                optDistributorModel.get().getVehicles());
+                Instant.now(), cmd.direction());
 
         distributorRepositoryPort.save(updateDistributor);
 

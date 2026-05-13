@@ -1,13 +1,11 @@
 package com.tecno_comfenalco.pa.infrastructure.distributor.entity;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.tecno_comfenalco.pa.infrastructure.vehicle.entity.VehicleDocument;
 import com.tecno_comfenalco.pa.shared.dto.DirectionDto;
 
 import lombok.AllArgsConstructor;
@@ -31,5 +29,4 @@ public class DistributorDocument {
     private Instant createAt;
     private Instant updateAt;
     private DirectionDto directionDto;
-    private List<VehicleDocument> vehicleDocuments;
 }
