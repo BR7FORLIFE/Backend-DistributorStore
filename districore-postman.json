@@ -135,7 +135,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"maria\",\n  \"password\": \"12345\",\n  \"rememberMe\": false\n}"
+							"raw": "{\n  \"username\": \"clayton.will\",\n  \"password\": \"password123\",\n  \"rememberMe\": false\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/auth/login",
@@ -496,6 +496,25 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get Store By Id (DISTRIBUTOR ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/distributor/get-store/{{storeId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"distributor",
+								"get-store",
+								"{{storeId}}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -661,7 +680,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n   \"nit\": \"800234567\",\n   \"tempName\": \"tienda de la esquina\" \n}",
+							"raw": "{\n   \"nit\": \"4892192612\",\n   \"tempName\": \"tienda de la esquina\" \n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -713,6 +732,43 @@
 							"path": [
 								"presales",
 								"get-order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Stores (PRESALES ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/presales/get-stores",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"presales",
+								"get-stores"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Store By Id (PRESALES ROLE)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/presales/get-store/{{storeId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"presales",
+								"get-store",
+								"{{storeId}}"
 							]
 						}
 					},
@@ -962,7 +1018,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"pablo\",\n  \"password\": \"12345\",\n  \"rememberMe\": false\n}"
+							"raw": "{\n  \"username\": \"moises.schuppe\",\n  \"password\": \"password123\",\n  \"rememberMe\": false\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/auth/login",
@@ -1087,7 +1143,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/store/verify-binding?token=cdee5086d7ab5079db8c13d850329fc040bd603e22808572329dae7a7cbe6785",
+							"raw": "{{baseUrl}}/store/verify-binding?token=78b00517ee77b132748303f8340b6b1389df7bdddf9ad9b16b908eb7018fa6dd",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -1098,7 +1154,7 @@
 							"query": [
 								{
 									"key": "token",
-									"value": "cdee5086d7ab5079db8c13d850329fc040bd603e22808572329dae7a7cbe6785"
+									"value": "78b00517ee77b132748303f8340b6b1389df7bdddf9ad9b16b908eb7018fa6dd"
 								}
 							]
 						}
@@ -1601,7 +1657,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"distributorId\": \"e62cb997-da9e-4daa-a6d4-f5ebc56a564b\",\n    \"storeId\": \"a5db4b31-5946-4b36-89f0-c673a8a922ad\",\n    \"products\": [\n        {\n            \"productId\": \"f7195fda-8e2d-4678-8d0a-d78e548f3632\",\n            \"quantity\": 1\n        },\n        {\n            \"productId\": \"ef8d2f5b-d500-48b8-882d-7b2f7c696586\",\n            \"quantity\": 1\n        }\n    ]\n}",
+							"raw": "{\n    \"distributorId\": \"01faca6a-ad68-4872-bd68-e16910d16b50\",\n    \"storeId\": \"8de08cd6-0017-4f80-95e7-dbc48c33fa52\",\n    \"products\": [\n        {\n            \"productId\": \"f7195fda-8e2d-4678-8d0a-d78e548f3632\",\n            \"quantity\": 1\n        },\n        {\n            \"productId\": \"ef8d2f5b-d500-48b8-882d-7b2f7c696586\",\n            \"quantity\": 1\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2011,7 +2067,13 @@
 			"name": "seeder",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "records",
+						"value": "1000",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{baseUrl}}/seeder/generate",
 					"host": [
