@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import com.tecno_comfenalco.pa.domain.orders.model.OrderProductModel;
 
-public record InventoryDiffEvent(
+public record OrderRejectedEvent(
         UUID distributorId,
         List<OrderProductModel> orderProducts) {
 

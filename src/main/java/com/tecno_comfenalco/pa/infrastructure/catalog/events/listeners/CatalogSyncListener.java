@@ -22,6 +22,10 @@ public class CatalogSyncListener {
 
     // mandamos el metodo a otro hilo para ejecutar la actualizacion de los
     // registros del catalogo
+
+    /**
+     * cuando el producto es actualizado tmb se actualiza en el catalogo
+     */
     @Async
     @EventListener
     public void handleProductUpdate(ProductUpdatedEvent productEvent) {

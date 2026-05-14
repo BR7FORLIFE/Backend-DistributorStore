@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.tecno_comfenalco.pa.application.distributor.exceptions.DistributorNotFoundException;
 import com.tecno_comfenalco.pa.application.distributor.ports.IDistributorRepositoryPort;
+import com.tecno_comfenalco.pa.application.inventory.events.InventoryDiffEvent;
 import com.tecno_comfenalco.pa.application.inventory.exceptions.InventoryNotFoundException;
 import com.tecno_comfenalco.pa.application.inventory.ports.IInventoryRepositoryPort;
 import com.tecno_comfenalco.pa.application.orders.command.actions.ChangeStatusOrderCommand;
@@ -25,7 +26,7 @@ import com.tecno_comfenalco.pa.application.orders.command.response.CreateOrderCo
 import com.tecno_comfenalco.pa.application.orders.command.response.GetAllOrderCommandResult;
 import com.tecno_comfenalco.pa.application.orders.command.response.GetOrderByIdCommandResult;
 import com.tecno_comfenalco.pa.application.orders.draft.OrderProductDraft;
-import com.tecno_comfenalco.pa.application.orders.events.InventoryDiffEvent;
+import com.tecno_comfenalco.pa.application.orders.events.OrderRejectedEvent;
 import com.tecno_comfenalco.pa.application.orders.exceptions.OrderExpirationException;
 import com.tecno_comfenalco.pa.application.orders.exceptions.OrderNotFoundException;
 import com.tecno_comfenalco.pa.application.orders.exceptions.UnprocessableOrderException;
@@ -48,6 +49,9 @@ import com.tecno_comfenalco.pa.domain.orders.services.OrderService;
 import com.tecno_comfenalco.pa.domain.presales.model.PresalesModel;
 import com.tecno_comfenalco.pa.domain.product.model.ProductModel;
 import com.tecno_comfenalco.pa.domain.store.models.StoreModel;
+import com.tecno_comfenalco.pa.infrastructure.inventory.events.listeners.InventoryListener.OP;
+import com.tecno_comfenalco.pa.shared.enums.orders.DeliverStatusOrderEnum;
+import com.tecno_comfenalco.pa.shared.enums.orders.RequestStatusOrderEnum;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 
 @Service
@@ -233,7 +237,8 @@ public class OrderUseCaseImp implements OrderUsecase {
                 // lanzamos el evento asincrono para la resta de inventario
                 applicationEventPublisher.publishEvent(new InventoryDiffEvent(
                                 optDistributor.get().getId(),
-                                orderProducts));
+                                orderProducts,
+                                OP.DIFF));
 
                 // verificamos que la orden no sea la misma
                 return new CreateOrderCommandResult(
@@ -421,6 +426,13 @@ public class OrderUseCaseImp implements OrderUsecase {
                 OrderModel updateStatusOrder = OrderService.transitionedStateRequestEnum(
                                 optOrder.get(),
                                 cmd.orderStatus());
+
+                if (updateStatusOrder.getStatusOrder() == RequestStatusOrderEnum.REJECTED) {
+                        applicationEventPublisher
+                                        .publishEvent(new OrderRejectedEvent(
+                                                        optDistributor.get().getId(),
+                                                        optOrder.get().getOrderProducts()));
+                }
 
                 OrderModel saved = orderRepositoryPort.save(updateStatusOrder);
 

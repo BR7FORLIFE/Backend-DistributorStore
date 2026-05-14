@@ -125,7 +125,8 @@ public class ProductUseCaseImp implements ProductUseCase {
 
         iProductRepositoryPort.deleteProductByIdAndDistributorId(cmd.productId(), optDistributor.get().getId());
 
-        applicationEventPublisher.publishEvent(new ProductDeletedEvent(cmd.productId(), optDistributor.get().getId()));
+        applicationEventPublisher
+                .publishEvent(new ProductDeletedEvent(cmd.productId(), optDistributor.get().getId(), 0));
 
         return new DisabledProductCommandResult("Product delete succesfull!");
     }
