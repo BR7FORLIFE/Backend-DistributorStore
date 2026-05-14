@@ -9,17 +9,17 @@ import com.tecno_comfenalco.pa.shared.enums.BindingStatusEnum;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;
 
 public interface IStoreBindingRepositoryPort {
-    boolean existsStoreBindingByNitAndDistributorId(String nit, UUID distributorId);
+        boolean existsStoreBindingByNitAndDistributorId(String nit, UUID distributorId);
 
-    StoreBindingRequestModel save(StoreBindingRequestModel model);
+        StoreBindingRequestModel save(StoreBindingRequestModel model);
 
-    PagedResult<StoreBindingRequestModel> findAllPaged(UUID distributorId, String name, Integer page, Integer size,
-            String sortBy, String direction);
+        PagedResult<StoreBindingRequestModel> findAllPaged(UUID distributorId, String name, Integer page, Integer size,
+                        String sortBy, String direction);
 
-    Optional<StoreBindingRequestModel> findById(UUID bindingId);
+        Optional<StoreBindingRequestModel> findByIdAndDistributorId(UUID bindingId, UUID distributorId);
 
-    Optional<StoreBindingRequestModel> findByNitAndToken(String nit, String token);
+        Optional<StoreBindingRequestModel> findByNitAndToken(String nit, String token);
 
-    List<StoreBindingRequestModel> findByNitAndBindingStatusAndIsConsumedTrue(String nit,
-            BindingStatusEnum statusEnum);
+        List<StoreBindingRequestModel> findByNitAndDistributorIdAndBindingStatusAndIsConsumedTrue(
+                        String nit, UUID distributorId, BindingStatusEnum statusEnum);
 }

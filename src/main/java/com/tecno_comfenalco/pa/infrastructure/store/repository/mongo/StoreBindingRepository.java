@@ -12,18 +12,18 @@ import com.tecno_comfenalco.pa.infrastructure.store.entity.StoreBindingRequestDo
 import com.tecno_comfenalco.pa.shared.enums.BindingStatusEnum;
 
 public interface StoreBindingRepository extends MongoRepository<StoreBindingRequestDocument, UUID> {
-    boolean existsByNitAndDistributorId(String nit, UUID DistributorId);
+        boolean existsByNitAndDistributorId(String nit, UUID DistributorId);
 
-    Page<StoreBindingRequestDocument> findByDistributorId(UUID DistributorId, Pageable pageable);
+        Page<StoreBindingRequestDocument> findByDistributorId(UUID DistributorId, Pageable pageable);
 
-    Page<StoreBindingRequestDocument> findByDistributorIdAndTempNameContainingIgnoreCase(UUID DistributorId,
-            String tempName,
-            Pageable pageable);
+        Page<StoreBindingRequestDocument> findByDistributorIdAndTempNameContainingIgnoreCase(UUID DistributorId,
+                        String tempName,
+                        Pageable pageable);
 
-    Optional<StoreBindingRequestDocument> findById(UUID Id);
+        Optional<StoreBindingRequestDocument> findByIdAndDistributorId(UUID Id, UUID DistributorId);
 
-    Optional<StoreBindingRequestDocument> findByNitAndActivationCode(String Nit, String ActivationCode);
+        Optional<StoreBindingRequestDocument> findByNitAndActivationCode(String Nit, String ActivationCode);
 
-    List<StoreBindingRequestDocument> findByNitAndBindingStatusAndIsConsumedTrue(String nit,
-            BindingStatusEnum bindingStatus);
+        List<StoreBindingRequestDocument> findByNitAndDistributorIdAndBindingStatusAndIsConsumedTrue(String nit,
+                        UUID distributorId, BindingStatusEnum bindingStatus);
 }

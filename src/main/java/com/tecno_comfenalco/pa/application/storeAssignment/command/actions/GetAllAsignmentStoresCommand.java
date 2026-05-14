@@ -5,6 +5,6 @@ import java.util.UUID;
 import com.tecno_comfenalco.pa.shared.utils.http.RequestParams;
 
 public record GetAllAsignmentStoresCommand(
-        UUID userDistributorId, RequestParams params) {
+                UUID userDistributorId, UUID distributorId, RequestParams params) {
 
 }

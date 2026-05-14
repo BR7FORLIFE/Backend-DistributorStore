@@ -74,8 +74,8 @@ public class StoreBindingRepositoryAdapter implements IStoreBindingRepositoryPor
     }
 
     @Override
-    public Optional<StoreBindingRequestModel> findById(UUID bindingId) {
-        return storeBindingRepository.findById(bindingId)
+    public Optional<StoreBindingRequestModel> findByIdAndDistributorId(UUID bindingId, UUID distributorId) {
+        return storeBindingRepository.findByIdAndDistributorId(bindingId, distributorId)
                 .map(StoreBindingMapper::toDomain);
     }
 
@@ -86,9 +86,10 @@ public class StoreBindingRepositoryAdapter implements IStoreBindingRepositoryPor
     }
 
     @Override
-    public List<StoreBindingRequestModel> findByNitAndBindingStatusAndIsConsumedTrue(String nit,
-            BindingStatusEnum statusEnum) {
-        return storeBindingRepository.findByNitAndBindingStatusAndIsConsumedTrue(nit, statusEnum)
+    public List<StoreBindingRequestModel> findByNitAndDistributorIdAndBindingStatusAndIsConsumedTrue(
+            String nit, UUID distributorId, BindingStatusEnum statusEnum) {
+        return storeBindingRepository
+                .findByNitAndDistributorIdAndBindingStatusAndIsConsumedTrue(nit, distributorId, statusEnum)
                 .stream()
                 .map(StoreBindingMapper::toDomain)
                 .collect(Collectors.toList());

@@ -25,16 +25,13 @@ import com.tecno_comfenalco.pa.application.store.command.response.MeStoreCommand
 import com.tecno_comfenalco.pa.application.store.command.response.RegisterStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.command.response.UpdateStoreCommandResult;
 import com.tecno_comfenalco.pa.application.store.exceptions.StoreAlreadyExistsException;
-import com.tecno_comfenalco.pa.application.store.exceptions.StoreBindingNotFoundException;
 import com.tecno_comfenalco.pa.application.store.exceptions.StoreNotFoundException;
-import com.tecno_comfenalco.pa.application.store.ports.IStoreBindingRepositoryPort;
 import com.tecno_comfenalco.pa.application.store.ports.IStoreRepositoryPort;
 import com.tecno_comfenalco.pa.application.store.usecases.StoreUseCase;
 import com.tecno_comfenalco.pa.application.storeAssignment.exceptions.NoStoreAssigmentNotFoundException;
 import com.tecno_comfenalco.pa.application.storeAssignment.ports.IStoreAssignmentRepositoryPort;
 import com.tecno_comfenalco.pa.domain.auth.models.UserModel;
 import com.tecno_comfenalco.pa.domain.catalog.models.CatalogModel;
-import com.tecno_comfenalco.pa.domain.distributor.model.DistributorModel;
 import com.tecno_comfenalco.pa.domain.store.models.StoreModel;
 import com.tecno_comfenalco.pa.shared.utils.helper.ValidateQueryParams;
 import com.tecno_comfenalco.pa.shared.utils.http.PagedResult;

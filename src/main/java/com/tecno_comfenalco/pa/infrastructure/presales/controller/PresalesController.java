@@ -46,6 +46,13 @@ import com.tecno_comfenalco.pa.application.store.command.storeBinding.actions.Se
 import com.tecno_comfenalco.pa.application.store.command.storeBinding.response.SendBindingCommandResult;
 import com.tecno_comfenalco.pa.application.store.dto.storeBinding.request.SendBindingStoreRequestDto;
 import com.tecno_comfenalco.pa.application.store.usecases.StoreBindingUseCase;
+import com.tecno_comfenalco.pa.application.storeAssignment.command.actions.GetAllAsignmentStoresCommand;
+import com.tecno_comfenalco.pa.application.storeAssignment.command.actions.GetAllAssignmentStoreByIdCommand;
+import com.tecno_comfenalco.pa.application.storeAssignment.command.response.GetAllAsignmentStoresCommandResult;
+import com.tecno_comfenalco.pa.application.storeAssignment.command.response.GetAllAssignmentStoreByIdCommandResult;
+import com.tecno_comfenalco.pa.application.storeAssignment.dto.response.GetAllAssignmentsStoreByIdResponseDto;
+import com.tecno_comfenalco.pa.application.storeAssignment.dto.response.GetAllStoresAssignmentResponseDto;
+import com.tecno_comfenalco.pa.application.storeAssignment.usecases.StoreAssignmentUseCase;
 import com.tecno_comfenalco.pa.infrastructure.security.CustomUserDetails;
 import com.tecno_comfenalco.pa.shared.utils.http.DirectionEnum;
 import com.tecno_comfenalco.pa.shared.utils.http.RequestParams;
@@ -60,14 +67,17 @@ public class PresalesController {
         private final PresalesUseCase presalesUseCase;
         private final StoreBindingUseCase storeBindingUseCase;
         private final OrderUsecase orderUsecase;
+        private final StoreAssignmentUseCase storeAssignmentUseCase;
 
         public PresalesController(
                         PresalesUseCase presalesUseCase,
                         StoreBindingUseCase storeBindingUseCase,
-                        OrderUsecase orderUsecase) {
+                        OrderUsecase orderUsecase,
+                        StoreAssignmentUseCase storeAssignmentUseCase) {
                 this.presalesUseCase = presalesUseCase;
                 this.storeBindingUseCase = storeBindingUseCase;
                 this.orderUsecase = orderUsecase;
+                this.storeAssignmentUseCase = storeAssignmentUseCase;
         }
 
         @PostMapping
@@ -210,5 +220,48 @@ public class PresalesController {
                                 result.orders(),
                                 result.meta(),
                                 result.message()));
+        }
+
+        @PreAuthorize("hasRole('PRESALES')")
+        @GetMapping("/get-stores")
+        public ResponseEntity<GetAllStoresAssignmentResponseDto> getMyStores(
+                        @RequestParam(required = false) String name,
+                        @RequestParam(required = false, defaultValue = "0") Integer page,
+                        @RequestParam(required = false, defaultValue = "10") Integer size,
+                        @RequestParam(required = false, defaultValue = "name") String sortBy,
+                        @RequestParam(required = false, defaultValue = "DESC") DirectionEnum direction,
+                        Authentication authentication) {
+
+                CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+                RequestParams params = new RequestParams(name, page, size, sortBy, direction);
+                GetAllAsignmentStoresCommand cmd = new GetAllAsignmentStoresCommand(
+                                null,
+                                details.getDistributorId(),
+                                params);
+
+                GetAllAsignmentStoresCommandResult result = storeAssignmentUseCase.getAllStoresByDistributor(cmd);
+
+                return ResponseEntity.ok()
+                                .body(new GetAllStoresAssignmentResponseDto(result.stores(), result.meta(),
+                                                result.message()));
+        }
+
+        @PreAuthorize("hasRole('PRESALES')")
+        @GetMapping("/get-store/{storeId}")
+        public ResponseEntity<GetAllAssignmentsStoreByIdResponseDto> getMyStoresById(
+                        @PathVariable UUID storeId,
+                        Authentication authentication) {
+
+                CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+
+                GetAllAssignmentStoreByIdCommand cmd = new GetAllAssignmentStoreByIdCommand(
+                                null,
+                                details.getDistributorId(),
+                                storeId);
+
+                GetAllAssignmentStoreByIdCommandResult result = storeAssignmentUseCase.getStoreByIdWithAssignment(cmd);
+
+                return ResponseEntity.ok()
+                                .body(new GetAllAssignmentsStoreByIdResponseDto(result.store(), result.message()));
         }
 }

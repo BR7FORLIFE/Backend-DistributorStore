@@ -25,6 +25,7 @@ import com.tecno_comfenalco.pa.application.store.ports.IStoreRepositoryPort;
 import com.tecno_comfenalco.pa.application.store.usecases.StoreBindingUseCase;
 import com.tecno_comfenalco.pa.application.storeAssignment.ports.IStoreAssignmentRepositoryPort;
 import com.tecno_comfenalco.pa.config.GenerateCodeService;
+import com.tecno_comfenalco.pa.domain.distributor.model.DistributorModel;
 import com.tecno_comfenalco.pa.domain.presales.model.PresalesModel;
 import com.tecno_comfenalco.pa.domain.store.models.StoreBindingRequestModel;
 import com.tecno_comfenalco.pa.domain.store.models.StoreModel;
@@ -89,15 +90,16 @@ public class StoreBindingUseCaseImp implements StoreBindingUseCase {
 
     @Override
     public ListAllBindingCommandResult listAllBindings(ListAllBindingCommand cmd) {
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userDistributorId());
         // verificamos que es verdad que exista la distribuidora
-        if (!distributorRepositoryPort.existsDistributorById(cmd.distributorId())) {
+        if (optDistributor.isEmpty()) {
             throw new DistributorNotFoundException();
         }
 
         ValidateQueryParams.validate(cmd.params()); // validamos los query params
 
         PagedResult<StoreBindingRequestModel> bindingsModels = iStoreBindingRepositoryPort.findAllPaged(
-                cmd.distributorId(),
+                optDistributor.get().getId(),
                 cmd.params().name(),
                 cmd.params().page(),
                 cmd.params().size(),
@@ -111,7 +113,15 @@ public class StoreBindingUseCaseImp implements StoreBindingUseCase {
     // flujo de cambio de estado del request binding por parte de la distribuidora
     @Override
     public ChangeStatusBindingCommandResult changeStatusBindingByDistributor(ChangeStatusBindingCommand cmd) {
-        Optional<StoreBindingRequestModel> optBinding = iStoreBindingRepositoryPort.findById(cmd.bindingId());
+
+        Optional<DistributorModel> optDistributor = distributorRepositoryPort.findByUserId(cmd.userDistributorId());
+
+        if (optDistributor.isEmpty()) {
+            throw new DistributorNotFoundException();
+        }
+
+        Optional<StoreBindingRequestModel> optBinding = iStoreBindingRepositoryPort
+                .findByIdAndDistributorId(cmd.bindingId(), optDistributor.get().getId());
 
         if (optBinding.isEmpty()) {
             throw new StoreBindingNotFoundException();

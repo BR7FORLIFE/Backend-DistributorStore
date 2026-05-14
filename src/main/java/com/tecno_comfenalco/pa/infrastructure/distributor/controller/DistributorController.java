@@ -48,7 +48,10 @@ import com.tecno_comfenalco.pa.application.store.dto.storeBinding.response.Chang
 import com.tecno_comfenalco.pa.application.store.dto.storeBinding.response.ListAllBindingStoreResponseDto;
 import com.tecno_comfenalco.pa.application.store.usecases.StoreBindingUseCase;
 import com.tecno_comfenalco.pa.application.storeAssignment.command.actions.GetAllAsignmentStoresCommand;
+import com.tecno_comfenalco.pa.application.storeAssignment.command.actions.GetAllAssignmentStoreByIdCommand;
 import com.tecno_comfenalco.pa.application.storeAssignment.command.response.GetAllAsignmentStoresCommandResult;
+import com.tecno_comfenalco.pa.application.storeAssignment.command.response.GetAllAssignmentStoreByIdCommandResult;
+import com.tecno_comfenalco.pa.application.storeAssignment.dto.response.GetAllAssignmentsStoreByIdResponseDto;
 import com.tecno_comfenalco.pa.application.storeAssignment.dto.response.GetAllStoresAssignmentResponseDto;
 import com.tecno_comfenalco.pa.application.storeAssignment.usecases.StoreAssignmentUseCase;
 import com.tecno_comfenalco.pa.infrastructure.security.CustomUserDetails;
@@ -150,7 +153,7 @@ public class DistributorController {
 
                 RequestParams params = new RequestParams(name, page, size, sortBy, direction);
 
-                ListAllBindingCommand cmd = new ListAllBindingCommand(details.getDistributorId(), params);
+                ListAllBindingCommand cmd = new ListAllBindingCommand(details.getUserId(), params);
                 ListAllBindingCommandResult result = storeBindingUseCase.listAllBindings(cmd);
 
                 return ResponseEntity.ok()
@@ -163,8 +166,15 @@ public class DistributorController {
         @PostMapping("/{bindingId}/status")
         public ResponseEntity<ChangeStatusBindingStoreResponseDto> changeStatusByBindingRequest(
                         @PathVariable UUID bindingId,
-                        @RequestBody ChangeStatusBindingStoreRequestDto dto) {
-                ChangeStatusBindingCommand cmd = new ChangeStatusBindingCommand(bindingId, dto.status());
+                        @RequestBody ChangeStatusBindingStoreRequestDto dto,
+                        Authentication authentication) {
+                CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+
+                ChangeStatusBindingCommand cmd = new ChangeStatusBindingCommand(
+                                details.getUserId(),
+                                bindingId,
+                                dto.status());
+
                 ChangeStatusBindingCommandResult result = storeBindingUseCase.changeStatusBindingByDistributor(cmd);
 
                 return ResponseEntity.ok()
@@ -185,12 +195,34 @@ public class DistributorController {
 
                 CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
                 RequestParams params = new RequestParams(name, page, size, sortBy, direction);
-                GetAllAsignmentStoresCommand cmd = new GetAllAsignmentStoresCommand(details.getUserId(), params);
+                GetAllAsignmentStoresCommand cmd = new GetAllAsignmentStoresCommand(
+                                details.getUserId(),
+                                null,
+                                params);
                 GetAllAsignmentStoresCommandResult result = storeAssignmentUseCase.getAllStoresByDistributor(cmd);
 
                 return ResponseEntity.ok()
-                                .body(new GetAllStoresAssignmentResponseDto(result.distributors(), result.meta(),
+                                .body(new GetAllStoresAssignmentResponseDto(result.stores(), result.meta(),
                                                 result.message()));
+        }
+
+        @PreAuthorize("hasRole('DISTRIBUTOR')")
+        @GetMapping("/get-store/{storeId}")
+        public ResponseEntity<GetAllAssignmentsStoreByIdResponseDto> getMyStoresById(
+                        @PathVariable UUID storeId,
+                        Authentication authentication) {
+
+                CustomUserDetails details = (CustomUserDetails) authentication.getPrincipal();
+
+                GetAllAssignmentStoreByIdCommand cmd = new GetAllAssignmentStoreByIdCommand(
+                                details.getUserId(),
+                                null,
+                                storeId);
+
+                GetAllAssignmentStoreByIdCommandResult result = storeAssignmentUseCase.getStoreByIdWithAssignment(cmd);
+
+                return ResponseEntity.ok()
+                                .body(new GetAllAssignmentsStoreByIdResponseDto(result.store(), result.message()));
         }
 
         @PreAuthorize("hasRole('DISTRIBUTOR')")

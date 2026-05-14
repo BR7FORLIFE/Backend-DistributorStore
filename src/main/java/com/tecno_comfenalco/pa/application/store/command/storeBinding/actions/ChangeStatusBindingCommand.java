@@ -5,7 +5,8 @@ import java.util.UUID;
 import com.tecno_comfenalco.pa.shared.enums.BindingStatusEnum;
 
 public record ChangeStatusBindingCommand(
-        UUID bindingId,
-        BindingStatusEnum bindingStatus) {
+                UUID userDistributorId,
+                UUID bindingId,
+                BindingStatusEnum bindingStatus) {
 
 }

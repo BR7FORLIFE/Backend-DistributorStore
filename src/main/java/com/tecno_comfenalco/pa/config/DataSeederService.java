@@ -27,7 +27,7 @@ import com.tecno_comfenalco.pa.domain.inventory.models.InventoryModel;
 import com.tecno_comfenalco.pa.domain.presales.model.PresalesModel;
 import com.tecno_comfenalco.pa.domain.product.model.ProductModel;
 import com.tecno_comfenalco.pa.domain.store.models.StoreModel;
-import com.tecno_comfenalco.pa.domain.vehicle.model.VehicleModel;
+
 import com.tecno_comfenalco.pa.domain.warehouse.models.WareHouseModel;
 import com.tecno_comfenalco.pa.shared.dto.DirectionDto;
 import com.tecno_comfenalco.pa.shared.enums.DocumentTypeEnum;
